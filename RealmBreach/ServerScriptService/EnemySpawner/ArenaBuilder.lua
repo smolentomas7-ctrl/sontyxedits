@@ -53,31 +53,34 @@ local function findOrCreate(parent, className, childName)
 end
 
 --[[ Lighting ]]
--- Dark, foggy night with bloom so neon cracks really glow
+-- Moody purple dusk: dark enough to feel gritty, bright enough to see where you walk.
+-- Bloom makes the neon cracks glow.
 function ArenaBuilder.SetupLighting()
-	Lighting.ClockTime = 0
-	Lighting.Brightness = 1
-	Lighting.Ambient = Color3.fromRGB(25, 20, 30)
-	Lighting.OutdoorAmbient = Color3.fromRGB(40, 34, 50)
-	Lighting.EnvironmentDiffuseScale = 0.2
+	Lighting.ClockTime = 19.5
+	Lighting.Brightness = 2
+	Lighting.ExposureCompensation = 0.3
+	Lighting.Ambient = Color3.fromRGB(80, 72, 95)
+	Lighting.OutdoorAmbient = Color3.fromRGB(110, 100, 130)
+	Lighting.EnvironmentDiffuseScale = 0.4
 	Lighting.EnvironmentSpecularScale = 0.5
 
 	local atmosphere = findOrCreate(Lighting, "Atmosphere", "Atmosphere")
-	atmosphere.Density = 0.4
-	atmosphere.Haze = 2
+	atmosphere.Density = 0.25
+	atmosphere.Haze = 0.8
 	atmosphere.Glare = 0
-	atmosphere.Color = Color3.fromRGB(30, 22, 40)
-	atmosphere.Decay = Color3.fromRGB(10, 8, 14)
+	atmosphere.Color = Color3.fromRGB(70, 58, 90)
+	atmosphere.Decay = Color3.fromRGB(35, 28, 45)
 
 	local bloom = findOrCreate(Lighting, "BloomEffect", "RealmBloom")
-	bloom.Intensity = 1.2
-	bloom.Size = 30
-	bloom.Threshold = 0.9
+	bloom.Intensity = 1
+	bloom.Size = 24
+	bloom.Threshold = 0.95
 
 	local colorCorrection = findOrCreate(Lighting, "ColorCorrectionEffect", "RealmGrade")
-	colorCorrection.Contrast = 0.15
-	colorCorrection.Saturation = -0.1
-	colorCorrection.TintColor = Color3.fromRGB(235, 225, 255)
+	colorCorrection.Contrast = 0.1
+	colorCorrection.Saturation = -0.05
+	colorCorrection.TintColor = Color3.fromRGB(240, 232, 255)
+	print("[ArenaBuilder] Lighting ready")
 end
 
 --[[ Lobby ]]
@@ -206,6 +209,7 @@ function ArenaBuilder.BuildArena()
 	pillarFolder.Name = "Pillars"
 	pillarFolder.Parent = dungeonModel
 	dungeonModel.Parent = workspace
+	print("[ArenaBuilder] Dungeon arena built — walk into the portal to enter")
 end
 
 -- Recolors the arena and rebuilds the pillars so every floor looks different
