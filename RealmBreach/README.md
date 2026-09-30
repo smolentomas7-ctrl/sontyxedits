@@ -8,8 +8,8 @@ A dark dungeon crawler for Roblox with endless floors. Each file in this folder 
 |---|---------|-------|--------|
 | 1 | ReplicatedStorage | `ReplicatedStorage/GameConfig.lua`, `ReplicatedStorage/RemoteEvents/CreateRemotes.lua` | Done |
 | 2 | ServerScriptService > PlayerData | `ServerScriptService/PlayerData/PlayerData.server.lua` (Script), `SaveManager.lua` and `StatCalculator.lua` (ModuleScripts inside the PlayerData Script) | Done |
-| 3 | ServerScriptService > LootSystem | | Next |
-| 4 | ServerScriptService > EnemySpawner | | |
+| 3 | ServerScriptService > LootSystem | `ServerScriptService/LootSystem.server.lua` | Done |
+| 4 | ServerScriptService > EnemySpawner | | Next |
 | 5 | ServerScriptService > CombatServer | | |
 | 6 | StarterPlayerScripts > CombatClient | | |
 | 7 | StarterGui > MainGui | | |
