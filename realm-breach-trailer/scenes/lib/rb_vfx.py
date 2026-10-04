@@ -1353,7 +1353,7 @@ def fireball(frame, start, end, seed=0, scale=1.0, travel=6, floor=None, color=F
     rfl = s * (0.2 + 0.5 * _eo(af / 3.0)) * (af >= 0) * (af < 6)
     hfl = 1.1 * np.clip(1 - af / 5.5, 0, 1) ** 2 * (af >= 0)
     fx.add(Vs, Fs, E[None, None] + 0 * F[:, None, None], size=rfl[:, None], heat=hfl[:, None], mat=3)
-    fire = glow_mat("fire_%s_%.2f_%.2f" % (color, s, strength), color, strength=5.0 * strength, hot="#FFE7A8",
+    fire = glow_mat("fire_%s_%.2f_%.2f" % (color, s, strength), color, strength=3.6 * strength, hot="#FFC35A",
                     soft=1.25, noise=0.95, nscale=2.8 / max(s, 0.3), nspeed=1.8)
     core = glow_mat("fire_core_%.2f" % strength, "#FFB040", strength=16.0 * strength, hot=WHITE_HOT, soft=1.2)
     halo = glow_mat("fire_halo_%s_%.2f" % (color, strength), color, strength=1.5 * strength, soft=3.0)
@@ -1547,7 +1547,7 @@ def god_attack(frame, origin, target, seed=0, scale=1.0, column=False, height=45
                     deep="#5A2A04")
     flash = glow_mat("god_flash_%.2f" % strength, color, strength=9.0 * strength, hot="#FFFFFF", soft=2.4,
                      deep="#8A4A08")
-    shell = glow_mat("god_shell_%.2f" % strength, color, strength=2.5 * strength, hot="#FFFFFF", soft=4.0,
+    shell = glow_mat("god_shell_%.2f" % strength, color, strength=1.6 * strength, hot="#FFFFFF", soft=6.0,
                      profile="shell", deep="#8A4A08")
     lf = np.arange(f - 6, f + 18)
     al = lf - f
@@ -1592,7 +1592,7 @@ def god_attack(frame, origin, target, seed=0, scale=1.0, column=False, height=45
                    mat=m)
         rs = s * (0.5 + 3.0 * _eo(a / 9.0)) * post * (a < 14)
         fx.add(Vs, Fs, base[None, None] + 0 * F[:, None, None], scl=np.stack([rs, rs, rs * 0.75], -1)[:, None],
-               heat=(1.4 * (1 - _ss(0, 13, a)) * post)[:, None], mat=3)
+               heat=(0.8 * (1 - _ss(0, 13, a)) * post)[:, None], mat=3)
         Q = 60
         qa = rg.uniform(0, 2 * math.pi, Q)
         qr = s * 0.9 * np.sqrt(rg.uniform(0, 1, Q))

@@ -238,10 +238,11 @@ if "det" in DO:
     print("DETERMINISM max abs diff = %.6f" % float(np.abs(imgs[0] - imgs[1]).max()))
 if "timing" in DO:
     sc, cam = setup(scale=1.0, samples=8)
-    t0 = time.time()
-    h1, fr, _ = build("god", cam)
-    V.embers(1, 80, (0, 1.0, 1.7), radius=2.6, height=4.0, seed=3, cam=cam)
-    print("TIMING build %.2fs" % (time.time() - t0))
-    tr = render(sc, fr, os.path.join(OUT, "timing_full.png"))
-    tr2 = render(sc, fr + 1, os.path.join(OUT, "timing_full2.png"))
-    print("TIMING full-res 8spp: %.2fs, %.2fs per frame" % (tr, tr2))
+    amb = V.embers(1, 80, (0, 1.0, 1.7), radius=2.6, height=4.0, seed=3, cam=cam)
+    for key in ("fireball_boom", "god"):
+        t0 = time.time()
+        h, fr, extra = build(key, cam)
+        tb = time.time() - t0
+        tr = render(sc, fr, os.path.join(OUT, "timing_%s_full.png" % key))
+        print("TIMING %s full-res 8spp (+ ambient embers): build %.2fs render %.2fs" % (key, tb, tr))
+        clear(h, extra)
