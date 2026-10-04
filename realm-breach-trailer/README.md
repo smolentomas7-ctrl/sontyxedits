@@ -37,8 +37,24 @@ xvfb-run -a blender -b --factory-startup -P scenes/turnarounds.py -- --char warr
 xvfb-run -a blender -b --factory-startup -P scenes/turnarounds.py -- --char god
 ```
 
-Shots, sound design, edit and mix are added as the production progresses;
-see `PROGRESS.md`.
+```bash
+# sound design + mix
+python3 src/sfx.py                   # 53 procedural SFX -> assets/audio/sfx/
+python3 src/subtitles.py             # edit/subtitles.json (word groups timed to the VO)
+python3 src/mix.py                   # build/audio/mix.wav (-14 LUFS integrated, true peak <= -1 dBTP) + stems
+
+# shots (one Blender script per shot: scenes/<ID>.py)
+python3 src/render_shots.py --mode still                 # one key still per shot -> build/stills/
+python3 src/checkpoint2.py [--safe]                      # graded key stills in shot order -> assets/checkpoint2/
+python3 src/render_shots.py --mode preview --workers 2   # 50% renders -> build/shots/<ID>/preview/
+python3 src/edit.py --mode preview [--safe]              # 540x960 preview -> build/preview/
+python3 src/render_shots.py --mode final --workers 2     # 100% renders -> build/shots/<ID>/final/
+python3 src/edit.py --mode final                         # output/realm_breach_trailer.mp4
+ffprobe -v error -show_streams -show_format output/realm_breach_trailer.mp4
+```
+
+Any single shot: `xvfb-run -a blender -b --factory-startup -P scenes/M104.py -- --mode still [--frame N]`.
+Rendering is resumable (existing frames are skipped; `--force` re-renders). See `PROGRESS.md`.
 
 ## Project layout
 

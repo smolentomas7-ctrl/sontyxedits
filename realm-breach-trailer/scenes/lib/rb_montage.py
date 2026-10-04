@@ -109,6 +109,19 @@ def act(w, shot, action, f_peak, dur, pos, heading, slowmo=1.0, crack=None, then
     _finish(w)
 
 
+def cold_key(target, cam_loc, side=1.0, dist=2.6, energy=260.0, color=(0.62, 0.72, 0.9), size=2.4):
+    """Soft moon-coloured key (area, no shadow) from the camera side so plate armour reads as metal
+    (iron reflects only what lights it). side=+1 camera-left of the subject, -1 camera-right."""
+    t, c = Vector(target), Vector(cam_loc)
+    d = c - t
+    d.z = 0
+    d.normalize()
+    sv = Vector((-d.y, d.x, 0.0)) * side
+    loc = t + (d * 0.7 + sv * 0.7).normalized() * dist + Vector((0, 0, 1.0))
+    return C.light("AREA", "MT_cold_key", tuple(loc), color=color, energy=energy, size=size,
+                   target=tuple(t + Vector((0, 0, 0.3))), shadow=False, volume=0.15)
+
+
 def ground_mark(forest, xy):
     """(x, y) -> (x, y, ground z) on a forest set."""
     return Vector((xy[0], xy[1], forest.ground_z(xy[0], xy[1])))

@@ -6,7 +6,7 @@ python3 src/render_shots.py --mode still|preview|final [--shots O2,O5,...] [--wo
 * Every shot with a script scenes/<ID>.py is rendered (shots without a script —
   O1, E1, END — are pure 2D and built in src/edit.py).
 * still   : one key frame per shot (build/stills/<ID>/).
-* preview : 50% resolution, all frames + handles (build/shots/<ID>/preview/).
+* preview : 50% resolution, the frames the edit uses ± --handles (default 1) (build/shots/<ID>/preview/).
 * final   : 100% resolution (build/shots/<ID>/final/).
 * Shots are split into frame-range chunks distributed over N parallel Blender
   workers; cloth/particle shots re-step their simulation from the shot's sim start
@@ -28,8 +28,9 @@ import video  # noqa: E402
 BLENDER = ["xvfb-run", "-a", "-s", "-screen 0 1920x1080x24", "blender", "-b", "--factory-startup", "-P"]
 
 
-def jobs_for(shot, mode, chunk):
-    h = video.HANDLE_FRAMES
+def jobs_for(shot, mode, chunk, handles=1):
+    # the edit only reads [start, end) (M509's strobe reads inside its sources), so renders need ~no handles
+    h = handles
     a, b = shot["start_frame"] - h, shot["end_frame"] + h
     if mode == "still":
         return [(shot["id"], None, None)]
@@ -77,6 +78,7 @@ def main():
     ap.add_argument("--samples")
     ap.add_argument("--frame")
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--handles", type=int, default=1, help="extra frames rendered each side (max %d)" % video.HANDLE_FRAMES)
     a = ap.parse_args()
     tl = json.load(open(os.path.join(ROOT, "edit", "timeline.json")))
     want = set(a.shots.split(",")) if a.shots else None
@@ -89,7 +91,7 @@ def main():
         extra += ["--samples", a.samples]
     if a.frame:
         extra += ["--frame", a.frame]
-    jobs = [j for s in shots for j in jobs_for(s, a.mode, a.chunk)]
+    jobs = [j for s in shots for j in jobs_for(s, a.mode, a.chunk, min(a.handles, video.HANDLE_FRAMES))]
     print("%d shots, %d jobs, %d workers, mode %s" % (len(shots), len(jobs), a.workers, a.mode), flush=True)
     t0 = time.time()
     fails = []

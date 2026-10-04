@@ -35,4 +35,6 @@ cam.handheld(amp=0.003, rot_deg=0.12, freq=0.7, seed=shot.seed)
 F.key_ctrl("glow", shot.sim_start, 1.0)
 shot.scene.frame_set(shot.key_frame)
 FO.lights_forest("boards", F, warrior=W, cam=cam_fn(shot.key_frame)["loc"], follow=w.root)
+import rb_core as C  # noqa: E402
+C.parent_keep(MT.cold_key(W + Vector((0, 0, 1.2)), cam_fn(shot.key_frame)["loc"], side=1.0), w.root)
 shot.render()
