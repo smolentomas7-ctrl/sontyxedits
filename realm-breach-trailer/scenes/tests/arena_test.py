@@ -5,6 +5,7 @@ blender -b --factory-startup -P scenes/tests/arena_test.py -- --shots a,b,c --sc
   b  O5 end  Fallen God from a low angle (24 mm, ~4 m away, looking up), blue underlight, cracks ignited
   c  F1e     wide 24 mm, warrior and god ~5 m apart in the 'duel' arena, the god towering in the top half
   d  O4      ground-level 50 mm insert: sabaton planted on the cracked, wet, glowing floor at WARRIOR_STOP
+  e  E2      'after' arena from a high crane position (35 mm): shattered halo on the floor, exhausted warrior
 Writes build/tests/rb_env_arena/<shot>_s<scale>_<samples>spp.png and prints build / render seconds.
 """
 import os
@@ -100,7 +101,7 @@ def shot_c(sc):
     MO.key_pose(w, FRAME, pose, Wp, (0, 0, 180))
     cam = C.camera("cam", lens=24, fstop=8.0)
     cam.location = Vector((-3.1, 4.4, 0.6))
-    C.look_at(cam, cam.location + Vector((3.9, 8.9, 2.6)))
+    C.look_at(cam, cam.location + Vector((3.9, 8.9, 1.75)))
     cam.data.dof.focus_distance = 9.0
     L = AR.lights_duel(warrior=Wp, cam=cam.location)
     return A, L
@@ -123,10 +124,24 @@ def shot_d(sc):
     return A, L
 
 
+def shot_e(sc):
+    A = AR.build_arena("after")
+    import rb_warrior as RW
+    w = RW.build_warrior("late")
+    Wp = Vector((0.4, 8.3, 0.0))
+    MO.key_pose(w, FRAME, MO.blend(MO.POSES_W["stand"], MO.POSES_W["kneel"], 0.25), Wp, (0, 0, 165))
+    cam = C.camera("cam", lens=35, fstop=8.0)
+    cam.location = Vector((-4.2, -1.5, 6.5))
+    C.look_at(cam, Vector((0.6, 12.5, 0.4)))
+    cam.data.dof.focus_distance = 12.0
+    L = AR.lights_after(warrior=Wp, cam=cam.location)
+    return A, L
+
+
 for s in shots:
     t0 = time.time()
     sc = setup()
-    A, L = {"a": shot_a, "b": shot_b, "c": shot_c, "d": shot_d}[s](sc)
+    A, L = {"a": shot_a, "b": shot_b, "c": shot_c, "d": shot_d, "e": shot_e}[s](sc)
     sc.frame_set(FRAME)
     nshadow = sum(1 for o in L.values() if o.data.use_shadow)
     t1 = time.time()

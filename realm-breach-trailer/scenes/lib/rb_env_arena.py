@@ -176,7 +176,7 @@ def floor_material(name="arena_floor", god=GOD_POS, hot=HOTSPOTS):
     col = b.ramp(tone, [(0.12, (0.011, 0.011, 0.012)), (0.45, (0.034, 0.032, 0.030)), (0.85, (0.08, 0.073, 0.065))])
     col = b.mix(b.math("MULTIPLY", _mr(b, (n_grain, "Fac"), 0.64, 0.74), 0.45), col, (0.1, 0.097, 0.092))
     col = b.mix(b.math("MULTIPLY", _mr(b, (n_mid, "Fac"), 0.56, 0.7), 0.55), col, (0.005, 0.005, 0.005))
-    col = b.mix(b.math("MULTIPLY", chamf, _mr(b, (n_fine, "Fac"), 0.42, 0.58)), col, (0.11, 0.104, 0.096))
+    col = b.mix(b.math("MULTIPLY", chamf, _mr(b, (n_fine, "Fac"), 0.35, 0.55, 0.5, 1.0)), col, (0.13, 0.122, 0.11))
     col = b.mix(b.math("MULTIPLY", joint, 0.95), col, (0.002, 0.002, 0.002))
     # ---- fracture network: bent, jittered Voronoi cell edges -> angular cracks in broken runs, fine branch
     # cracks only near the main ones (denser in the hot zones); distances converted to metres
@@ -216,7 +216,7 @@ def floor_material(name="arena_floor", god=GOD_POS, hot=HOTSPOTS):
     # ---- wetness: damp sheen over most of the floor, mirror puddles in the low spots
     wn = b.math("ADD", b.math("MULTIPLY", (n_wet, "Fac"), 0.55), b.math("MULTIPLY", (n_mid, "Fac"), 0.45))
     wn = b.math("ADD", wn, b.math("ADD", b.math("MULTIPLY", a_sink, 0.15), b.math("MULTIPLY", joint, 0.08)))
-    damp = b.math("MULTIPLY", _mr(b, wn, 0.47, 0.515), wet)
+    damp = b.math("MULTIPLY", _mr(b, wn, 0.49, 0.53), wet)
     puddle = b.math("MULTIPLY", _mr(b, wn, 0.575, 0.585), wet)
     # dry ash / dust settled on the high, dry parts
     ash = b.math("MULTIPLY", _mr(b, (_noise(b, _vadd(b, xy, (17.0, 29.0, 0.0)), 0.3, 5.0, 0.6), "Fac"), 0.56, 0.68),
@@ -228,13 +228,13 @@ def floor_material(name="arena_floor", god=GOD_POS, hot=HOTSPOTS):
     rough = b.math("ADD", rough, b.math("MULTIPLY", b.math("SUBTRACT", slab, 0.5), 0.25))
     n_sh = _noise(b, xy, 1.6, 5.0, 0.6)
     n_sh2 = _noise(b, xy, 7.0, 3.0, 0.6)
-    wrough = b.math("ADD", _mr(b, (n_sh, "Fac"), 0.3, 0.7, 0.06, 0.42),
+    wrough = b.math("ADD", _mr(b, (n_sh, "Fac"), 0.3, 0.7, 0.03, 0.35),
                     b.math("MULTIPLY", b.math("SUBTRACT", (n_sh2, "Fac"), 0.5), 0.25))
     wrough = b.math("ADD", wrough, b.math("MULTIPLY", b.math("SUBTRACT", slab, 0.5), 0.14))
     rough = _lerp(b, damp, rough, b.math("MAXIMUM", wrough, 0.04))
     rough = _lerp(b, b.math("MULTIPLY", chamf, 0.6), rough, 0.8)
     rough = _lerp(b, ash, rough, 0.92)
-    rough = _lerp(b, puddle, rough, 0.02)
+    rough = _lerp(b, puddle, rough, 0.05)
     # ---- emission: crack cores + heat halo (+ glowing joints only at the hot spots), ember -> blue near god
     fs = b.n("ShaderNodeVectorMath", _operation="SCALE")
     b._in(fs, 0, xy)
@@ -635,8 +635,8 @@ def build_floor(seed=999, zone=HERO, impact=None, mat=None, name="ARENA_floor"):
                 ang = rnd.uniform(0, math.pi)
                 a, bpart = _split(big, c, np.array([math.cos(ang), math.sin(ang)]))
                 pieces += [p for p in (a, bpart) if len(p) >= 3]
-            base_dz = rnd.gauss(0.0, 0.012)
-            base_t = (rnd.gauss(0, 0.008), rnd.gauss(0, 0.008))
+            base_dz = rnd.gauss(0.0, 0.02)
+            base_t = (rnd.gauss(0, 0.01), rnd.gauss(0, 0.01))
             for k, pc in enumerate(pieces):
                 pc = _clean(pc)
                 if len(pc) < 3 or abs(_area(pc)) < 0.04:
@@ -660,7 +660,7 @@ def build_floor(seed=999, zone=HERO, impact=None, mat=None, name="ARENA_floor"):
                     rx += -v[1] / dn * tilt
                     ry += v[0] / dn * tilt
                     dz -= rnd.uniform(0.02, 0.12) * (0.3 + fall)
-                cham = rnd.uniform(0.018, 0.04) if not smash else rnd.uniform(0.008, 0.02)
+                cham = rnd.uniform(0.03, 0.06) if not smash else rnd.uniform(0.01, 0.025)
                 _slab_piece(acc, pc, dz, 0.22, cham, _tilt(rx, ry), ctr, sid, max(0.0, -dz * 25.0))
             x += w
         y += d
