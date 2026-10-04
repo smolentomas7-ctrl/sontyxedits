@@ -9,8 +9,8 @@ Update after every step so work can resume after an interruption.
 | 3 Reference analysis | done | Different track (corr 0.15). Drop 15.9 s; pre-drop static + word captions every ~0.45 s; post-drop 1.79 cuts/s (0.9/beat), median 0.37 s, 2-beat holds + quarter-beat strobe bursts; no flashes/zooms. analysis/reference.json |
 | 4 Shot list | done | edit/shot_list.md + edit/timeline.json (69 shots, 74.73 s). Brief v2 merged (subtitles, right safe zone 140 px, loop). |
 | 5 Characters (CHECKPOINT 1) | approved | Warrior late/early + Fallen God built procedurally (scenes/lib/rb_warrior.py, rb_god.py). Turnarounds: build/characters/, sheet: assets/characters/checkpoint1_contact_sheet.jpg. Cape + tabard are cloth-simulated (mass 0.12, tension 80, collision dist 5 mm — larger distances make the cloth climb the proxies). |
-| 6 World + VFX | in progress | Workflow builders: arena, forest (done-ish), dungeon+props, heaven, enemies, vfx. Shot scripts scenes/<ID>.py; montage staging helpers scenes/lib/rb_montage.py. |
-| 7 Stills (CHECKPOINT 2) | pending | |
+| 6 World + VFX | mostly done | Arena + forest (builders, finished by director after the usage-limit kill), VFX + dungeon/props done (workflow v3); enemies + heaven building. Shot scripts for all 65 3D shots written (scenes/<ID>.py; montage on rb_montage.py). |
+| 7 Stills (CHECKPOINT 2) | in progress | Key stills rendering in batches; review notes in edit/review_notes.md. Major fixes: cape collapse (inward collision normals), wrist roll, closed fists/toes, re-staged O3/O9/O11b/F1a/F1d/F2a-c/F7/E2. Sheet: python3 src/checkpoint2.py |
 | 8 Animate + render | pending | |
 | 9 Voice | draft done | Kokoro bm_lewis (warrior), am_onyx (god); chains applied; assets/audio/vo/*.wav + vo.json. Line 2 kept full length. |
 | 10 SFX | pending | |
@@ -24,6 +24,8 @@ Update after every step so work can resume after an interruption.
   (re-download: github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/)
 
 ## Render budget notes
+- Dungeon sets: ~35-45 s/frame full res 8 spp uncontended (25 lights in volumetrics) -> cull/trim per shot before the final.
+- Renders need only the frames the edit uses (render_shots.py --handles 1 default).
 - EEVEE on llvmpipe: ~5 s fixed + ~1.2 s per TAA sample per frame at 1080x1920. 2 parallel Blender workers ≈ 11 s/frame effective at 8 samples.
 - Keep shadow-casting lights to 1–2 per shot; rims without shadows.
 - Never wait on `pgrep -f <pattern>` inside the same shell command that contains the pattern (it matches itself).
