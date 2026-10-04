@@ -73,22 +73,22 @@ ISLANDS = [(-36.0, 26.0, -16.0, 7.0), (42.0, 24.0, -26.0, 9.0), (-26.0, -44.0, -
 
 # per-depth look: seam colour/strength, practicals, fog, world, light colours / energies
 LOOK = {
-    "floor1": dict(seam="#FF6A1A", seam_k=0.3, circle=0.12, brazier=0.7, vein=0.35, magma=0.3, heat=0.12, haze="#8FA2B6", haze_e=0.9, moon_e=0.3,
+    "floor1": dict(seam="#FF6A1A", seam_k=0.3, circle=0.12, brazier=0.7, vein=0.35, magma=0.3, heat=0.06, haze="#8FA2B6", haze_e=0.9, moon_e=0.3,
                    fog_col=(0.52, 0.55, 0.58), fog=0.07, world_fog=0.016, bg=(0.0030, 0.0034, 0.0040),
                    void="#5A6B7E", void_k=0.45, key="#A9B6C4", key_e=950.0, top="#BCC8D4", top_e=5200.0,
-                   rim_k=1.0, back="#93A9BF", back_e=260.0, fill="#7F8FA0", fill_e=30.0, stone=1.0),
+                   rim_k=1.0, back="#93A9BF", back_e=260.0, fill="#7F8FA0", fill_e=100.0, stone=1.0),
     "struggle": dict(seam="#FF6A1A", seam_k=0.7, circle=0.3, brazier=0.85, vein=0.6, magma=0.55, heat=0.25, haze="#4FA6A0", haze_e=0.8, moon_e=0.25,
                      fog_col=(0.36, 0.56, 0.56), fog=0.08, world_fog=0.018, bg=(0.0016, 0.0038, 0.0044),
                      void="#1F6E6A", void_k=0.9, key="#6FA4A6", key_e=760.0, top="#8CC2C4", top_e=4300.0,
-                     rim_k=1.1, back="#4FD2C8", back_e=380.0, fill="#3F6E70", fill_e=24.0, stone=0.8),
-    "deep": dict(seam="#FF5A1A", seam_k=0.2, circle=0.06, brazier=0.3, vein=0.18, magma=0.2, heat=0.05, haze="#8A9098", haze_e=0.5, moon_e=0.15,
+                     rim_k=1.1, back="#4FD2C8", back_e=380.0, fill="#3F6E70", fill_e=80.0, stone=0.8),
+    "deep": dict(seam="#FF5A1A", seam_k=0.2, circle=0.06, brazier=0.3, vein=0.18, magma=0.2, heat=0.02, haze="#8A9098", haze_e=0.5, moon_e=0.15,
                  fog_col=(0.47, 0.48, 0.5), fog=0.09, world_fog=0.02, bg=(0.0014, 0.0015, 0.0017),
                  void="#3A3F46", void_k=0.35, key="#9EA2A8", key_e=430.0, top="#C9CCD0", top_e=3600.0,
-                 rim_k=0.75, back="#8E959E", back_e=200.0, fill="#5A6068", fill_e=14.0, stone=0.7),
+                 rim_k=0.75, back="#8E959E", back_e=200.0, fill="#5A6068", fill_e=45.0, stone=0.7),
     "legend": dict(seam="#FF9A2A", seam_k=1.4, circle=0.8, brazier=1.6, vein=1.2, magma=1.0, heat=0.45, haze="#FFB070", haze_e=1.0, moon_e=0.35,
                    fog_col=(0.78, 0.58, 0.42), fog=0.07, world_fog=0.016, bg=(0.0045, 0.0026, 0.0015),
                    void="#FF5A14", void_k=1.2, key="#FFB65C", key_e=1300.0, top="#FFD27A", top_e=6200.0,
-                   rim_k=1.3, back="#F2B544", back_e=520.0, fill="#7A4A2A", fill_e=24.0, stone=1.05),
+                   rim_k=1.3, back="#F2B544", back_e=520.0, fill="#7A4A2A", fill_e=80.0, stone=1.05),
 }
 
 
@@ -457,11 +457,11 @@ def mat_floor(depth):
     v2 = b.n("ShaderNodeTexVoronoi", _feature="DISTANCE_TO_EDGE", Scale=2.1)
     b._in(v2, "Vector", _vadd(b, wv, (3.1, 7.7, 0.0)))
     e2 = b.math("DIVIDE", (v2, "Distance"), 2.1)
-    g1 = _mr(b, (_noise(b, _vadd(b, xy, (13.0, 7.0, 0.0)), 0.25, 2.0), "Fac"), 0.5, 0.54)
+    g1 = _mr(b, (_noise(b, _vadd(b, xy, (13.0, 7.0, 0.0)), 0.25, 2.0), "Fac"), 0.56, 0.6)
     g2 = b.math("MULTIPLY", b.math("MULTIPLY", _mr(b, e1, 0.05, 0.35), g1),
                 _mr(b, (_noise(b, wv, 0.9, 2.0), "Fac"), 0.52, 0.56))
-    core1, groove1 = _mr(b, e1, 0.002, 0.006, 1.0, 0.0), _mr(b, e1, 0.004, 0.022, 1.0, 0.0)
-    core2, groove2 = _mr(b, e2, 0.0012, 0.004, 1.0, 0.0), _mr(b, e2, 0.002, 0.01, 1.0, 0.0)
+    core1, groove1 = _mr(b, e1, 0.0012, 0.004, 1.0, 0.0), _mr(b, e1, 0.004, 0.02, 1.0, 0.0)
+    core2, groove2 = _mr(b, e2, 0.0008, 0.003, 1.0, 0.0), _mr(b, e2, 0.002, 0.009, 1.0, 0.0)
     crack = b.math("MAXIMUM", b.math("MULTIPLY", core1, g1), b.math("MULTIPLY", core2, g2))
     groove = b.math("MAXIMUM", b.math("MULTIPLY", groove1, g1), b.math("MULTIPLY", groove2, g2))
     halo = b.math("MULTIPLY", _mr(b, e1, 0.0, 0.05, 1.0, 0.0), g1)
@@ -802,7 +802,7 @@ def void_world(depth="struggle"):
     nt.links.new(add.outputs[0], out.inputs["Surface"])
     pv = nt.nodes.new("ShaderNodeVolumePrincipled")
     pv.inputs["Color"].default_value = (*lk["fog_col"], 1.0)
-    pv.inputs["Anisotropy"].default_value = 0.5
+    pv.inputs["Anisotropy"].default_value = 0.3
     nt.links.new(fog.outputs[0], pv.inputs["Density"])
     nt.links.new(pv.outputs[0], out.inputs["Volume"])
     return w
@@ -820,8 +820,9 @@ def tune_eevee(sc=None):
     e.use_ssr_halfres = True
     e.volumetric_end = max(e.volumetric_end, 140.0)
     e.volumetric_start = 0.1
-    e.use_volumetric_shadows = True
-    e.volumetric_shadow_samples = 12
+    # no volume SELF-shadowing: through ~100 m of world haze it blacks out the sun-lit fog (shadow maps still
+    # cut shafts into the haze)
+    e.use_volumetric_shadows = False
     e.gtao_distance = 0.8
     e.gtao_factor = 1.0
     e.shadow_cube_size = "1024"
@@ -1545,11 +1546,11 @@ def lights_dungeon(depth, dungeon=None, subject=(0, 0, 0), cam=(0, -6, 1.6), fol
     d.normalize()
     side = Vector((-d.y, d.x, 0.0))          # camera-left
     L = {}
-    L["key"] = _L("SPOT", "key", S - d * 4.2 + side * 4.4 + Vector((0, 0, 6.8)), lk["key"], lk["key_e"],
+    L["key"] = _L("SPOT", "key", S - d * 3.6 + side * 3.2 + Vector((0, 0, 7.2)), lk["key"], lk["key_e"],
                   target=S + Vector((0, 0, 1.0)), size=0.7, spot=36.0, blend=0.55, shadow=True, volume=0.35,
                   cutoff=30.0)
     L["top"] = _L("SPOT", "top", S + d * 1.2 - side * 0.8 + Vector((0, 0, 15.0)), lk["top"], lk["top_e"],
-                  target=S + Vector((0, 0, 0.2)), size=0.45, spot=17.0, blend=0.45, shadow=True, volume=1.0,
+                  target=S + Vector((0, 0, 0.2)), size=0.45, spot=17.0, blend=0.45, shadow=True, volume=3.0,
                   specular=0.6, cutoff=30.0)
     hz = _L("SUN", "haze", S + d * 40.0 + Vector((0, 0, 16.0)), lk["haze"], lk["haze_e"], target=S, size=0.05,
             volume=1.0, specular=0.0, diffuse=0.0)

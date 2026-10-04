@@ -13,7 +13,7 @@ import rb_motion as MO
 import rb_story as ST
 
 
-def build(shot, variant="approach", warrior=True, god=True, cape=True, arena_kw=None, act="intro"):
+def build(shot, variant="approach", warrior=True, god=True, cape=True, arena_kw=None, act="intro", cloth_goal=None):
     import rb_env_arena as AR
     out = {}
     out["arena"] = AR.build_arena(variant=variant, **(arena_kw or {}))
@@ -21,7 +21,9 @@ def build(shot, variant="approach", warrior=True, god=True, cape=True, arena_kw=
         AR.tune_eevee()
     if warrior:
         import rb_warrior as RW
-        w = RW.build_warrior("late", rings=True, cape=cape, cloth_goal=0.4 if act == "battle" else 0.0)
+        if cloth_goal is None:   # violent action (battle, the roar and the charge): soft goal + body-only colliders
+            cloth_goal = 0.4 if act == "battle" or shot.id in ("O11a", "O11b", "O12") else 0.0
+        w = RW.build_warrior("late", rings=True, cape=cape, cloth_goal=cloth_goal)
         out["w"] = w
         shot.register_cloth(getattr(w, "cloths", []))
     if god:

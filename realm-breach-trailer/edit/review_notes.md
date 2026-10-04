@@ -21,3 +21,4 @@
   F2b: blades only -> 3 m, helm + contact + obsidian blade. F1d: pulled back for hand + god. F2c: low,
   he is thrown toward the lens.
 - Arena floor puddles reflect blue/white hot spots (F1a-F1c, F7) -> tame.
+- O11b: cape flew up over the helm in the charge (arm proxies, friction 8) -> violent intro shots (O11a/O11b/O12) use the battle cloth settings. Re-render O11b.

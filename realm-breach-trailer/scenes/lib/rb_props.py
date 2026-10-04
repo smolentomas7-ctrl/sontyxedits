@@ -44,9 +44,9 @@ from rb_core import hexcol, link
 RARITY_ORDER = ["common", "rare", "epic", "mythic", "legendary", "morbidious", "god", "fallen equip"]
 RARITY_HEX = dict(C.video.RARITIES)
 FALLEN_GLOW = C.video.FALLEN_EQUIP_GLOW
-LADDER = {"common": 0.5, "rare": 0.85, "epic": 1.0, "mythic": 1.05, "legendary": 1.2, "morbidious": 1.05,
+LADDER = {"common": 0.35, "rare": 0.85, "epic": 1.0, "mythic": 1.05, "legendary": 1.2, "morbidious": 1.05,
           "god": 1.45, "fallen equip": 1.2}
-BEAM_W = {"common": 0.62, "rare": 0.85, "epic": 0.95, "mythic": 1.0, "legendary": 1.08, "morbidious": 1.0,
+BEAM_W = {"common": 0.45, "rare": 0.85, "epic": 0.95, "mythic": 1.0, "legendary": 1.08, "morbidious": 1.0,
           "god": 1.22, "fallen equip": 1.08}
 NAVY = "#1B2A4A"
 FONT = os.path.join(C.ROOT, "assets", "fonts", "Cinzel.ttf")
@@ -225,9 +225,9 @@ def mat_beam(name, height=7.0):
     gk = b.ctrl("glow", 1.0)
     tm = b.ctrl("time", 0.0)
     h = b.math("DIVIDE", (sep, "Z"), height)
-    vert = b.math("MULTIPLY", b.math("POWER", DG._mr(b, h, 0.0, 1.0, 1.0, 0.0), 2.4), DG._mr(b, (sep, "Z"), 0.0, 0.05))
+    vert = b.math("MULTIPLY", b.math("POWER", DG._mr(b, h, 0.0, 1.0, 1.0, 0.0), 1.6), DG._mr(b, (sep, "Z"), 0.0, 0.35))
     lw = b.n("ShaderNodeLayerWeight", Blend=0.5)
-    edge = b.math("ADD", 0.12, b.math("MULTIPLY", b.math("POWER", (lw, "Facing"), 2.0), 0.88))
+    edge = b.math("ADD", 0.04, b.math("MULTIPLY", b.math("POWER", (lw, "Facing"), 2.5), 0.96))
     ang = b.math("ARCTAN2", (sep, "Y"), (sep, "X"))
     sv = b.n("ShaderNodeCombineXYZ", X=b.math("MULTIPLY", ang, 1.6), Y=0.0, Z=b.math("SUBTRACT", (sep, "Z"),
                                                                                    b.math("MULTIPLY", tm, 1.1)))
@@ -238,8 +238,8 @@ def mat_beam(name, height=7.0):
     vo = b.n("ShaderNodeTexVoronoi", Scale=1.0)
     b._in(vo, "Vector", mv)
     motes = b.math("MULTIPLY", DG._mr(b, (vo, "Distance"), 0.07, 0.02), DG._mr(b, h, 0.6, 0.0))
-    s = b.math("ADD", b.math("MULTIPLY", b.math("MULTIPLY", vert, edge), b.math("MULTIPLY", stk, 7.0)),
-               b.math("MULTIPLY", motes, 14.0))
+    s = b.math("ADD", b.math("MULTIPLY", b.math("MULTIPLY", vert, edge), b.math("MULTIPLY", stk, 4.0)),
+               b.math("MULTIPLY", motes, 10.0))
     s = b.math("MULTIPLY", s, b.math("MULTIPLY", rk, gk))
     white = b.mix(b.math("MULTIPLY", vert, 0.35), colc, (1.0, 1.0, 1.0))
     b.out(DG.additive(b, white, s))
@@ -416,7 +416,7 @@ def loot(item="greatsword", rarity="common", loc=(0, 0, 0), rot_z=0.0, seed=0, i
     # beam, inner core, floor disc
     L.mats["pillar"] = mat_beam("PR_loot_beam", beam_height)
     acc = DG.Acc()
-    for r, hh in ((beam_radius, beam_height), (beam_radius * 0.22, beam_height * 0.75)):
+    for r, hh in ((beam_radius, beam_height),):
         N = 48
         th = np.linspace(0, 2 * math.pi, N, endpoint=False)
         zs = np.linspace(0, hh, 14)
@@ -813,7 +813,7 @@ def rebirth_plaque(loc=(0, 0, 0), rot_z=0.0, scale=1.0, word="REBIRTH"):
         cu.font = bpy.data.fonts.load(FONT, check_existing=True)
     except RuntimeError:
         pass
-    cu.size = 0.21
+    cu.size = 0.24
     cu.space_character = 1.12
     cu.align_x, cu.align_y = "CENTER", "CENTER"
     cu.extrude = 0.006
