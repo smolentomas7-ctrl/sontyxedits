@@ -604,9 +604,11 @@ def _early_head(w, rig, prefix, plate, leath, black, parts):
         # head part (z > 1.6): wraps the skull; below: neck, then flares over the shoulders
         if z > 1.60:
             t = (1.93 - z) / 0.33
-            ax = 0.035 + 0.12 * math.sin(min(1.0, t * 1.5) * math.pi / 2)
-            by = 0.05 + 0.115 * math.sin(min(1.0, t * 1.5) * math.pi / 2)
-            yc = 0.06 - 0.04 * t
+            # elliptical crown: the hood domes over the skull (a sine profile read as a paper cone side-on)
+            e = math.sqrt(max(0.0, 1.0 - (1.0 - min(1.0, t * 1.5)) ** 2))
+            ax = 0.02 + 0.135 * e
+            by = 0.03 + 0.135 * e
+            yc = 0.05 - 0.03 * t
         else:
             t = (1.60 - z) / 0.30
             ax = 0.155 + 0.2 * t ** 1.2

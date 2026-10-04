@@ -947,7 +947,7 @@ def _near_lens(cam, f0, f1, rg, falling, color, strength, n):
     sz = depth * rg.uniform(0.022, 0.04, n) * (0.6 + 0.4 * env) * win
     spd = np.linalg.norm(vel, axis=-1)
     scl = np.stack([sz, sz, sz + spd * 0.3], -1)
-    Vt, Ft = _uv_sphere(16, 8)
+    Vt, Ft = _uv_sphere(32, 14)
     fx.add_tiled(Vt, Ft, P, rot=_align_euler(vel), scl=scl, heat=heat)
     mat = glow_mat("ember_lens_%s_%.2f" % (color, strength), color, strength=6.0 * strength, soft=0.9, heat_pow=1.0)
     return fx.build([mat], parent=camob)
@@ -1157,7 +1157,7 @@ def shockwave(frame, loc, seed=0, scale=1.0, floor=None, dust=True, color=EMBER,
     fx.add(Vb, Fb, np.array([L[0], L[1], zr])[None, None] + 0 * F[:, None, None],
            scl=np.stack([R2, R2, R2], -1)[:, None], heat=h2[:, None], v=vb, mat=0)
     # dome flash
-    Vs, Fs = _uv_sphere(16, 10)
+    Vs, Fs = _uv_sphere(24, 12)
     rd = s * (0.15 + 0.5 * _eo(a / 4.0)) * on
     hd = 1.6 * np.clip(1 - a / 6.0, 0, 1) ** 2 * on
     fx.add(Vs, Fs, np.array([L[0], L[1], fl])[None, None] + 0 * F[:, None, None],
@@ -1512,8 +1512,8 @@ def god_attack(frame, origin, target, seed=0, scale=1.0, column=False, height=45
     fx = _FX("god_attack", f - 8, f + 30)
     F = fx.F
     a = F - f
-    Vs, Fs = _uv_sphere(16, 10)
-    Vb, Fb, ub = _beam(20, 14)
+    Vs, Fs = _uv_sphere(32, 16)
+    Vb, Fb, ub = _beam(24, 14)
     # build-up glow at origin -> release flash
     bu = _ss(-6, 0, a)
     pre = (a >= -6) & (a < 0)

@@ -22,3 +22,4 @@
   he is thrown toward the lens.
 - Arena floor puddles reflect blue/white hot spots (F1a-F1c, F7) -> tame.
 - O11b: cape flew up over the helm in the charge (arm proxies, friction 8) -> violent intro shots (O11a/O11b/O12) use the battle cloth settings. Re-render O11b.
+- M103: cold key works (iron reads as metal). Early hood crown read as a paper cone side-on -> elliptical dome (rb_warrior._early_head). Re-render M103/M105/M106 later.
