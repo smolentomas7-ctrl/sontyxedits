@@ -22,8 +22,9 @@ cam.whip(shot.f1 - 3, shot.f1 + 4, -35)
 
 def cam_fn(f):
     p = rb_intro.warrior_pos(f)
-    loc = p + Vector((-1.7, 0.7, 0.45))
-    return dict(loc=loc, target=p + Vector((0.2, 2.6, 1.15)), focus=p + Vector((0, 0, 1.0)))
+    # low rear 3/4 dolly keeping pace with him: warrior right of centre, the god ahead in the upper frame
+    loc = p + Vector((-0.75, -1.65, 0.42))
+    return dict(loc=loc, target=p + Vector((0.1, 2.0, 1.55)), focus=p + Vector((0, 0, 1.0)))
 
 
 cam.key_range(shot.frames_all, cam_fn)

@@ -19,8 +19,9 @@ import rb_env_arena as AR  # noqa: E402
 
 cam = rb_cam.Rig(lens=35, fstop=4.0)
 cam.handheld(amp=0.02, rot_deg=0.5, freq=1.4, seed=shot.seed)
-loc = Vector((2.6, 6.0, 1.1))
-cam.key_range(shot.frames_all, lambda f: dict(loc=loc, target=Vector((-0.4, 11.5, 3.0)), focus=5.5))
+# pulled back so both fit the vertical frame: his casting hand lower left, the god upper right (lightning between)
+loc = Vector((3.2, 4.2, 1.0))
+cam.key_range(shot.frames_all, lambda f: dict(loc=loc, target=Vector((-0.63, 11.2, 2.4)), focus=7.5))
 AR.lights_duel(warrior=tuple(rb_intro.warrior_pos_battle(shot.key_frame)), cam=tuple(loc))
 try:
     import rb_vfx as VFX

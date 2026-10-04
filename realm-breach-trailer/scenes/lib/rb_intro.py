@@ -21,7 +21,7 @@ def build(shot, variant="approach", warrior=True, god=True, cape=True, arena_kw=
         AR.tune_eevee()
     if warrior:
         import rb_warrior as RW
-        w = RW.build_warrior("late", rings=True, cape=cape)
+        w = RW.build_warrior("late", rings=True, cape=cape, cloth_goal=0.4 if act == "battle" else 0.0)
         out["w"] = w
         shot.register_cloth(getattr(w, "cloths", []))
     if god:

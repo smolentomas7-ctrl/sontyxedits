@@ -21,8 +21,9 @@ cam = rb_cam.Rig(lens=24, fstop=8.0)
 cam.handheld(amp=0.02, rot_deg=0.4, freq=1.2, seed=shot.seed)
 cam.shake(int(ST.bf(99.62)) - 1, amp=0.06, seed=shot.seed)
 cam.shake(int(ST.bf(100.4)) - 1, amp=0.04, seed=shot.seed + 1)
-loc = Vector((-2.8, 2.6, 1.0))
-cam.key_range(shot.frames_all, lambda f: dict(loc=loc, target=Vector((0.0, 8.2, 2.1)), focus=5.5))
+# low, just beyond where he lands: he is thrown toward the lens, the god looming behind him
+loc = Vector((0.9, 2.2, 0.5))
+cam.key_range(shot.frames_all, lambda f: dict(loc=loc, target=Vector((-0.2, 9.0, 2.6)), focus=4.5))
 AR.lights_duel(warrior=tuple(rb_intro.warrior_pos_battle(shot.key_frame)), cam=tuple(loc))
 try:
     import rb_vfx as VFX

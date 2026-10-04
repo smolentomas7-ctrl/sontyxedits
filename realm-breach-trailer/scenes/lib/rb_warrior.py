@@ -118,7 +118,7 @@ def lame_band(name, center, axis, r0, r1, h, arc, front=(0, -1, 0), N=40, M=6, f
     return G.tube(name, p0, p1, lambda t, th: r0 + (r1 - r0) * t + flare * t * t, N=N, M=M, arc=arc, front=front)
 
 
-def build_warrior(look="late", prefix="W_", rings=False, sword_glow=None, seed=7, cape=None):
+def build_warrior(look="late", prefix="W_", rings=False, sword_glow=None, seed=7, cape=None, cloth_goal=0.0):
     w = Warrior()
     w.look = look
     w.prefix = prefix
@@ -457,6 +457,7 @@ def build_warrior(look="late", prefix="W_", rings=False, sword_glow=None, seed=7
 
     w.parts = parts
     w.cloths = []
+    w.cloth_goal = cloth_goal
     w.cape = build_cape(w, prefix) if cape else None
     return w
 
@@ -776,6 +777,11 @@ def cloth_panel(w, name, joint, top_z, length, half_top, half_bot, y_fn, cols, r
             vg.add([v.index], 1.0, "REPLACE")
         elif v.co.z > top_z - 1.5 * row_h:
             vg.add([v.index], 0.6, "REPLACE")
+        elif getattr(w, "cloth_goal", 0.0) > 0:
+            # soft goal for violent action: the cloth keeps its drape against the body and swings around
+            # it instead of being flung into the collision proxies and staying tangled there
+            t = min(1.0, max(0.0, (top_z - v.co.z) / length))
+            vg.add([v.index], w.cloth_goal * (1 - t) ** 1.6, "REPLACE")
     G.set_mat(ob, mat)
     attach(ob, w.rig, joint)
     cl = ob.modifiers.new("Cloth", "CLOTH")
@@ -788,11 +794,13 @@ def cloth_panel(w, name, joint, top_z, length, half_top, half_bot, y_fn, cols, r
     st.bending_stiffness = 2.0
     st.air_damping = 1.0
     st.vertex_group_mass = "pin"
-    st.pin_stiffness = 1.0
+    st.pin_stiffness = 1.0 if getattr(w, "cloth_goal", 0.0) <= 0 else 4.0
     cs = cl.collision_settings
     cs.collision_quality = 3
     cs.distance_min = 0.005
     cs.use_self_collision = False
+    if getattr(w, "col_body", None) is not None:
+        cs.collection = w.col_body
     sol = ob.modifiers.new("Solidify", "SOLIDIFY")
     sol.thickness = 0.006
     sub = ob.modifiers.new("Subsurf", "SUBSURF")
@@ -822,6 +830,17 @@ def build_cape(w, prefix, seed=11):
     return cape
 
 
+def _normals_out(ob):
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(ob.data)
+    bm.free()
+    ob.data.update()
+
+
 def _collision_proxies(w, prefix):
     inv = M.new("invisible", blend="CLIP")[0]
     nt = inv.node_tree
@@ -835,14 +854,25 @@ def _collision_proxies(w, prefix):
              ("thigh_L", (0.11, 0.0, 0.72), (0.09, 0.09, 0.24)), ("thigh_R", (-0.11, 0.0, 0.72), (0.09, 0.09, 0.24)),
              ("upperarm_L", (0.27, 0.02, 1.37), (0.09, 0.09, 0.12)), ("upperarm_R", (-0.27, 0.02, 1.37), (0.09, 0.09, 0.12))]
     w.proxies = []
+    violent = getattr(w, "cloth_goal", 0.0) > 0
+    body = None
+    if violent:
+        # battle: the cloth collides with the torso/legs only (the arms sweeping overhead dragged the cape up
+        # and left it bunched on the shoulders) and slides more freely
+        body = bpy.data.collections.new(prefix + "colliders_body")
+        bpy.context.scene.collection.children.link(body)
     for joint, c, r in specs:
         ob = G.ellipsoid_cap(prefix + "col_" + joint, c, r, axis=(0, 0, 1), polar=(0, 3.14), N=16, M=10, smooth=True)
+        _normals_out(ob)      # inward normals made collisions push the cloth INTO the body (cape collapsed)
         G.set_mat(ob, inv)
         ob.modifiers.new("Collision", "COLLISION")
         ob.collision.thickness_outer = 0.008
-        ob.collision.cloth_friction = 8
+        ob.collision.cloth_friction = 2.0 if violent else 8
         attach(ob, rig, joint)
         w.proxies.append(ob)
+        if body is not None and not joint.startswith("upperarm"):
+            body.objects.link(ob)
+    w.col_body = body
 
 
 # ------------------------------------------------------------------ posing

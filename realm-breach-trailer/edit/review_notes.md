@@ -10,3 +10,14 @@
   fixed in rb_warrior (front ridge, strap rivets, domed toe cap). Dust puff VFX pending rb_vfx.
 - O7: good (god centred, halo reads). Blue underlight hot spot at the very bottom (inside the bottom
   safe zone, acceptable); robe reads as a flat sheet — consider folds/tatter in rb_god if time allows.
+- CAPE BUG (all late-look shots): collision proxies had inward normals, so collisions pulled the cape INTO
+  the chest/pelvis proxies (it shrank to a 0.4 x 0.7 m bundle within ~30 frames, even standing still).
+  Fixed (rb_warrior._normals_out). Battle shots also get a soft cloth goal + body-only colliders.
+- O8: salute fists read as hollow rings: palm tube open + wrist roll undefined for near-vertical blades ->
+  palm caps + natural wrist roll in rb_motion.aim_hand.
+- O9: camera 0.5 m from the helm at 85 mm (1 cm DOF, eyes bloomed into discs) -> 0.95 m, f/8.
+- O11b: camera looked away from the warrior -> low rear 3/4 dolly. F7: whip still mid-turn at impact ->
+  whip-tilt from warrior to god landing on the impact. F2a: camera between the fighters -> low side.
+  F2b: blades only -> 3 m, helm + contact + obsidian blade. F1d: pulled back for hand + god. F2c: low,
+  he is thrown toward the lens.
+- Arena floor puddles reflect blue/white hot spots (F1a-F1c, F7) -> tame.

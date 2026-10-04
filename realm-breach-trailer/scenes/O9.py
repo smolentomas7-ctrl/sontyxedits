@@ -17,9 +17,11 @@ S = rb_intro.build(shot, variant="approach")
 import rb_env_arena as AR  # noqa: E402
 
 head = ST.STOP + Vector((0, 0, 1.763))
-cam = rb_cam.Rig(lens=85, fstop=5.6)
-loc = head + Vector((-0.05, 0.5, 0.0))
-cam.key_range(shot.frames_all, lambda f: dict(loc=loc, target=head, focus=head + Vector((0, 0.15, 0))))
+cam = rb_cam.Rig(lens=85, fstop=8.0)
+# ~0.95 m out: the helm fills the frame width and the T-slit plane is in focus (closer = ~1 cm DOF and
+# the eyes, set back inside the helm, bloom into discs)
+loc = head + Vector((-0.06, 0.95, 0.02))
+cam.key_range(shot.frames_all, lambda f: dict(loc=loc, target=head + Vector((0, 0, 0.01)), focus=head + Vector((0, 0.12, 0.02))))
 AR.lights_walk(warrior=tuple(ST.STOP), cam=tuple(loc))
 C.light("AREA", "O9_bluefill", head + Vector((0.9, 2.0, 0.7)), color="#6FA8FF", energy=30, size=1.0,
         target=head, shadow=False)
