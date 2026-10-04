@@ -1,4 +1,5 @@
-"""O2 — The walk. Tracking from behind, 0.6 m high, 3 m back, matched to walk speed, 10% push-in, 35 mm."""
+"""O2 — The walk. Tracking from behind, 0.6 m high, 4.5 m back, tilted up into the vast hall so the warrior is
+small in the lower centre third; matched to walk speed, 10% push-in, 35 mm."""
 import math
 import os
 import sys
@@ -23,9 +24,9 @@ cam.handheld(amp=0.004, rot_deg=0.15, freq=0.6, seed=shot.seed)
 def cam_fn(f):
     p = rb_intro.warrior_pos(f)
     u = shot.u(f)
-    back = 3.0 - 0.3 * C.ease_in_out(u)
-    loc = p + Vector((0.32, -back, 0.6))
-    tgt = p + Vector((0.05, 7.0, 2.2))
+    back = 4.5 - 0.45 * C.ease_in_out(u)
+    loc = p + Vector((0.18, -back, 0.6))
+    tgt = p + Vector((0.0, 7.0, 3.6))
     return dict(loc=loc, target=tgt, focus=p + Vector((0, 0, 1.2)))
 
 
