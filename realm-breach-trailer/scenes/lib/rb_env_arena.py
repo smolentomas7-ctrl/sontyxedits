@@ -74,7 +74,7 @@ NAVE_X = 6.5
 COL_Y = [-54.0 + 9.0 * k for k in range(13)]
 HERO = (-34.0, 34.0, -58.0, 46.0)
 FAR = 150.0
-HOTSPOTS = ((WARRIOR_STOP[0], WARRIOR_STOP[1], 4.5), (CLASH[0], CLASH[1], 5.0), (0.0, -14.0, 4.0))
+HOTSPOTS = ((WARRIOR_STOP[0], WARRIOR_STOP[1], 4.0), (CLASH[0], CLASH[1], 5.0))
 EMBER = "#FF6A1A"
 BLUE = "#6FA8FF"
 BLUE_KEY = "#4A6C8F"
@@ -128,10 +128,25 @@ def _key_time(ntree_owner, ctrl_node, fps=C.FPS):
 
 
 # ------------------------------------------------------------------ materials
+def _dist_gate(b, xy, pts):
+    """max over pts [(x, y, r)] of a soft disc mask (1 inside ~0.3 r, 0 beyond r)."""
+    g = None
+    for (hx, hy, hr) in pts:
+        d = b.n("ShaderNodeVectorMath", _operation="DISTANCE")
+        b._in(d, 0, xy)
+        d.inputs[1].default_value = (hx, hy, 0.0)
+        k = _mr(b, (d, "Value"), hr, hr * 0.3)
+        g = k if g is None else b.math("MAXIMUM", g, k)
+    return g
+
+
 def floor_material(name="arena_floor", god=GOD_POS, hot=HOTSPOTS):
     """Wet cracked dark stone slabs. Reads point attributes from the slab geometry
-    (geo=1, slab=per-slab random, rim=0 top..1 joint edge, sink=how low the slab sits);
-    the far plane has none of them and falls back to a procedural brick slab pattern."""
+    (geo=1, slab=per-slab random, rim=0 top / 0.5 chamfer / 1 joint side, sink=how low the slab sits);
+    the far plane has none of them and falls back to a procedural brick slab pattern.
+    Cracks: an angular fracture network (warped Voronoi edges) in broken runs with fine branch cracks near
+    the main ones, denser around the hot spots; thin ember cores in dark grooves with a soft heat halo,
+    glowing only in segments; ember -> blue near the god."""
     m, b = M.new(name)
     geo = b.n("ShaderNodeNewGeometry")
     sep = b.n("ShaderNodeSeparateXYZ", Vector=(geo, "Position"))
@@ -144,66 +159,90 @@ def floor_material(name="arena_floor", god=GOD_POS, hot=HOTSPOTS):
     a_geo, a_slab, a_rim, a_sink = b.attr("geo"), b.attr("slab"), b.attr("rim"), b.attr("sink")
     # far-field slab pattern (matches the hero slab sizes)
     brick = b.n("ShaderNodeTexBrick", Vector=xy, Color1=(0, 0, 0), Color2=(1, 1, 1), Mortar=(0, 0, 0), Scale=1.0,
-                **{"Mortar Size": 0.035, "Mortar Smooth": 0.4, "Bias": 0.0, "Brick Width": 2.7, "Row Height": 2.35})
+                **{"Mortar Size": 0.03, "Mortar Smooth": 0.3, "Bias": 0.0, "Brick Width": 2.7, "Row Height": 2.35})
     brick.offset, brick.offset_frequency, brick.squash, brick.squash_frequency = 0.37, 2, 1.0, 1
     slab = _lerp(b, a_geo, (brick, "Color"), a_slab)
-    rim_j = _mr(b, a_rim, 0.45, 1.0)
-    joint = _lerp(b, a_geo, (brick, "Fac"), rim_j)
-    # tonal noise
-    n_big = _noise(b, xy, 0.035, 4.0)
-    n_mid = _noise(b, xy, 0.55, 6.0, 0.6)
-    n_fine = _noise(b, xy, 9.0, 8.0, 0.65)
-    n_wet = _noise(b, xy, 0.13, 4.0, 0.55)
-    tone = b.math("ADD", b.math("MULTIPLY", slab, 0.55), b.math("MULTIPLY", (n_big, "Fac"), 0.6))
-    col = b.ramp(tone, [(0.25, (0.016, 0.016, 0.018)), (0.62, (0.045, 0.043, 0.041)), (0.9, (0.085, 0.078, 0.07))])
-    var = b.ramp((n_mid, "Fac"), [(0.3, (0.7, 0.72, 0.75)), (0.7, (1.15, 1.1, 1.05))])
-    col = b.mix(1.0, col, var, blend="MULTIPLY")
-    spk = _mr(b, (n_fine, "Fac"), 0.6, 0.7)
-    col = b.mix(b.math("MULTIPLY", spk, 0.25), col, (0.12, 0.115, 0.11))
-    col = b.mix(b.math("MULTIPLY", joint, 0.85), col, (0.005, 0.005, 0.005))
-    # ---- cracks: domain-warped voronoi edges, clustered by a gate noise + hot spots
-    warp = _noise(b, xy, 0.25, 3.0)
-    wsub = _vadd(b, (warp, "Color"), (0.5, 0.5, 0.5), "SUBTRACT")
-    wsc = b.n("ShaderNodeVectorMath", _operation="SCALE")
-    b._in(wsc, 0, wsub)
-    wsc.inputs["Scale"].default_value = 1.3
-    wv = _vadd(b, (wsc, "Vector"), xy)
+    joint = _lerp(b, a_geo, (brick, "Fac"), _mr(b, a_rim, 0.62, 1.0))
+    chamf = b.math("MULTIPLY", _mr(b, a_rim, 0.04, 0.4), _mr(b, a_rim, 0.95, 0.62))
+    # ---- albedo: basalt-dark slabs, per-slab tone, blotches, mineral speckle, worn chamfers
+    n_big = _noise(b, xy, 0.04, 3.0)
+    n_mid = _noise(b, xy, 0.5, 6.0, 0.62)
+    n_fine = _noise(b, xy, 6.0, 8.0, 0.66)
+    n_grain = _noise(b, xy, 45.0, 2.0)
+    n_wet = _noise(b, xy, 0.11, 4.0, 0.55)
+    tone = b.math("ADD", b.math("MULTIPLY", slab, 0.45), b.math("MULTIPLY", (n_big, "Fac"), 0.35))
+    tone = b.math("ADD", tone, b.math("MULTIPLY", (n_mid, "Fac"), 0.45))
+    tone = b.math("SUBTRACT", tone, 0.18)
+    col = b.ramp(tone, [(0.12, (0.011, 0.011, 0.012)), (0.45, (0.034, 0.032, 0.030)), (0.85, (0.08, 0.073, 0.065))])
+    col = b.mix(b.math("MULTIPLY", _mr(b, (n_grain, "Fac"), 0.64, 0.74), 0.45), col, (0.1, 0.097, 0.092))
+    col = b.mix(b.math("MULTIPLY", _mr(b, (n_mid, "Fac"), 0.56, 0.7), 0.55), col, (0.005, 0.005, 0.005))
+    col = b.mix(b.math("MULTIPLY", chamf, _mr(b, (n_fine, "Fac"), 0.42, 0.58)), col, (0.11, 0.104, 0.096))
+    col = b.mix(b.math("MULTIPLY", joint, 0.95), col, (0.002, 0.002, 0.002))
+    # ---- fracture network: bent, jittered Voronoi cell edges -> angular cracks in broken runs, fine branch
+    # cracks only near the main ones (denser in the hot zones); distances converted to metres
+    wbig = _noise(b, xy, 0.12, 2.0)
+    wfine = _noise(b, xy, 0.9, 3.0)
+    wv = _vadd(b, xy, b.n("ShaderNodeVectorMath", _operation="SCALE",
+                         Vector=_vadd(b, (wbig, "Color"), (0.5, 0.5, 0.5), "SUBTRACT"), Scale=1.8))
+    wv = _vadd(b, wv, b.n("ShaderNodeVectorMath", _operation="SCALE",
+                         Vector=_vadd(b, (wfine, "Color"), (0.5, 0.5, 0.5), "SUBTRACT"), Scale=0.22))
     v1 = b.n("ShaderNodeTexVoronoi", _feature="DISTANCE_TO_EDGE", Scale=0.42)
     b._in(v1, "Vector", wv)
+    e1 = b.math("DIVIDE", (v1, "Distance"), 0.42)
     v2 = b.n("ShaderNodeTexVoronoi", _feature="DISTANCE_TO_EDGE", Scale=1.7)
-    b._in(v2, "Vector", wv)
-    core1 = _mr(b, (v1, "Distance"), 0.0012, 0.006, 1.0, 0.0)
-    core2 = _mr(b, (v2, "Distance"), 0.0, 0.011, 0.85, 0.0)
-    halo = _mr(b, (v1, "Distance"), 0.0, 0.05, 1.0, 0.0)
+    b._in(v2, "Vector", _vadd(b, wv, (3.1, 7.7, 0.0)))
+    e2 = b.math("DIVIDE", (v2, "Distance"), 1.7)
+    hotg = _dist_gate(b, xy, hot)
+    # hard-ish gates (cracks are present or absent in runs, never uniformly faint); hot zones lower the threshold
+    gsum = b.math("ADD", (_noise(b, _vadd(b, xy, (13.0, 7.0, 0.0)), 0.22, 2.0), "Fac"), b.math("MULTIPLY", hotg, 0.09))
+    gsum = b.math("ADD", gsum, b.math("MULTIPLY", b.math("SUBTRACT", (_noise(b, _vadd(b, xy, (41.0, 3.0, 0.0)), 0.045,
+                                                                                2.0), "Fac"), 0.5), 0.25))
+    g1 = _mr(b, gsum, 0.55, 0.585)
+    near1 = _mr(b, e1, 0.06, 0.4)
+    g2 = b.math("MULTIPLY", b.math("MULTIPLY", near1, g1),
+                _mr(b, b.math("ADD", (_noise(b, wv, 0.8, 2.0), "Fac"), b.math("MULTIPLY", hotg, 0.06)), 0.53, 0.57))
+    core1, groove1 = _mr(b, e1, 0.0022, 0.0065, 1.0, 0.0), _mr(b, e1, 0.004, 0.02, 1.0, 0.0)
+    core2, groove2 = _mr(b, e2, 0.0012, 0.0042, 1.0, 0.0), _mr(b, e2, 0.002, 0.009, 1.0, 0.0)
+    crack = b.math("MAXIMUM", b.math("MULTIPLY", core1, g1), b.math("MULTIPLY", core2, g2))
+    groove = b.math("MAXIMUM", b.math("MULTIPLY", groove1, g1), b.math("MULTIPLY", groove2, g2))
+    halo = b.math("MULTIPLY", _mr(b, e1, 0.0, 0.05, 1.0, 0.0), g1)
     halo = b.math("MULTIPLY", halo, halo)
-    gate1 = _mr(b, (_noise(b, _vadd(b, xy, (13.0, 7.0, 0.0)), 0.07, 2.0), "Fac"), 0.47, 0.57)
-    gate2 = _mr(b, (_noise(b, _vadd(b, xy, (5.0, 31.0, 0.0)), 0.11, 2.0), "Fac"), 0.55, 0.63)
-    for (hx, hy, hr) in hot:
-        d = b.n("ShaderNodeVectorMath", _operation="DISTANCE")
-        b._in(d, 0, xy)
-        d.inputs[1].default_value = (hx, hy, 0.0)
-        gate1 = b.math("MAXIMUM", gate1, _mr(b, (d, "Value"), hr, hr * 0.35))
-    crack = b.math("MAXIMUM", b.math("MULTIPLY", core1, gate1),
-                   b.math("MULTIPLY", core2, b.math("MULTIPLY", gate2, gate1)))
+    hot3 = b.math("MULTIPLY", hotg, hotg)
+    # heat varies along each crack: most segments smoulder, a few burn
+    seg = _mr(b, (_noise(b, wv, 0.9, 3.0), "Fac"), 0.4, 0.66, 0.0, 1.0)
+    col = b.mix(b.math("MULTIPLY", halo, 0.6), col, (0.004, 0.0025, 0.0015))
+    col = b.mix(b.math("MULTIPLY", groove, 0.9), col, (0.002, 0.0018, 0.0016))
     col = b.mix(crack, col, (0.0, 0.0, 0.0))
-    # ---- wetness: damp sheen everywhere, puddles in low spots
-    wn = b.math("ADD", (n_wet, "Fac"), b.math("MULTIPLY", a_sink, 0.12))
-    damp = b.math("MULTIPLY", _mr(b, wn, 0.36, 0.56), wet)
-    puddle = b.math("MULTIPLY", _mr(b, wn, 0.585, 0.605), wet)
-    col = b.mix(b.math("MULTIPLY", damp, 0.45), col, (0.0, 0.0, 0.0))
-    col = b.mix(b.math("MULTIPLY", puddle, 0.35), col, (0.0, 0.0, 0.0))
-    rough = b.math("ADD", 0.6, b.math("MULTIPLY", b.math("SUBTRACT", (n_fine, "Fac"), 0.5), 0.3))
-    rough = _lerp(b, damp, rough, 0.3)
-    rough = _lerp(b, b.math("MULTIPLY", joint, 0.5), rough, 0.18)
-    rough = _lerp(b, puddle, rough, 0.025)
-    # ---- emission: crack cores + glow spill + glowing joints, ember -> blue near the god
-    flick = _noise(b, b.n("ShaderNodeVectorMath", _operation="SCALE", Vector=xy, Scale=0.5), 1.0, 2.0, dims="4D",
-                   w=b.math("MULTIPLY", tm, 0.5))
-    flick = _mr(b, (flick, "Fac"), 0.3, 0.7, 0.4, 1.0)
-    jg = _mr(b, (_noise(b, _vadd(b, xy, (21.0, 3.0, 0.0)), 0.12, 2.0), "Fac"), 0.54, 0.64)
-    jglow = b.math("MULTIPLY", _mr(b, joint, 0.55, 1.0), b.math("MAXIMUM", jg, b.math("MULTIPLY", gate1, 0.5)))
-    estr = b.math("ADD", b.math("MULTIPLY", crack, 16.0), b.math("MULTIPLY", b.math("MULTIPLY", halo, gate1), 0.5))
-    estr = b.math("ADD", estr, b.math("MULTIPLY", jglow, 2.2))
+    # ---- wetness: damp sheen over most of the floor, mirror puddles in the low spots
+    wn = b.math("ADD", b.math("MULTIPLY", (n_wet, "Fac"), 0.55), b.math("MULTIPLY", (n_mid, "Fac"), 0.45))
+    wn = b.math("ADD", wn, b.math("ADD", b.math("MULTIPLY", a_sink, 0.15), b.math("MULTIPLY", joint, 0.08)))
+    damp = b.math("MULTIPLY", _mr(b, wn, 0.47, 0.515), wet)
+    puddle = b.math("MULTIPLY", _mr(b, wn, 0.575, 0.585), wet)
+    # dry ash / dust settled on the high, dry parts
+    ash = b.math("MULTIPLY", _mr(b, (_noise(b, _vadd(b, xy, (17.0, 29.0, 0.0)), 0.3, 5.0, 0.6), "Fac"), 0.56, 0.68),
+                 b.math("SUBTRACT", 1.0, damp))
+    col = b.mix(b.math("MULTIPLY", ash, 0.6), col, (0.085, 0.082, 0.078))
+    col = b.mix(b.math("MULTIPLY", damp, 0.6), col, (0.0, 0.0, 0.0))
+    col = b.mix(b.math("MULTIPLY", puddle, 0.6), col, (0.0, 0.0, 0.0))
+    rough = b.math("ADD", 0.78, b.math("MULTIPLY", b.math("SUBTRACT", (n_fine, "Fac"), 0.5), 0.3))
+    rough = b.math("ADD", rough, b.math("MULTIPLY", b.math("SUBTRACT", slab, 0.5), 0.25))
+    n_sh = _noise(b, xy, 1.6, 5.0, 0.6)
+    n_sh2 = _noise(b, xy, 7.0, 3.0, 0.6)
+    wrough = b.math("ADD", _mr(b, (n_sh, "Fac"), 0.3, 0.7, 0.06, 0.42),
+                    b.math("MULTIPLY", b.math("SUBTRACT", (n_sh2, "Fac"), 0.5), 0.25))
+    wrough = b.math("ADD", wrough, b.math("MULTIPLY", b.math("SUBTRACT", slab, 0.5), 0.14))
+    rough = _lerp(b, damp, rough, b.math("MAXIMUM", wrough, 0.04))
+    rough = _lerp(b, b.math("MULTIPLY", chamf, 0.6), rough, 0.8)
+    rough = _lerp(b, ash, rough, 0.92)
+    rough = _lerp(b, puddle, rough, 0.02)
+    # ---- emission: crack cores + heat halo (+ glowing joints only at the hot spots), ember -> blue near god
+    fs = b.n("ShaderNodeVectorMath", _operation="SCALE")
+    b._in(fs, 0, xy)
+    fs.inputs["Scale"].default_value = 0.6
+    flick = _noise(b, (fs, "Vector"), 1.0, 2.0, dims="4D", w=b.math("MULTIPLY", tm, 0.6))
+    flick = _mr(b, (flick, "Fac"), 0.3, 0.7, 0.45, 1.0)
+    estr = b.math("MULTIPLY", b.math("ADD", b.math("MULTIPLY", crack, 10.0), b.math("MULTIPLY", halo, 0.25)), seg)
+    estr = b.math("ADD", estr, b.math("MULTIPLY", b.math("MULTIPLY", _mr(b, joint, 0.6, 1.0), hot3), 0.35))
     estr = b.math("MULTIPLY", b.math("MULTIPLY", estr, flick), glow)
     dg = b.n("ShaderNodeVectorMath", _operation="DISTANCE")
     b._in(dg, 0, xy)
@@ -214,13 +253,16 @@ def floor_material(name="arena_floor", god=GOD_POS, hot=HOTSPOTS):
     bz = b.math("MULTIPLY", bz, b.math("MINIMUM", blue_k, 1.0))
     ecol = b.mix(bz, hexcol(EMBER), hexcol(BLUE))
     estr = b.math("MULTIPLY", estr, _lerp(b, bz, 1.0, b.math("MAXIMUM", blue_k, 0.0)))
-    # ---- bump: pitting, crack grooves, joint grooves on the far plane; puddles are flat
-    hgt = b.math("ADD", b.math("MULTIPLY", (n_fine, "Fac"), 0.5), b.math("MULTIPLY", (n_mid, "Fac"), 0.3))
-    hgt = b.math("SUBTRACT", hgt, b.math("MULTIPLY", crack, 0.8))
+    # ---- bump: grain, pitting, slab undulation, crack grooves, far-plane joints; puddles are flat
+    pits = b.n("ShaderNodeTexVoronoi", Vector=xy, Scale=14.0)
+    pitm = _mr(b, (pits, "Distance"), 0.0, 0.18, -1.0, 0.0)
+    hgt = b.math("ADD", b.math("MULTIPLY", (n_fine, "Fac"), 0.3), b.math("MULTIPLY", (n_mid, "Fac"), 0.25))
+    hgt = b.math("ADD", hgt, b.math("ADD", b.math("MULTIPLY", (n_grain, "Fac"), 0.06), b.math("MULTIPLY", pitm, 0.1)))
+    hgt = b.math("SUBTRACT", hgt, b.math("ADD", b.math("MULTIPLY", groove, 0.7), b.math("MULTIPLY", crack, 0.5)))
     hgt = b.math("SUBTRACT", hgt, b.math("MULTIPLY", b.math("MULTIPLY", (brick, "Fac"),
                                                              b.math("SUBTRACT", 1.0, a_geo)), 1.2))
-    bstr = b.math("MULTIPLY", 0.32, b.math("SUBTRACT", 1.0, puddle))
-    bump = b.n("ShaderNodeBump", Strength=bstr, Distance=0.012, Height=hgt)
+    bstr = b.math("SUBTRACT", 1.0, b.math("MULTIPLY", puddle, 0.95))
+    bump = b.n("ShaderNodeBump", Strength=bstr, Distance=0.02, Height=hgt)
     bs = b.bsdf(**{"Base Color": col, "Roughness": rough, "Normal": bump, "Emission Color": ecol,
                    "Emission Strength": estr})
     bs.inputs["Specular IOR Level"].default_value = 0.5
@@ -229,15 +271,28 @@ def floor_material(name="arena_floor", god=GOD_POS, hot=HOTSPOTS):
     return m
 
 
-def underglow_material(name="arena_underglow"):
-    """Ember light under the slabs, seen through joints and broken slabs (clustered, flickering)."""
+def underglow_material(name="arena_underglow", hot=HOTSPOTS):
+    """Magma under the slabs, seen through joints, missing pieces and the smashed crater: a dark cooled crust
+    with glowing seams (Voronoi), brighter in sparse clusters and the hot spots, slowly flickering."""
     m, b = M.new(name)
     geo = b.n("ShaderNodeNewGeometry")
+    sep = b.n("ShaderNodeSeparateXYZ", Vector=(geo, "Position"))
+    xy = b.n("ShaderNodeCombineXYZ", X=(sep, "X"), Y=(sep, "Y"), Z=0.0)
     g = b.ctrl("glow", 1.0)
     tm = b.ctrl("time", 0.0)
-    nz = _noise(b, (geo, "Position"), 0.09, 3.0, dims="4D", w=b.math("MULTIPLY", tm, 0.1))
-    k = _mr(b, (nz, "Fac"), 0.45, 0.62, 0.05, 1.0)
-    em = b.n("ShaderNodeEmission", Color=hexcol(EMBER), Strength=b.math("MULTIPLY", b.math("MULTIPLY", k, g), 3.0))
+    nz = _noise(b, xy, 0.09, 3.0, dims="4D", w=b.math("MULTIPLY", tm, 0.1))
+    k = _mr(b, (nz, "Fac"), 0.6, 0.74, 0.08, 1.0)
+    k = b.math("MAXIMUM", k, b.math("MULTIPLY", _dist_gate(b, xy, hot), 0.6))
+    wn = _noise(b, xy, 1.2, 2.0)
+    wv = _vadd(b, xy, b.n("ShaderNodeVectorMath", _operation="SCALE",
+                         Vector=_vadd(b, (wn, "Color"), (0.5, 0.5, 0.5), "SUBTRACT"), Scale=0.3))
+    vo = b.n("ShaderNodeTexVoronoi", _feature="DISTANCE_TO_EDGE", Scale=3.0)
+    b._in(vo, "Vector", wv)
+    seam = _mr(b, (vo, "Distance"), 0.0, 0.12, 1.0, 0.04)
+    crust = _mr(b, (_noise(b, xy, 6.0, 4.0), "Fac"), 0.35, 0.7, 0.0, 0.35)
+    heat = b.math("MULTIPLY", b.math("MAXIMUM", b.math("MULTIPLY", seam, seam), crust), k)
+    col = b.mix(_mr(b, heat, 0.0, 0.8), (0.55, 0.05, 0.004), hexcol(EMBER))
+    em = b.n("ShaderNodeEmission", Color=col, Strength=b.math("MULTIPLY", b.math("MULTIPLY", heat, g), 3.0))
     b.out(em)
     _key_time(m.node_tree, M.ctrl_node(m, "time"))
     return m
@@ -258,19 +313,21 @@ def pillar_material(name="arena_pillar"):
     n2 = _noise(b, pos, 2.6, 8.0, 0.62)
     smp = b.n("ShaderNodeMapping", Vector=pos, Scale=(2.2, 2.2, 0.07))
     streak = _noise(b, smp, 3.0, 6.0, 0.6)
-    col = b.ramp((n1, "Fac"), [(0.28, (0.03, 0.029, 0.027)), (0.55, (0.07, 0.065, 0.058)), (0.8, (0.12, 0.108, 0.094))])
-    stk = _mr(b, (streak, "Fac"), 0.42, 0.72, 1.0, 0.4)
+    col = b.ramp((n1, "Fac"), [(0.28, (0.022, 0.022, 0.022)), (0.55, (0.055, 0.052, 0.048)),
+                               (0.8, (0.1, 0.092, 0.082))])
+    stk = _mr(b, (streak, "Fac"), 0.42, 0.72, 1.0, 0.35)
     col = b.mix(1.0, col, b.n("ShaderNodeCombineColor", Red=stk, Green=stk, Blue=stk), blend="MULTIPLY")
-    col = b.mix(b.math("MULTIPLY", (n2, "Fac"), 0.25), col, (0.0, 0.0, 0.0))
-    col = b.mix(b.math("MULTIPLY", wear, 0.55), col, (0.2, 0.185, 0.165))
-    col = b.mix(b.math("MULTIPLY", cav, 0.75), col, (0.008, 0.008, 0.008))
-    col = b.mix(b.math("MULTIPLY", chip, 0.85), col, (0.15, 0.135, 0.115))
+    col = b.mix(b.math("MULTIPLY", (n2, "Fac"), 0.3), col, (0.0, 0.0, 0.0))
+    col = b.mix(b.math("MULTIPLY", wear, 0.6), col, (0.17, 0.158, 0.14))
+    col = b.mix(b.math("MULTIPLY", cav, 0.8), col, (0.006, 0.006, 0.006))
+    col = b.mix(b.math("MULTIPLY", chip, 0.85), col, (0.14, 0.126, 0.108))
     # wet foot (water wicking up from the floor, ragged edge)
     wzn = b.math("ADD", (wz, "Z"), b.math("MULTIPLY", b.math("SUBTRACT", (n2, "Fac"), 0.5), 1.6))
     wetz = _mr(b, wzn, 2.4, 0.7)
     col = b.mix(b.math("MULTIPLY", wetz, 0.55), col, (0.0, 0.0, 0.0))
     # dissolve into the dark above (scaled by CTRL_fade)
-    fz = _mr(b, (wz, "Z"), 14.0, 55.0, 0.0, 0.92)
+    fz = _mr(b, (wz, "Z"), 4.0, 26.0, 0.0, 1.0)
+    fz = b.math("POWER", fz, 0.7)
     col = b.mix(b.math("MULTIPLY", fz, fade_k), col, (0.0, 0.0, 0.0))
     rough = b.math("ADD", 0.8, b.math("MULTIPLY", b.math("SUBTRACT", (n2, "Fac"), 0.5), 0.2))
     rough = _lerp(b, wetz, rough, 0.3)
@@ -287,7 +344,7 @@ def pillar_material(name="arena_pillar"):
     fine = _noise(b, pos, 22.0, 6.0, 0.7)
     hgt = b.math("ADD", b.math("MULTIPLY", (fine, "Fac"), 0.35), b.math("MULTIPLY", (n2, "Fac"), 0.5))
     hgt = b.math("SUBTRACT", hgt, b.math("MULTIPLY", b.math("SUBTRACT", 1.0, stk), 0.2))
-    bump = b.n("ShaderNodeBump", Strength=0.38, Distance=0.02, Height=hgt)
+    bump = b.n("ShaderNodeBump", Strength=0.4, Distance=0.02, Height=hgt)
     bs = b.bsdf(**{"Base Color": col, "Roughness": rough, "Normal": bump, "Emission Color": hexcol(EMBER),
                    "Emission Strength": estr})
     bs.inputs["Specular IOR Level"].default_value = 0.4
@@ -296,9 +353,11 @@ def pillar_material(name="arena_pillar"):
 
 
 def fog_material(name, density=0.05, height=1.4, color=(0.5, 0.55, 0.6), anisotropy=0.35, scale=0.08,
-                 wind=(0.45, 0.15, 0.0), emit_color=None, emit=0.0, center=None, radius=None, z0=0.0):
-    """Drifting ground haze: density = CTRL_density * exp(-(z-z0)/height) * noise (wind-advected by
-    CTRL_time). Optional radial falloff around `center` and emission that follows the density."""
+                 wind=(0.45, 0.15, 0.0), emit_color=None, emit=0.0, center=None, radius=None, z0=0.0,
+                 contrast=(0.36, 0.66, 0.08, 1.45)):
+    """Drifting haze: density = CTRL_density * exp(-(z-z0)/height) * noise (wind-advected by CTRL_time).
+    Optional radial falloff around `center`; emission (radiance per metre = CTRL_emit at full density)
+    follows the density shape. contrast = noise map range (from lo, from hi, to lo, to hi)."""
     m, b = M.new(name)
     geo = b.n("ShaderNodeNewGeometry")
     pos = (geo, "Position")
@@ -312,20 +371,20 @@ def fog_material(name, density=0.05, height=1.4, color=(0.5, 0.55, 0.6), anisotr
     nz = _noise(b, p, scale, 3.0, 0.55, dims="4D", w=b.math("MULTIPLY", tm, 0.04))
     nz2 = _noise(b, p, scale * 4.0, 2.0, 0.5)
     n = b.math("ADD", b.math("MULTIPLY", (nz, "Fac"), 0.75), b.math("MULTIPLY", (nz2, "Fac"), 0.25))
-    nk = _mr(b, n, 0.36, 0.66, 0.08, 1.45)
+    nk = _mr(b, n, *contrast)
     hz = b.math("EXPONENT", b.math("MULTIPLY", b.math("SUBTRACT", (sep, "Z"), z0), -1.0 / height))
     hz = b.math("MINIMUM", hz, 1.0)
-    d = b.math("MULTIPLY", b.math("MULTIPLY", hz, nk), dk)
+    shape = b.math("MULTIPLY", hz, nk)
     if center is not None:
         dc = b.n("ShaderNodeVectorMath", _operation="DISTANCE")
         b._in(dc, 0, b.n("ShaderNodeCombineXYZ", X=(sep, "X"), Y=(sep, "Y"), Z=0.0))
         dc.inputs[1].default_value = (center[0], center[1], 0.0)
         rk = _mr(b, (dc, "Value"), radius, radius * 0.25)
-        d = b.math("MULTIPLY", d, b.math("MULTIPLY", rk, rk))
-    vol = b.n("ShaderNodeVolumePrincipled", Color=color, Density=d, Anisotropy=anisotropy)
+        shape = b.math("MULTIPLY", shape, b.math("MULTIPLY", rk, rk))
+    vol = b.n("ShaderNodeVolumePrincipled", Color=color, Density=b.math("MULTIPLY", shape, dk), Anisotropy=anisotropy)
     if emit_color is not None:
         vol.inputs["Emission Color"].default_value = (*hexcol(emit_color), 1.0)
-        b.link(b.math("MULTIPLY", b.math("DIVIDE", d, max(density, 1e-6)), ek), vol.inputs["Emission Strength"])
+        b.link(b.math("MULTIPLY", shape, ek), vol.inputs["Emission Strength"])
     b.out(volume=vol)
     _key_time(m.node_tree, M.ctrl_node(m, "time"))
     return m
@@ -345,8 +404,9 @@ def shard_material(name="arena_halo_shard"):
 
 
 # ------------------------------------------------------------------ world
-def arena_world(density=0.012, color=(0.52, 0.57, 0.63), anisotropy=0.5, horizon=1.0):
-    """Void background with a faint ember band low on the +Y horizon; uniform world haze.
+def arena_world(density=0.0006, color=(0.55, 0.6, 0.66), anisotropy=0.55, horizon=1.0):
+    """Void background (teal-black) with an ember band low on the +Y horizon (also what the wet floor
+    reflects through the world probe); thin uniform world haze.
     Controls: CTRL_fog (volume density), CTRL_horizon (background band)."""
     sc = bpy.context.scene
     w = bpy.data.worlds.new("ArenaWorld")
@@ -383,17 +443,24 @@ def arena_world(density=0.012, color=(0.52, 0.57, 0.63), anisotropy=0.5, horizon
     nt.links.new(tc.outputs["Generated"], sep.inputs[0])
     hz = ctrl("horizon", horizon)
     fog = ctrl("fog", density)
-    band = math("MULTIPLY", math("SUBTRACT", 1.0, math("MINIMUM", math("MULTIPLY", math("ABSOLUTE", sep.outputs["Z"], 0), 7.0), 1.0)),
-                math("MAXIMUM", math("MULTIPLY", sep.outputs["Y"], 1.4), 0.0))
-    band = math("MULTIPLY", math("POWER", band, 2.0), hz.outputs[0])
-    mix = nt.nodes.new("ShaderNodeMix")
-    mix.data_type = "RGBA"
-    nt.links.new(math("MULTIPLY", band, 0.06), mix.inputs["Factor"])
-    mix.inputs[6].default_value = (*hexcol("#07080A"), 1.0)
-    mix.inputs[7].default_value = (*hexcol(EMBER), 1.0)
-    bg = node("ShaderNodeBackground", Strength=1.0)
-    nt.links.new(mix.outputs[2], bg.inputs["Color"])
-    nt.links.new(bg.outputs[0], out.inputs["Surface"])
+    # band: peaks at the horizon (z = 0), wider toward +Y, a whisper of it all around
+    elev = math("ABSOLUTE", math("SUBTRACT", sep.outputs["Z"], 0.02), 0)
+    band = math("SUBTRACT", 1.0, math("MINIMUM", math("MULTIPLY", elev, 5.0), 1.0))
+    band = math("MULTIPLY", math("POWER", band, 3.0), math("ADD", math("MAXIMUM", sep.outputs["Y"], 0.0), 0.08))
+    band = math("MULTIPLY", band, hz.outputs[0])
+    em = node("ShaderNodeEmission")
+    em.inputs["Color"].default_value = (*hexcol(EMBER), 1.0)
+    base = node("ShaderNodeBackground", Strength=1.0)
+    base.inputs["Color"].default_value = (0.0016, 0.0021, 0.0026, 1.0)
+    add = nt.nodes.new("ShaderNodeAddShader")
+    nt.links.new(base.outputs[0], add.inputs[0])
+    sc_band = nt.nodes.new("ShaderNodeMath")
+    sc_band.operation = "MULTIPLY"
+    nt.links.new(band, sc_band.inputs[0])
+    sc_band.inputs[1].default_value = 0.55
+    nt.links.new(sc_band.outputs[0], em.inputs["Strength"])
+    nt.links.new(em.outputs[0], add.inputs[1])
+    nt.links.new(add.outputs[0], out.inputs["Surface"])
     pv = node("ShaderNodeVolumePrincipled", Color=(*color, 1.0), Anisotropy=anisotropy)
     nt.links.new(fog.outputs[0], pv.inputs["Density"])
     nt.links.new(pv.outputs[0], out.inputs["Volume"])
@@ -568,20 +635,20 @@ def build_floor(seed=999, zone=HERO, impact=None, mat=None, name="ARENA_floor"):
                 ang = rnd.uniform(0, math.pi)
                 a, bpart = _split(big, c, np.array([math.cos(ang), math.sin(ang)]))
                 pieces += [p for p in (a, bpart) if len(p) >= 3]
-            base_dz = rnd.gauss(0.0, 0.006)
-            base_t = (rnd.gauss(0, 0.004), rnd.gauss(0, 0.004))
+            base_dz = rnd.gauss(0.0, 0.012)
+            base_t = (rnd.gauss(0, 0.008), rnd.gauss(0, 0.008))
             for k, pc in enumerate(pieces):
                 pc = _clean(pc)
                 if len(pc) < 3 or abs(_area(pc)) < 0.04:
                     continue
-                gap = rnd.uniform(0.012, 0.02)
+                gap = rnd.uniform(0.018, 0.032)
                 pc = _inset(pc, gap)
                 if len(pc) < 3 or abs(_area(pc)) < 0.03:
                     continue
                 ctr = pc.mean(0)
                 dz, (rx, ry) = base_dz, base_t
                 if nsplit and not smash and k == len(pieces) - 1:
-                    dz -= rnd.uniform(0.015, 0.05)
+                    dz -= rnd.uniform(0.02, 0.06)
                     rx += rnd.gauss(0, 0.02)
                     ry += rnd.gauss(0, 0.02)
                 if smash:
@@ -617,7 +684,7 @@ def build_far_floor(mat, zone=HERO, far=FAR, name="ARENA_floor_far"):
     return ob
 
 
-def build_underglow(mat, zone=HERO, z=-0.075, name="ARENA_underglow"):
+def build_underglow(mat, zone=HERO, z=-0.12, name="ARENA_underglow"):
     x0, x1, y0, y1 = zone
     me = bpy.data.meshes.new(name)
     me.from_pydata([(x0, y0, z), (x1, y0, z), (x1, y1, z), (x0, y1, z)], [], [(0, 1, 2, 3)])
@@ -1012,9 +1079,9 @@ def build_arena(variant="approach", seed=999, pillars=True, far_pillars=True, ru
         A.fallen += fallen_pillar("ARENA_fallenR", (17.0, 27.5), math.radians(200), seed + 5, radius=1.85, drums=5,
                                   mat=pm)
         # loose debris along the approach and around the court
-        A.rubble.append(scatter_rubble("ARENA_debris_path", (0.0, -10.0), 26.0, 220, seed + 11, size=(0.03, 0.35),
+        A.rubble.append(scatter_rubble("ARENA_debris_path", (0.0, -10.0), 26.0, 520, seed + 11, size=(0.025, 0.35),
                                        mat=pm, avoid=[(0.0, yy, 1.4) for yy in range(-44, 14, 2)]))
-        A.rubble.append(scatter_rubble("ARENA_debris_court", (0.0, 14.0), 13.0, 140, seed + 12, size=(0.03, 0.4),
+        A.rubble.append(scatter_rubble("ARENA_debris_court", (0.0, 14.0), 13.0, 260, seed + 12, size=(0.025, 0.4),
                                        mat=pm, ring=4.0, avoid=[(0.0, 14.0, 3.5), (0.0, 9.0, 2.5)]))
     if variant in ("duel", "after"):
         A.rubble.append(scatter_rubble("ARENA_impact_rubble", IMPACT, 4.2, 90, seed + 21, size=(0.03, 0.45), mat=pm,
@@ -1029,136 +1096,180 @@ def build_arena(variant="approach", seed=999, pillars=True, far_pillars=True, ru
         A.shards = None
     A.fog = {}
     if fog:
-        A.mats["fog_ground"] = fog_material("arena_fog_ground", density=0.06, height=1.3, color=(0.5, 0.55, 0.6),
+        A.mats["fog_ground"] = fog_material("arena_fog_ground", density=0.045, height=1.2, color=(0.5, 0.55, 0.6),
                                             anisotropy=0.4, scale=0.07)
-        A.fog["ground"] = _box("ARENA_fog_ground", (-70, -75, -0.3), (70, 75, 9.0), A.mats["fog_ground"])
-        A.mats["fog_blue"] = fog_material("arena_fog_blue", density=0.07, height=2.2, color=(0.6, 0.75, 1.0),
-                                          anisotropy=0.2, scale=0.12, emit_color=BLUE, emit=0.06, center=GOD_POS[:2],
+        A.fog["ground"] = _box("ARENA_fog_ground", (-70, -75, -0.3), (70, 75, 5.0), A.mats["fog_ground"])
+        A.mats["fog_haze"] = fog_material("arena_fog_haze", density=0.012, height=6.0, color=(0.55, 0.6, 0.66),
+                                          anisotropy=0.5, scale=0.02, wind=(0.3, 0.1, 0.0),
+                                          contrast=(0.3, 0.7, 0.55, 1.3))
+        A.fog["haze"] = _box("ARENA_fog_haze", (-95, -90, -0.3), (95, 135, 45.0), A.mats["fog_haze"])
+        A.mats["fog_blue"] = fog_material("arena_fog_blue", density=0.025, height=2.2, color=(0.6, 0.75, 1.0),
+                                          anisotropy=0.2, scale=0.12, emit_color=BLUE, emit=0.003, center=GOD_POS[:2],
                                           radius=9.0, wind=(0.2, -0.3, 0.05))
         A.fog["blue"] = _box("ARENA_fog_blue", (-10, 4, -0.3), (10, 24, 10.0), A.mats["fog_blue"])
-        A.mats["fog_horizon"] = fog_material("arena_fog_horizon", density=0.012, height=9.0, color=(0.8, 0.6, 0.5),
-                                             anisotropy=0.3, scale=0.03, emit_color=EMBER, emit=0.5,
+        A.mats["fog_horizon"] = fog_material("arena_fog_horizon", density=0.006, height=4.0, color=(0.8, 0.6, 0.5),
+                                             anisotropy=0.3, scale=0.03, emit_color=EMBER, emit=0.008,
                                              wind=(0.6, 0.0, 0.0))
-        A.fog["horizon"] = _box("ARENA_fog_horizon", (-140, 62, -0.5), (140, 125, 40.0), A.mats["fog_horizon"])
+        A.fog["horizon"] = _box("ARENA_fog_horizon", (-140, 55, -0.5), (140, 135, 30.0), A.mats["fog_horizon"])
     return A
 
 
 # ------------------------------------------------------------------ lights
 def _L(kind, name, loc, color, energy, target=None, size=0.3, shadow=False, spot=45.0, blend=0.3, volume=1.0,
-       specular=1.0):
+       specular=1.0, diffuse=1.0, cutoff=None):
+    """rb_core.light + per-light diffuse factor and an optional influence cutoff (metres)."""
     ob = C.light(kind, "ARENA_" + name, tuple(loc), color=color, energy=energy, size=size, target=target,
                  shadow=shadow, spot_size=math.radians(spot), blend=blend, volume=volume, specular=specular)
+    ob.data.diffuse_factor = diffuse
+    if cutoff:
+        ob.data.use_custom_distance = True
+        ob.data.cutoff_distance = cutoff
     if shadow:
         ob.data.shadow_buffer_bias = 0.02
         ob.data.shadow_buffer_clip_start = 0.5
     return ob
 
 
-def rim_light(name, target, cam, color=EMBER, energy=400.0, dist=3.2, height=1.4, side=1.0, spot=40.0, size=0.6,
-              volume=0.3):
+def rim_light(name, target, cam, color=EMBER, energy=400.0, dist=3.2, height=1.4, side=1.0, spot=26.0, size=0.6,
+              volume=0.3, diffuse=0.15, specular=1.3):
     """Shadowless spot placed behind `target` as seen from `cam` (offset sideways by `side` m),
-    aimed at the target: an edge light for that camera."""
+    aimed at the target: an edge light for that camera. Low diffuse so the floor beyond the subject
+    gets a wet sheen rather than a lit patch (plate armour rims are specular anyway)."""
     t, c = Vector(target), Vector(cam)
     d = t - c
     d.z = 0
     d.normalize()
     sidev = Vector((-d.y, d.x, 0.0))
     loc = t + d * dist + sidev * side + Vector((0, 0, height))
-    return _L("SPOT", name, loc, color, energy, target=t, size=size, spot=spot, blend=0.5, volume=volume)
+    return _L("SPOT", name, loc, color, energy, target=t, size=size, spot=spot, blend=0.5, volume=volume,
+              diffuse=diffuse, specular=specular)
 
 
-def horizon_glows(k=1.0):
-    """Ember fire glow far behind the god: big soft shadowless point lights lighting the haze."""
-    specs = [(-38, 80, 6, 1.0), (-9, 94, 3.5, 1.4), (14, 76, 8, 0.8), (46, 88, 5, 1.0), (-78, 100, 6, 0.8),
-             (80, 104, 4, 0.7)]
-    return {"horizon%d" % i: _L("POINT", "horizon%d" % i, (x, y, z), EMBER, 2.2e5 * e * k, size=8.0, volume=1.0,
-                                specular=0.6) for i, (x, y, z, e) in enumerate(specs)}
+HORIZON = [(-30.0, 78.0, 4.0, 1.0), (-7.0, 92.0, 3.0, 1.3), (15.0, 80.0, 6.0, 0.9), (42.0, 90.0, 4.0, 0.8)]
+
+
+def horizon_glows(k=1.0, cutoff=95.0):
+    """Ember fire far behind the god: big soft shadowless point lights that light the low haze around and
+    behind him and rim the far pillars. Influence is cut at `cutoff` m so the near arena stays dark."""
+    return {"horizon%d" % i: _L("POINT", "horizon%d" % i, (x, y, z), EMBER, 2.6e4 * e * k, size=8.0, volume=0.45,
+                                diffuse=0.6, specular=0.25, cutoff=cutoff)
+            for i, (x, y, z, e) in enumerate(HORIZON)}
+
+
+def floor_glow(y0=-40.0, y1=40.0, k=1.0, width=30.0, step=20.0, volume=0.25):
+    """Ember up-light from the glowing cracks: large shadowless up-facing area lights just above the floor
+    along the nave. Lights pillar bases, the warrior's legs and the ground mist warm; falls off with height
+    so the shafts go dark above."""
+    out = {}
+    n = max(1, int(round((y1 - y0) / step)))
+    for i in range(n):
+        y = y0 + (i + 0.5) * (y1 - y0) / n
+        ob = _L("AREA", "floor_glow%d" % i, (0.0, y, 0.05), "#FF5A14", 900.0 * k * (width * step) / 600.0,
+                size=width, volume=volume, specular=0.15)
+        ob.data.shape = "RECTANGLE"
+        ob.data.size, ob.data.size_y = width, step
+        ob.rotation_euler = (math.pi, 0, 0)
+        out["floor_glow%d" % i] = ob
+    return out
+
+
+def horizon_sheen(k=1.0):
+    """Specular-only ember sources low on the far horizon: long warm glints on the wet floor
+    (no diffuse, no haze), the 'reflection of the distant fire'."""
+    specs = [(-5.0, 125.0, 2.0, 1.0), (12.0, 140.0, 1.5, 0.7)]
+    return {"sheen%d" % i: _L("POINT", "sheen%d" % i, (x, y, z), "#FF7A2E", 4.0e4 * e * k, size=14.0, volume=0.0,
+                              diffuse=0.0, specular=1.0)
+            for i, (x, y, z, e) in enumerate(specs)}
 
 
 def god_rays(specs, color="#AFC2D6", k=1.0):
     """Narrow shadowless spots from high above: visible shafts in the haze. specs: [(top, floor, deg, energy)]."""
     out = {}
     for i, (top, floor, deg, e) in enumerate(specs):
-        out["ray%d" % i] = _L("SPOT", "ray%d" % i, top, color, e * k, target=floor, size=1.5, spot=deg, blend=0.15,
-                              volume=1.0, specular=0.3)
+        out["ray%d" % i] = _L("SPOT", "ray%d" % i, top, color, 3.0 * e * k, target=floor, size=1.0, spot=deg,
+                              blend=0.15, volume=1.0, specular=0.3, diffuse=0.25)
     return out
 
 
 def lights_walk(warrior=(0.0, -14.0, 0.0), cam=None, god=GOD_POS):
-    """O2-O4: ember backlight through the fog, ember rim on the warrior, a cold moon from above-behind
-    the god (shadowed: pillar shadows and shafts in the haze), the blue zone around the god (shadowed
-    top shaft), god rays down the nave. 2 shadow casters: moon + god_top."""
+    """O2-O4: ember backlight through the fog, ember rim on the warrior, a cold unshadowed moon from high
+    front-right (models the fluted shafts of the left colonnade, leaves the right one in silhouette), the
+    blue zone around the god (shadowed top shaft), god rays down the nave, warm up-light from the cracks.
+    Shadow casters: god_top (+ the shot's own key if it adds one)."""
     W = Vector(warrior)
     Gp = Vector(god)
-    cam = Vector(cam) if cam is not None else W + Vector((-0.6, -3.0, 0.6))
+    cam = Vector(cam) if cam is not None else W + Vector((-0.5, -3.0, 0.6))
     L = {}
-    L["moon"] = _L("SUN", "moon", (0, 0, 50), "#8DA4BD", 0.35, target=(-0.35, -1.0, 47.9), size=math.radians(2.0),
-                   shadow=True, volume=1.0, specular=1.0)
-    L["moon"].data.shadow_cascade_max_distance = 160.0
-    L["moon"].data.shadow_cascade_count = 4
-    L["moon"].data.shadow_cascade_exponent = 0.75
-    L["rim"] = rim_light("rim", W + Vector((0, 0, 1.25)), cam, EMBER, 650.0, dist=3.0, height=1.3, side=1.2)
-    L["rim2"] = rim_light("rim2", W + Vector((0, 0, 1.0)), cam, "#FF7A2E", 300.0, dist=2.5, height=0.2, side=-1.4)
-    L["bounce"] = _L("AREA", "bounce", W + Vector((0, 0.8, 0.05)), EMBER, 70.0, size=5.0, volume=0.0, specular=0.2)
+    L["moon"] = _L("SUN", "moon", (0, 0, 50), "#8DA4BD", 2.4, target=(-0.45, 0.35, 49.18), size=math.radians(2.0),
+                   shadow=False, volume=0.05, specular=0.5)
+    L["rim"] = rim_light("rim", W + Vector((0, 0, 1.3)), cam, EMBER, 650.0, dist=3.0, height=0.55, side=1.2)
+    L["rim2"] = rim_light("rim2", W + Vector((0, 0, 1.0)), cam, "#FF7A2E", 300.0, dist=2.5, height=0.1, side=-1.4)
+    L["bounce"] = _L("AREA", "bounce", W + Vector((0, 0.8, 0.05)), EMBER, 40.0, size=5.0, volume=0.0, specular=0.2)
     L["bounce"].rotation_euler = (math.pi, 0, 0)
-    L["god_top"] = _L("SPOT", "god_top", Gp + Vector((-4.0, 7.0, 34.0)), "#7FA9E6", 26000.0, target=Gp + Vector((0, 0, 2.5)),
-                      size=0.8, spot=13.0, blend=0.25, shadow=True, volume=1.0)
-    L["god_under"] = _L("POINT", "god_under", Gp + Vector((0.0, -2.6, 0.5)), BLUE, 260.0, size=0.5, volume=0.4)
-    L.update(god_rays([((-7.0, -2.0, 90.0), (-2.0, -9.0, 0.0), 4.0, 70000.0),
-                       ((9.0, 30.0, 90.0), (2.5, 5.0, 0.0), 3.5, 60000.0),
-                       ((-14.0, 40.0, 90.0), (-4.0, 26.0, 0.0), 3.0, 50000.0)]))
+    L["god_top"] = _L("SPOT", "god_top", Gp + Vector((-4.0, 7.0, 34.0)), "#7FA9E6", 20000.0,
+                      target=Gp + Vector((0, 0, 2.5)), size=0.8, spot=13.0, blend=0.25, shadow=True, volume=1.0)
+    L["god_under"] = _L("POINT", "god_under", Gp + Vector((0.0, -2.6, 0.8)), BLUE, 900.0, size=0.6, volume=0.5)
+    L.update(god_rays([((-6.0, 20.0, 62.0), (-1.9, 7.3, 0.0), 4.0, 4.0e5),
+                       ((8.0, 36.0, 66.0), (2.5, 24.0, 0.0), 3.5, 4.5e5),
+                       ((10.0, 22.0, 66.0), (5.0, 12.0, 0.0), 3.0, 4.0e5)]))
     L.update(horizon_glows())
+    L.update(horizon_sheen())
+    L.update(floor_glow(W.y - 26.0, W.y + 34.0))
     return L
 
 
 def lights_god_reveal(cam=None, god=GOD_POS):
-    """O5/O7/F2a/F3: cold blue underlight (shadowed, sculpts the face from below), a blue shaft from above
-    (shadowed), cool rims behind the god, blue pool on the wet floor, ember horizon, god rays."""
+    """O5/O7/F2a/F3: cold blue underlight (shadowed, sculpts the face from below), a cold key shaft from
+    high front-left (shadowed, its source kept out of an upward-looking frame), cool rims behind the god,
+    blue pool on the wet floor, ember horizon, god rays."""
     Gp = Vector(god)
     cam = Vector(cam) if cam is not None else Gp + Vector((0.4, -4.0, 0.3))
     L = {}
-    L["under"] = _L("SPOT", "under", Gp + Vector((0.7, -3.1, 0.25)), BLUE, 2600.0, target=Gp + Vector((0, 0, 4.4)),
-                    size=0.35, spot=55.0, blend=0.4, shadow=True, volume=0.6)
-    L["top"] = _L("SPOT", "top", Gp + Vector((-3.0, 6.0, 34.0)), "#9CBEEB", 24000.0, target=Gp + Vector((0, 0, 3.2)),
+    L["under"] = _L("SPOT", "under", Gp + Vector((0.7, -3.1, 0.25)), BLUE, 1600.0, target=Gp + Vector((0, 0, 4.6)),
+                    size=0.35, spot=30.0, blend=0.5, shadow=True, volume=0.4)
+    L["top"] = _L("SPOT", "top", Gp + Vector((-9.0, -3.0, 34.0)), "#9CBEEB", 20000.0, target=Gp + Vector((0, 0, 3.2)),
                   size=0.8, spot=12.0, blend=0.25, shadow=True, volume=1.0)
     L["rimL"] = rim_light("rimL", Gp + Vector((0, 0, 4.2)), cam, "#CFE2FF", 2600.0, dist=4.5, height=3.0, side=3.0,
-                          spot=35.0, volume=0.2)
+                          spot=35.0, volume=0.15)
     L["rimR"] = rim_light("rimR", Gp + Vector((0, 0, 4.2)), cam, "#9CC4FF", 2000.0, dist=4.5, height=2.0, side=-3.2,
-                          spot=35.0, volume=0.2)
-    L["pool"] = _L("POINT", "pool", Gp + Vector((0.0, -2.4, 0.35)), BLUE, 420.0, size=0.6, volume=0.5)
-    L["key"] = _L("AREA", "key", Gp + Vector((-5.5, -6.0, 3.0)), BLUE_KEY, 900.0, target=Gp + Vector((0, 0, 3.5)),
+                          spot=35.0, volume=0.15)
+    L["pool"] = _L("POINT", "pool", Gp + Vector((0.0, -2.4, 0.35)), BLUE, 420.0, size=0.6, volume=0.4, diffuse=0.12)
+    L["key"] = _L("AREA", "key", Gp + Vector((-5.5, -6.0, 3.0)), BLUE_KEY, 150.0, target=Gp + Vector((0, 0, 3.5)),
                   size=4.0, volume=0.0)
-    L.update(god_rays([((6.0, 34.0, 95.0), (1.5, 18.0, 0.0), 3.2, 65000.0),
-                       ((-10.0, 40.0, 95.0), (-3.5, 22.0, 0.0), 2.8, 55000.0),
-                       ((14.0, 10.0, 95.0), (5.0, 12.0, 0.0), 3.0, 40000.0)], color="#B4CBE6"))
+    L.update(god_rays([((6.0, 34.0, 70.0), (1.5, 18.0, 0.0), 3.2, 4.0e5),
+                       ((-10.0, 40.0, 70.0), (-3.5, 22.0, 0.0), 2.8, 3.5e5),
+                       ((14.0, 10.0, 70.0), (5.0, 12.0, 0.0), 3.0, 3.0e5)], color="#B4CBE6"))
     L.update(horizon_glows())
+    L.update(floor_glow(Gp.y - 30.0, Gp.y + 10.0, k=0.6))
     return L
 
 
 def lights_duel(warrior=(0.0, 8.8, 0.0), cam=None, god=GOD_POS):
     """O10-O12, F1, F2, F7: ember key from the warrior's side vs blue key from the god's side (the 2
     shadow casters), ember rim on the warrior and cold rims on the god (placed against `cam`),
-    floor bounce, blue pool, ember horizon, god rays."""
+    floor bounce, blue pool, ember horizon + floor sheen, god rays."""
     W, Gp = Vector(warrior), Vector(god)
     cam = Vector(cam) if cam is not None else W + Vector((-4.5, -8.0, 1.5))
     mid = (W + Gp) * 0.5
     L = {}
-    L["ember_key"] = _L("SPOT", "ember_key", W + Vector((-6.0, -7.5, 8.0)), "#FF8236", 9000.0,
-                        target=mid + Vector((0, -1.0, 1.6)), size=1.2, spot=42.0, blend=0.4, shadow=True, volume=0.5)
-    L["blue_key"] = _L("SPOT", "blue_key", Gp + Vector((5.5, 4.0, 16.0)), "#7DA6E0", 16000.0,
-                       target=mid + Vector((0, 1.0, 2.0)), size=1.0, spot=36.0, blend=0.35, shadow=True, volume=0.7)
+    L["ember_key"] = _L("SPOT", "ember_key", W + Vector((-6.0, -7.5, 8.0)), "#FF8236", 6000.0,
+                        target=mid + Vector((0, -1.0, 1.6)), size=1.2, spot=42.0, blend=0.4, shadow=True, volume=0.4)
+    L["blue_key"] = _L("SPOT", "blue_key", Gp + Vector((7.0, 6.0, 30.0)), "#7DA6E0", 45000.0,
+                       target=mid + Vector((0, 1.0, 2.0)), size=1.0, spot=24.0, blend=0.35, shadow=True, volume=0.3)
     L["rim_w"] = rim_light("rim_w", W + Vector((0, 0, 1.3)), cam, EMBER, 700.0, dist=2.6, height=1.0, side=1.0)
     L["rim_g"] = rim_light("rim_g", Gp + Vector((0, 0, 4.0)), cam, "#BFD8FF", 2600.0, dist=4.5, height=2.5, side=2.5,
-                           spot=35.0, volume=0.2)
+                           spot=35.0, volume=0.15)
     L["under"] = _L("SPOT", "under", Gp + Vector((0.6, -3.0, 0.25)), BLUE, 1400.0, target=Gp + Vector((0, 0, 4.2)),
-                    size=0.35, spot=55.0, blend=0.4, volume=0.5)
-    L["bounce"] = _L("AREA", "bounce", W + Vector((0, 0, 0.05)), EMBER, 60.0, size=4.0, volume=0.0, specular=0.2)
+                    size=0.35, spot=55.0, blend=0.4, volume=0.4)
+    L["bounce"] = _L("AREA", "bounce", W + Vector((0, 0, 0.05)), EMBER, 40.0, size=4.0, volume=0.0, specular=0.2)
     L["bounce"].rotation_euler = (math.pi, 0, 0)
-    L["pool"] = _L("POINT", "pool", Gp + Vector((0.0, -2.6, 0.35)), BLUE, 380.0, size=0.6, volume=0.5)
-    L.update(god_rays([((-7.0, 2.0, 90.0), (-1.5, 6.0, 0.0), 3.5, 55000.0),
-                       ((9.0, 34.0, 95.0), (2.0, 17.0, 0.0), 3.2, 60000.0),
-                       ((-12.0, 42.0, 95.0), (-4.0, 25.0, 0.0), 2.8, 45000.0)]))
+    L["pool"] = _L("POINT", "pool", Gp + Vector((0.0, -2.6, 1.2)), BLUE, 260.0, size=0.8, volume=0.4, diffuse=0.35)
+    L.update(god_rays([((-6.0, 2.0, 64.0), (-1.5, 6.0, 0.0), 3.5, 3.5e5),
+                       ((9.0, 34.0, 70.0), (2.0, 17.0, 0.0), 3.2, 4.0e5),
+                       ((-12.0, 42.0, 70.0), (-4.0, 25.0, 0.0), 2.8, 3.5e5)]))
     L.update(horizon_glows())
+    L.update(horizon_sheen())
+    L.update(floor_glow(W.y - 30.0, W.y + 10.0))
     return L
 
 
@@ -1174,10 +1285,12 @@ def lights_after(warrior=(0.0, 8.5, 0.0), cam=None, god=GOD_POS):
     L["ember_fill"] = _L("SPOT", "ember_fill", W + Vector((-5.0, -6.0, 5.0)), "#FF7A2E", 2400.0,
                          target=W + Vector((0, 2.5, 0.8)), size=1.5, spot=55.0, blend=0.5, shadow=True, volume=0.4)
     L["rim_w"] = rim_light("rim_w", W + Vector((0, 0, 1.2)), cam, EMBER, 600.0, dist=2.6, height=1.0, side=1.0)
-    L["bounce"] = _L("AREA", "bounce", W + Vector((0, 0, 0.05)), EMBER, 70.0, size=5.0, volume=0.0, specular=0.2)
+    L["bounce"] = _L("AREA", "bounce", W + Vector((0, 0, 0.05)), EMBER, 50.0, size=5.0, volume=0.0, specular=0.2)
     L["bounce"].rotation_euler = (math.pi, 0, 0)
     L["shards"] = _L("POINT", "shards", Vector(HALO_REST) + Vector((0, 0, 0.4)), BLUE, 120.0, size=1.0, volume=0.3)
-    L.update(god_rays([((-6.0, 3.0, 90.0), (-1.0, 7.0, 0.0), 3.5, 35000.0),
-                       ((10.0, 32.0, 95.0), (2.5, 16.0, 0.0), 3.0, 30000.0)], color="#E8C6A0"))
+    L.update(god_rays([((-6.0, 3.0, 64.0), (-1.0, 7.0, 0.0), 3.5, 2.5e5),
+                       ((10.0, 32.0, 70.0), (2.5, 16.0, 0.0), 3.0, 2.2e5)], color="#E8C6A0"))
     L.update(horizon_glows(1.3))
+    L.update(horizon_sheen(1.2))
+    L.update(floor_glow(W.y - 30.0, W.y + 10.0, k=1.2))
     return L

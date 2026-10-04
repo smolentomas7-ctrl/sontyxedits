@@ -2,6 +2,7 @@
 
 blender -b --factory-startup -P scenes/tests/forest_test.py -- --variant trees|waterfall|boards|hellgate|all
         [--scale 0.25] [--samples 6] [--frame 40] [--tag v1] [--seed 101] [--nowarrior] [--exposure 0]
+        [--repeat N]  (N extra renders of the next frames -> steady-state seconds/frame)
 Writes build/tests/rb_env_forest/<variant>_<tag>.png and prints build / render seconds.
 """
 import math
@@ -82,6 +83,11 @@ for v in variants:
     sc.render.filepath = os.path.join(out, "%s_%s.png" % (v, tag))
     bpy.ops.render.render(write_still=True)
     t2 = time.time()
+    for k in range(int(a.get("repeat", 0))):        # steady-state cost (shaders compiled, next frame)
+        sc.frame_set(frame + 1 + k)
+        t3 = time.time()
+        bpy.ops.render.render(write_still=False)
+        print("FOREST_TIME %s steady render %.2fs (scale %.2f, %d spp)" % (v, time.time() - t3, scale, samples))
     nv = sum(len(o.data.vertices) for o in sc.objects if o.type == "MESH" and o.data and o.visible_get())
     print("FOREST_TEST %s build %.1fs render %.1fs (scale %.2f, %d spp) trees %d rocks %d -> %s"
           % (v, t1 - t0, t2 - t1, scale, samples, len(F.trees), len(F.rocks), sc.render.filepath))
