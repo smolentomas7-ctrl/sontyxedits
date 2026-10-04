@@ -25,3 +25,4 @@
 - M103: cold key works (iron reads as metal). Early hood crown read as a paper cone side-on -> elliptical dome (rb_warrior._early_head). Re-render M103/M105/M106 later.
 - F1a: good (cape streams, sparks); warrior's cape crossed the right safe zone -> camera back 0.8 m, aim between them. Re-render.
 - F1d: god's halo/robe in the right safe zone; key frame after the bolt -> camera back, aim weighted to the god, key 1391. Re-render.
+- F2a: obsidian blade invisible against the dark, god small -> 7 m, edge_glow x4. Re-render.
