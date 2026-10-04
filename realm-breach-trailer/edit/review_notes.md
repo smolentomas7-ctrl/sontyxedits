@@ -27,3 +27,4 @@
 - F1d: god's halo/robe in the right safe zone; key frame after the bolt -> camera back, aim weighted to the god, key 1391. Re-render.
 - F2a: obsidian blade invisible against the dark, god small -> 7 m, edge_glow x4. Re-render.
 - F2b: sparks great but hid both blades -> key 1479, sparks 0.75, camera 3.7 m slightly higher. Re-render.
+- F2c: reads (thrown, cape flying, god behind) -> key 1512 for a bigger figure. Re-render.

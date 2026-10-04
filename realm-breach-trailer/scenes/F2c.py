@@ -12,7 +12,7 @@ import rb_intro  # noqa: E402
 import rb_shot  # noqa: E402
 import rb_story as ST  # noqa: E402
 
-shot = rb_shot.Shot("F2c", key_frame=1508)
+shot = rb_shot.Shot("F2c", key_frame=1512)   # nearer the crash, bigger in frame
 S = rb_intro.build(shot, variant="duel", act="battle")
 import rb_env_arena as AR  # noqa: E402
 
