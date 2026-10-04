@@ -34,7 +34,7 @@ def _finish(w):
 
 
 def walk(w, shot, mark, heading, key_frame=None, stride=0.64, ground=None, carry=True, lean=0.0, crack=None,
-         first_beat=None):
+         first_beat=None, stop_frame=None):
     """Heavy walk, one footfall per song beat, passing `mark` (feet) at key_frame (default shot.key_frame).
     ground(x, y) -> z keeps the planted feet on uneven terrain."""
     kf = shot.key_frame if key_frame is None else key_frame
@@ -48,7 +48,7 @@ def walk(w, shot, mark, heading, key_frame=None, stride=0.64, ground=None, carry
     mark = Vector(mark)
     mz = mark.z
     start = Vector((mark.x, mark.y, 0.0)) - fwd * ((kf - f0) / step * stride)
-    at, _ = MO.walk_plan(start, heading, f0, shot.render_end + 2 * step, step, stride)
+    at, _ = MO.walk_plan(start, heading, f0, shot.render_end + 2 * step, step, stride, stop_frame=stop_frame)
     gz = (lambda x, y: mz) if ground is None else ground
     grip, blade = CARRY[w.look]
     for f in shot.frames_all:
@@ -73,7 +73,7 @@ def walk(w, shot, mark, heading, key_frame=None, stride=0.64, ground=None, carry
 
 
 def stand(w, shot, pos, heading, ground=None, look_up=0.0, crack=None, grip=None, blade=None, two=False,
-          breath=1.0, stance=0.2):
+          breath=1.0, stance=0.2, extra=None):
     """Idle stand with breathing; sword low (or at grip/blade, char-local). Feet planted on the ground."""
     pos = Vector(pos)
     gz = (lambda x, y: pos.z) if ground is None else ground
@@ -93,6 +93,8 @@ def stand(w, shot, pos, heading, ground=None, look_up=0.0, crack=None, grip=None
         root = Vector((pos.x, pos.y, 0.5 * (feet["L"][0].z + feet["R"][0].z) - 0.092 + 0.004 * breath * br))
         p = MO.sword_pose(w, base, ST.wl(grip, root, heading), ST.wd(blade, heading), two_hands=two,
                           root_loc=root, root_rot=(0, 0, heading))
+        if extra:
+            p.update(extra)
         pose, loc, rot = MO.solve_walk(w, p, root, heading, feet, hip_drop=0.02)
         MO.key_pose(w, f, pose, loc, rot)
         _ctrl(w, f, crack)
@@ -125,3 +127,123 @@ def cold_key(target, cam_loc, side=1.0, dist=2.6, energy=260.0, color=(0.62, 0.7
 def ground_mark(forest, xy):
     """(x, y) -> (x, y, ground z) on a forest set."""
     return Vector((xy[0], xy[1], forest.ground_z(xy[0], xy[1])))
+
+
+# ================================================================== dungeon montage scaffolding
+def imp(b, lead=1.5):
+    """Impact frame for song beat b: impacts land 1-2 frames before their beat."""
+    return int(round(ST.bf(b) - lead))
+
+
+def scene(shot, depth, look="mid", warrior=True, seed=None):
+    """Dungeon set of the given depth + the warrior in `look` (cloth registered; battle cloth settings)."""
+    import rb_env_dungeon as DG
+    import rb_warrior as RW
+    D = DG.build_dungeon(depth, seed=shot.seed if seed is None else seed)
+    w = None
+    if warrior:
+        cape = look == "late"
+        w = RW.build_warrior(look, rings=look == "late", cape=cape, cloth_goal=0.4 if cape else 0.0)
+        shot.register_cloth(getattr(w, "cloths", []) or [])
+    return D, w
+
+
+def light(shot, depth, D, subject, cam_loc, follow=None):
+    import rb_env_dungeon as DG
+    shot.scene.frame_set(shot.key_frame)
+    return DG.lights_dungeon(depth, D, subject=tuple(subject), cam=tuple(cam_loc), follow=follow)
+
+
+def fx(name, *a, **k):
+    """Call rb_vfx.<name> and never let a missing/failed effect kill the shot (logged)."""
+    try:
+        import rb_vfx as VFX
+        return getattr(VFX, name)(*a, **k)
+    except Exception as e:  # noqa: BLE001
+        print("VFX FAIL", name, repr(e))
+        return None
+
+
+def enemy(kind, prefix=None, seed=0):
+    import rb_enemies as EN
+    return EN.build_enemy(kind, prefix=prefix, seed=seed)
+
+
+def enemy_act(e, shot, action, f_peak, dur, loc, heading, slowmo=1.0):
+    import rb_enemies as EN
+    EN.perform_enemy(e, list(shot.frames_all), action, f_peak, dur, tuple(loc), heading, slowmo=slowmo)
+
+
+def enemy_path(e, shot, fn):
+    """Re-key the enemy root location along fn(f) -> (x, y, z) (on top of its keyed action)."""
+    for f in shot.frames_all:
+        e.root.location = tuple(fn(f))
+        e.root.keyframe_insert("location", frame=f)
+    C.set_interp(e.root, "LINEAR")
+
+
+def act_pose(w, action, f, f_peak, dur, pos, heading, slowmo=1.0):
+    """(pose, loc, rot) of an rb_actions move at frame f (for computing hand / tip positions)."""
+    import rb_actions as RA
+    return RA.perform(w, f, action, f_peak, dur, pos, heading, slowmo=slowmo)
+
+
+def joint_world(w, pose_loc_rot, joint):
+    pose, loc, rot = pose_loc_rot
+    return MO.fk(w, pose, loc, rot)[joint][0]
+
+
+def tip_empty(w, name="MT_tip"):
+    """An empty at the sword tip (parented to the sword) for trails / lightning sources."""
+    import bpy
+    sw = w.sword
+    zmax = max(v[2] for v in sw.bound_box)
+    e = bpy.data.objects.new(name, None)
+    C.link(e) if hasattr(C, "link") else bpy.context.scene.collection.objects.link(e)
+    e.parent = sw
+    e.location = (0.0, 0.0, zmax)
+    return e
+
+
+def world_at(obj, f):
+    import bpy
+    bpy.context.scene.frame_set(f)
+    return obj.matrix_world.translation.copy()
+
+
+def frame_fit(objs, lens, margin=1.35, axis=(0, -1, 0.15)):
+    """Camera location framing the objects' world bbox (vertical frame) from direction `axis`."""
+    import bpy
+    bpy.context.view_layer.update()
+    pts = [o.matrix_world @ Vector(c) for o in objs for c in o.bound_box]
+    lo = Vector([min(p[i] for p in pts) for i in range(3)])
+    hi = Vector([max(p[i] for p in pts) for i in range(3)])
+    ctr = (lo + hi) / 2
+    w = max(hi.x - lo.x, hi.y - lo.y)
+    h = hi.z - lo.z
+    sw, sh = C.video.SENSOR_HEIGHT_MM * C.video.WIDTH / C.video.HEIGHT, C.video.SENSOR_HEIGHT_MM
+    d = max(w * lens / sw, h * lens / sh) * margin
+    return ctr + Vector(axis).normalized() * d, ctr
+
+
+def whip_in(f, f0, frames=4, yaw=55.0):
+    """Yaw offset (deg) finishing an incoming whip pan: decelerates to 0 over `frames` after f0."""
+    u = C.clamp01((f - f0) / float(frames))
+    return yaw * (1 - C.ease_out(u))
+
+
+def rot_target(loc, target, yaw_deg):
+    from mathutils import Matrix
+    d = Vector(target) - Vector(loc)
+    return Vector(loc) + Matrix.Rotation(math.radians(yaw_deg), 3, "Z") @ d
+
+
+def key_glow(obj, keys, name="glow"):
+    """Key CTRL_<name> on every material of obj and its children: keys = [(frame, value), ...]."""
+    obs = [obj] + list(getattr(obj, "children_recursive", []))
+    mats = {m for o in obs if getattr(o, "data", None) is not None and hasattr(o.data, "materials")
+            for m in o.data.materials if m is not None}
+    for m in mats:
+        if M.ctrl_node(m, name) is not None:
+            for f, v in keys:
+                M.key_ctrl(m, name, f, v)

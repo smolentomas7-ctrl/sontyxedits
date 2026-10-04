@@ -73,20 +73,20 @@ ISLANDS = [(-36.0, 26.0, -16.0, 7.0), (42.0, 24.0, -26.0, 9.0), (-26.0, -44.0, -
 
 # per-depth look: seam colour/strength, practicals, fog, world, light colours / energies
 LOOK = {
-    "floor1": dict(seam="#FF6A1A", seam_k=0.45, circle=0.22, brazier=0.7, vein=0.35, magma=0.5, heat=0.15,
-                   fog_col=(0.52, 0.55, 0.58), fog=0.07, world_fog=0.009, bg=(0.0030, 0.0034, 0.0040),
+    "floor1": dict(seam="#FF6A1A", seam_k=0.3, circle=0.12, brazier=0.7, vein=0.35, magma=0.3, heat=0.12, haze="#8FA2B6", haze_e=0.9, moon_e=0.3,
+                   fog_col=(0.52, 0.55, 0.58), fog=0.07, world_fog=0.016, bg=(0.0030, 0.0034, 0.0040),
                    void="#5A6B7E", void_k=0.45, key="#A9B6C4", key_e=950.0, top="#BCC8D4", top_e=5200.0,
                    rim_k=1.0, back="#93A9BF", back_e=260.0, fill="#7F8FA0", fill_e=30.0, stone=1.0),
-    "struggle": dict(seam="#FF6A1A", seam_k=0.8, circle=0.32, brazier=0.85, vein=0.6, magma=0.8, heat=0.3,
-                     fog_col=(0.36, 0.56, 0.56), fog=0.08, world_fog=0.011, bg=(0.0016, 0.0038, 0.0044),
+    "struggle": dict(seam="#FF6A1A", seam_k=0.7, circle=0.3, brazier=0.85, vein=0.6, magma=0.55, heat=0.25, haze="#4FA6A0", haze_e=0.8, moon_e=0.25,
+                     fog_col=(0.36, 0.56, 0.56), fog=0.08, world_fog=0.018, bg=(0.0016, 0.0038, 0.0044),
                      void="#1F6E6A", void_k=0.9, key="#6FA4A6", key_e=760.0, top="#8CC2C4", top_e=4300.0,
                      rim_k=1.1, back="#4FD2C8", back_e=380.0, fill="#3F6E70", fill_e=24.0, stone=0.8),
-    "deep": dict(seam="#FF5A1A", seam_k=0.22, circle=0.08, brazier=0.3, vein=0.18, magma=0.25, heat=0.05,
-                 fog_col=(0.47, 0.48, 0.5), fog=0.09, world_fog=0.012, bg=(0.0014, 0.0015, 0.0017),
+    "deep": dict(seam="#FF5A1A", seam_k=0.2, circle=0.06, brazier=0.3, vein=0.18, magma=0.2, heat=0.05, haze="#8A9098", haze_e=0.5, moon_e=0.15,
+                 fog_col=(0.47, 0.48, 0.5), fog=0.09, world_fog=0.02, bg=(0.0014, 0.0015, 0.0017),
                  void="#3A3F46", void_k=0.35, key="#9EA2A8", key_e=430.0, top="#C9CCD0", top_e=3600.0,
                  rim_k=0.75, back="#8E959E", back_e=200.0, fill="#5A6068", fill_e=14.0, stone=0.7),
-    "legend": dict(seam="#FF9A2A", seam_k=1.6, circle=0.9, brazier=1.6, vein=1.2, magma=1.4, heat=0.6,
-                   fog_col=(0.78, 0.58, 0.42), fog=0.07, world_fog=0.010, bg=(0.0045, 0.0026, 0.0015),
+    "legend": dict(seam="#FF9A2A", seam_k=1.4, circle=0.8, brazier=1.6, vein=1.2, magma=1.0, heat=0.45, haze="#FFB070", haze_e=1.0, moon_e=0.35,
+                   fog_col=(0.78, 0.58, 0.42), fog=0.07, world_fog=0.016, bg=(0.0045, 0.0026, 0.0015),
                    void="#FF5A14", void_k=1.2, key="#FFB65C", key_e=1300.0, top="#FFD27A", top_e=6200.0,
                    rim_k=1.3, back="#F2B544", back_e=520.0, fill="#7A4A2A", fill_e=24.0, stone=1.05),
 }
@@ -502,7 +502,7 @@ def mat_floor(depth):
     fs = _vscale(b, xy, 0.6)
     flick = _noise(b, fs, 1.0, 2.0, dims="4D", w=b.math("MULTIPLY", tm, 0.5))
     flick = _mr(b, (flick, "Fac"), 0.3, 0.7, 0.5, 1.0)
-    estr = b.math("MULTIPLY", b.math("ADD", b.math("MULTIPLY", crack, 9.0), b.math("MULTIPLY", halo, 0.3)), seg)
+    estr = b.math("MULTIPLY", b.math("ADD", b.math("MULTIPLY", crack, 5.0), b.math("MULTIPLY", halo, 0.15)), seg)
     estr = b.math("MULTIPLY", b.math("MULTIPLY", estr, flick), glow)
     estr = b.math("ADD", estr, b.math("MULTIPLY", b.math("MULTIPLY", cmask, circ), 5.0))
     # bump
@@ -536,13 +536,13 @@ def mat_magma(depth):
     g = b.ctrl("glow", lk["magma"])
     tm = b.ctrl("time", 0.0)
     nz = _noise(b, xy, 0.25, 3.0, dims="4D", w=b.math("MULTIPLY", tm, 0.12))
-    k = _mr(b, (nz, "Fac"), 0.35, 0.7, 0.25, 1.0)
+    k = _mr(b, (nz, "Fac"), 0.48, 0.72, 0.0, 1.0)
     vo = b.n("ShaderNodeTexVoronoi", _feature="DISTANCE_TO_EDGE", Scale=2.5)
     b._in(vo, "Vector", _vadd(b, xy, _vscale(b, (_noise(b, xy, 1.5, 2.0), "Color"), 0.3)))
     seam = _mr(b, (vo, "Distance"), 0.0, 0.14, 1.0, 0.1)
     heat = b.math("MULTIPLY", b.math("MULTIPLY", seam, seam), k)
     col = b.mix(_mr(b, heat, 0.0, 0.9), (0.5, 0.04, 0.003), hexcol(lk["seam"]))
-    em = b.n("ShaderNodeEmission", Color=col, Strength=b.math("MULTIPLY", b.math("MULTIPLY", heat, g), 4.0))
+    em = b.n("ShaderNodeEmission", Color=col, Strength=b.math("MULTIPLY", b.math("MULTIPLY", heat, g), 3.0))
     b.out(em)
     key_time(m)
     return _tag(m)
@@ -578,11 +578,11 @@ def mat_masonry(depth):
     # cracks
     vo = b.n("ShaderNodeTexVoronoi", _feature="DISTANCE_TO_EDGE", Scale=1.3)
     b._in(vo, "Vector", _vadd(b, pos, _vscale(b, (_noise(b, pos, 1.2, 2.0), "Color"), 0.35)))
-    cr = b.math("MULTIPLY", _mr(b, (vo, "Distance"), 0.003, 0.012, 1.0, 0.0),
-                _mr(b, (_noise(b, pos, 0.5, 2.0), "Fac"), 0.52, 0.58))
+    cr = b.math("MULTIPLY", _mr(b, (vo, "Distance"), 0.0015, 0.005, 1.0, 0.0),
+                _mr(b, (_noise(b, pos, 0.5, 2.0), "Fac"), 0.56, 0.6))
     col = b.mix(cr, col, (0.0, 0.0, 0.0))
     low = _mr(b, (sep, "Z"), 1.6, 0.0)
-    estr = b.math("MULTIPLY", b.math("MULTIPLY", cr, low), b.math("MULTIPLY", heat, 6.0))
+    estr = b.math("MULTIPLY", b.math("MULTIPLY", cr, low), b.math("MULTIPLY", heat, 3.0))
     chis = b.n("ShaderNodeTexWave", Vector=pos, Scale=6.0, Distortion=4.0, Detail=3.0, _bands_direction="DIAGONAL")
     pits = b.n("ShaderNodeTexVoronoi", Vector=pos, Scale=22.0)
     hgt = b.math("ADD", b.math("MULTIPLY", (n2, "Fac"), 0.5), b.math("MULTIPLY", (chis, "Fac"), 0.12))
@@ -994,7 +994,7 @@ def _column(acc, x, y, radius, height, rnd, vn, base_z=0.0, tall=False):
         ph = rnd.uniform(0, 6)
         amp = rnd.uniform(0.35, 0.8)
         jag = lambda th: amp * (0.5 + 0.5 * vn(np.cos(th) * 1.6 + ph, np.sin(th) * 1.6, 1.0)) + 0.06 * np.abs(vn(np.cos(th) * 9, np.sin(th) * 9, 3.0))
-    lathe(acc, zs, rf, N=96, T=T, jag=jag, blk=blk)
+    lathe(acc, zs, rf, N=64, T=T, jag=jag, blk=blk)
 
 
 def _fallen_drums(acc, x, y, yaw, radius, rnd, vn, n=2):
@@ -1153,7 +1153,7 @@ def _arch(acc, D, cx, cy, yaw, rnd, vn, span=3.8, pier=1.25, depth=1.35, spring=
 _LINK = None
 
 
-def _link_template(a=0.04, R0=0.022, rw=0.0085, M_=16, N=6):
+def _link_template(a=0.04, R0=0.022, rw=0.0085, M_=12, N=5):
     """Chain link (stadium torus) centred at the origin, long axis Z, flat in XZ. Returns verts, faces."""
     phis = (np.arange(M_) + 0.5) / M_ * 2 * math.pi
     cl = np.stack([R0 * np.cos(phis), np.zeros(M_), R0 * np.sin(phis) + a * np.sign(np.sin(phis))], 1)
@@ -1171,7 +1171,7 @@ def _link_template(a=0.04, R0=0.022, rw=0.0085, M_=16, N=6):
         i2 = (i + 1) % M_
         for j in range(N):
             j2 = (j + 1) % N
-            F.append((i * N + j, i * N + j2, i2 * N + j2, i2 * N + j))
+            F.append((i * N + j, i2 * N + j, i2 * N + j2, i * N + j2))
     return np.array(V), F, 2 * (a + R0 - rw)
 
 
@@ -1314,7 +1314,9 @@ def build_dungeon(depth="struggle", seed=0):
     _rock_mass(ra, 0, 0, -0.2, lambda th: D._edge(th) + 0.1, 9.5, vn)
     # ---- causeways + far platforms
     masonry = Acc()
+    far = Acc()
     cw = Acc()
+    tops = Acc()
     D.marks["causeways"] = []
     for ci, (ang, dist, zend) in enumerate(CAUSEWAYS):
         a = math.radians(ang)
@@ -1368,13 +1370,15 @@ def build_dungeon(depth="struggle", seed=0):
         rimf = (lambda R_, ph_: (lambda th: R_ * (1 + 0.16 * VN(int(ph_ * 100)).fbm(np.cos(th) * 1.5 + ph_, np.sin(th) * 1.5, 0.0, 3))))(isl_r, ph)
         _rock_mass(ra, cen[0], cen[1], cen[2] - 0.2, rimf, isl_r * 1.1, vn, NT=64, NR=14)
         V, F = polar_grid(cen[0], cen[1], rimf, lambda u, th, x, y: cen[2] - 0.02, NR=4, NT=64)
-        cw.add(V, F, slab=0.5, geo=0.0)
+        tops.add(V, F, slab=0.5, geo=0.0)
         for k in range(rnd.randint(1, 3)):
             aa = rnd.uniform(0, 2 * math.pi)
             px, py = cen[0] + isl_r * 0.6 * math.cos(aa), cen[1] + isl_r * 0.6 * math.sin(aa)
-            _column(masonry, px, py, 0.6, TALL if rnd.random() < 0.4 else rnd.uniform(2.0, 6.0), rnd, vn, base_z=cen[2],
+            _column(far, px, py, 0.6, TALL if rnd.random() < 0.4 else rnd.uniform(2.0, 6.0), rnd, vn, base_z=cen[2],
                     tall=False)
         objs, fc = brazier(D, "DG_far_brazier%d" % ci, cen[0] + 1.5, cen[1] - 1.0, cen[2], rnd, depth)
+        for ob in objs:
+            ob.visible_shadow = False
         O.extend(objs)
         O.append(_far_glow(D, "DG_far_glow%d" % ci, fc, lk["seam"] if depth != "legend" else "#FF9A2A", 3.0,
                            0.05 * lk["brazier"]))
@@ -1383,16 +1387,22 @@ def build_dungeon(depth="struggle", seed=0):
         rimf = (lambda R__, ph_: (lambda th: R__ * (1 + 0.18 * VN(int(ph_ * 100)).fbm(np.cos(th) * 1.5 + ph_, np.sin(th) * 1.5, 0.0, 3))))(R_, ph)
         _rock_mass(ra, x, y, z - 0.2, rimf, R_ * 1.2, vn, NT=64, NR=14)
         V, F = polar_grid(x, y, rimf, lambda u, th, xx, yy: z - 0.02, NR=4, NT=64)
-        cw.add(V, F, slab=0.5, geo=0.0)
+        tops.add(V, F, slab=0.5, geo=0.0)
         for k in range(rnd.randint(1, 3)):
             aa = rnd.uniform(0, 2 * math.pi)
             px, py = x + R_ * 0.55 * math.cos(aa), y + R_ * 0.55 * math.sin(aa)
-            _column(masonry, px, py, 0.65, TALL if rnd.random() < 0.35 else rnd.uniform(2.0, 7.0), rnd, vn, base_z=z)
+            _column(far, px, py, 0.65, TALL if rnd.random() < 0.35 else rnd.uniform(2.0, 7.0), rnd, vn, base_z=z)
         if ii % 2 == 0:
             objs, fc = brazier(D, "DG_isl_brazier%d" % ii, x - 1.0, y + 0.5, z, rnd, depth, scale=1.3)
+            for ob in objs:
+                ob.visible_shadow = False
             O.extend(objs)
             O.append(_far_glow(D, "DG_isl_glow%d" % ii, fc, lk["seam"], 3.5, 0.04 * lk["brazier"]))
     O.append(cw.build("DG_causeways", D.mats["floor"], smooth=40.0, bake=True))
+    O.append(tops.build("DG_far_tops", D.mats["floor"], smooth=0, recalc=False))
+    O.append(far.build("DG_far_masonry", D.mats["masonry"], smooth=35.0))
+    for ob in O[-2:]:
+        ob.visible_shadow = False
     # ---- arches, columns, walls
     _arch(masonry, D, 0.0, 10.1, 0.0, rnd, vn)
     a = math.radians(250)
@@ -1435,8 +1445,10 @@ def build_dungeon(depth="struggle", seed=0):
         ob = acc.build("DG_debris%02d" % i, D.mats["rock"], smooth=30.0)
         ob.location = (rr * math.cos(a), rr * math.sin(a), z)
         bob(ob, rnd.uniform(0.04, 0.14), rnd.uniform(0.015, 0.035), rnd.uniform(0, 6.3), z)
+        ob.visible_shadow = False
         O.append(ob)
     O.append(ra.build("DG_rock", D.mats["rock"], smooth=50.0))
+    O[-1].visible_shadow = False
     # ---- braziers
     D.marks["braziers"] = []
     for i, ang in enumerate(BRAZIER_ANG):
@@ -1460,6 +1472,7 @@ def build_dungeon(depth="struggle", seed=0):
     for i, (x, y, zb) in enumerate(LONG_CHAINS):
         ch = chain("DG_chain_long%02d" % i, [(x, y, 18.0), (x, y, zb)], D.mats["iron"], scale=1.7, rnd=rnd)
         sway(ch, 0.12, 0.025, i * 1.7)
+        ch.visible_shadow = False
         O.append(ch)
     tallc = {ang: (r * math.cos(math.radians(ang)), r * math.sin(math.radians(ang))) for ang, r, h, _ in COLUMNS}
     for i, (a0, z0, a1, z1, sag) in enumerate(((62, 8.6, 116, 9.2, 2.2), (195, 7.6, 226, 5.9, 0.9),
@@ -1469,7 +1482,7 @@ def build_dungeon(depth="struggle", seed=0):
         pts = [p0.lerp(p1, t) - Vector((0, 0, sag * 4 * t * (1 - t))) for t in np.linspace(0, 1, 24)]
         O.append(chain("DG_chain_drape%d" % i, pts, D.mats["iron"], scale=1.2, rnd=rnd))
     # ---- fog
-    D.mats["fog_ground"] = mat_fog("DG_fog_ground_" + depth, density=lk["fog"], height=0.9, color=lk["fog_col"],
+    D.mats["fog_ground"] = mat_fog("DG_fog_ground_" + depth, density=lk["fog"], height=1.6, color=lk["fog_col"],
                                    anisotropy=0.35, scale=0.12)
     O.append(box_object("DG_fog_ground", (-20, -20, -0.5), (20, 20, 4.0), D.mats["fog_ground"]))
     D.mats["fog_void"] = mat_fog("DG_fog_void_" + depth, density=0.09, color=lk["fog_col"], anisotropy=0.3,
@@ -1533,10 +1546,16 @@ def lights_dungeon(depth, dungeon=None, subject=(0, 0, 0), cam=(0, -6, 1.6), fol
     side = Vector((-d.y, d.x, 0.0))          # camera-left
     L = {}
     L["key"] = _L("SPOT", "key", S - d * 4.2 + side * 4.4 + Vector((0, 0, 6.8)), lk["key"], lk["key_e"],
-                  target=S + Vector((0, 0, 1.0)), size=0.7, spot=36.0, blend=0.55, shadow=True, volume=0.35)
+                  target=S + Vector((0, 0, 1.0)), size=0.7, spot=36.0, blend=0.55, shadow=True, volume=0.35,
+                  cutoff=30.0)
     L["top"] = _L("SPOT", "top", S + d * 1.2 - side * 0.8 + Vector((0, 0, 15.0)), lk["top"], lk["top_e"],
                   target=S + Vector((0, 0, 0.2)), size=0.45, spot=17.0, blend=0.45, shadow=True, volume=1.0,
-                  specular=0.6)
+                  specular=0.6, cutoff=30.0)
+    hz = _L("SUN", "haze", S + d * 40.0 + Vector((0, 0, 16.0)), lk["haze"], lk["haze_e"], target=S, size=0.05,
+            volume=1.0, specular=0.0, diffuse=0.0)
+    L["haze"] = hz
+    L["moon"] = _L("SUN", "moon", S + d * 30.0 - side * 22.0 + Vector((0, 0, 14.0)), lk["haze"], lk["moon_e"],
+                   target=S, size=0.03, volume=0.0, specular=0.6)
     for nm, off, z, e in (("rimL", 0.55, 1.38, 1.0), ("rimR", -0.55, 1.38, 1.0), ("rimH", 0.15, 1.95, 0.5)):
         ob = _L("POINT", nm, S + d * 0.45 + side * off + Vector((0, 0, z)), EMBER, 15.0 * e * lk["rim_k"], size=0.1,
                 volume=0.0, specular=1.0, cutoff=1.15)

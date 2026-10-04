@@ -231,10 +231,10 @@ def floor_material(name="arena_floor", god=GOD_POS, hot=HOTSPOTS):
     wrough = b.math("ADD", _mr(b, (n_sh, "Fac"), 0.3, 0.7, 0.03, 0.35),
                     b.math("MULTIPLY", b.math("SUBTRACT", (n_sh2, "Fac"), 0.5), 0.25))
     wrough = b.math("ADD", wrough, b.math("MULTIPLY", b.math("SUBTRACT", slab, 0.5), 0.14))
-    rough = _lerp(b, damp, rough, b.math("MAXIMUM", wrough, 0.04))
+    rough = _lerp(b, damp, rough, b.math("MAXIMUM", wrough, 0.08))
     rough = _lerp(b, b.math("MULTIPLY", chamf, 0.6), rough, 0.8)
     rough = _lerp(b, ash, rough, 0.92)
-    rough = _lerp(b, puddle, rough, 0.05)
+    rough = _lerp(b, puddle, rough, 0.14)   # 0.05 mirrored area lights as hard white discs
     # ---- emission: crack cores + heat halo (+ glowing joints only at the hot spots), ember -> blue near god
     fs = b.n("ShaderNodeVectorMath", _operation="SCALE")
     b._in(fs, 0, xy)
