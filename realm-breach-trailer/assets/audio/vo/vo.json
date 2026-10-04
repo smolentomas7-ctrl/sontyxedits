@@ -1,0 +1,322 @@
+{
+ "VO1": {
+  "speaker": "warrior",
+  "voice": "bm_lewis",
+  "text": "So... you're the one who's been waiting for me.",
+  "tts_text": "So... you're the one, who's been waiting for me.",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.78,
+    "dur": 3.585
+   },
+   {
+    "take": 2,
+    "speed": 0.84,
+    "dur": 3.166
+   },
+   {
+    "take": 3,
+    "speed": 0.9,
+    "dur": 2.981
+   },
+   {
+    "take": 4,
+    "speed": 0.96,
+    "dur": 2.844
+   }
+  ],
+  "chosen_take": 2,
+  "speech_dur": 3.166,
+  "file_dur": 3.773,
+  "lead_in": 0.0,
+  "file": "assets/audio/vo/VO1.wav"
+ },
+ "VO2": {
+  "speaker": "warrior",
+  "voice": "bm_lewis",
+  "text": "I have crossed worlds... faced death... and sacrificed everything.",
+  "tts_text": "I have crossed worlds... faced death... and sacrificed everything.",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.78,
+    "dur": 5.66
+   },
+   {
+    "take": 2,
+    "speed": 0.84,
+    "dur": 4.88
+   },
+   {
+    "take": 3,
+    "speed": 0.9,
+    "dur": 4.49
+   },
+   {
+    "take": 4,
+    "speed": 0.96,
+    "dur": 4.249
+   }
+  ],
+  "chosen_take": 2,
+  "speech_dur": 4.88,
+  "file_dur": 5.487,
+  "lead_in": 0.0,
+  "file": "assets/audio/vo/VO2.wav"
+ },
+ "VO2S": {
+  "speaker": "warrior",
+  "voice": "bm_lewis",
+  "text": "I have faced death... and sacrificed everything.",
+  "tts_text": "I have faced death... and sacrificed everything.",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.78,
+    "dur": 4.091
+   },
+   {
+    "take": 2,
+    "speed": 0.84,
+    "dur": 3.545
+   },
+   {
+    "take": 3,
+    "speed": 0.9,
+    "dur": 3.305
+   },
+   {
+    "take": 4,
+    "speed": 0.96,
+    "dur": 3.099
+   }
+  ],
+  "chosen_take": 1,
+  "speech_dur": 4.091,
+  "file_dur": 4.698,
+  "lead_in": 0.0,
+  "file": "assets/audio/vo/VO2S.wav"
+ },
+ "VO3": {
+  "speaker": "warrior",
+  "voice": "bm_lewis",
+  "text": "But now...",
+  "tts_text": "But now...",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.78,
+    "dur": 1.163
+   },
+   {
+    "take": 2,
+    "speed": 0.84,
+    "dur": 1.006
+   },
+   {
+    "take": 3,
+    "speed": 0.9,
+    "dur": 0.919
+   },
+   {
+    "take": 4,
+    "speed": 0.96,
+    "dur": 0.859
+   }
+  ],
+  "chosen_take": 1,
+  "speech_dur": 1.163,
+  "file_dur": 1.77,
+  "lead_in": 0.0,
+  "file": "assets/audio/vo/VO3.wav"
+ },
+ "VO4": {
+  "speaker": "warrior",
+  "voice": "bm_lewis",
+  "text": "The Fallen God...",
+  "tts_text": "The Fallen God...",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.78,
+    "dur": 1.65
+   },
+   {
+    "take": 2,
+    "speed": 0.84,
+    "dur": 1.405
+   },
+   {
+    "take": 3,
+    "speed": 0.9,
+    "dur": 1.343
+   },
+   {
+    "take": 4,
+    "speed": 0.96,
+    "dur": 1.23
+   }
+  ],
+  "chosen_take": 1,
+  "speech_dur": 1.65,
+  "file_dur": 2.257,
+  "lead_in": 0.0,
+  "file": "assets/audio/vo/VO4.wav"
+ },
+ "VO5": {
+  "speaker": "warrior",
+  "voice": "bm_lewis",
+  "text": "YOUR REIGN ENDS HERE!",
+  "tts_text": "Your reign, ends here!",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.95,
+    "dur": 1.448
+   },
+   {
+    "take": 2,
+    "speed": 1.0,
+    "dur": 1.394
+   },
+   {
+    "take": 3,
+    "speed": 1.06,
+    "dur": 1.36
+   }
+  ],
+  "chosen_take": 1,
+  "speech_dur": 1.448,
+  "file_dur": 2.055,
+  "lead_in": 0.0,
+  "file": "assets/audio/vo/VO5.wav"
+ },
+ "VO6": {
+  "speaker": "god",
+  "voice": "am_onyx",
+  "text": "After everything you've lost... you still dare to challenge me?",
+  "tts_text": "After everything you've lost... you still dare, to challenge me?",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.78,
+    "dur": 4.286
+   },
+   {
+    "take": 2,
+    "speed": 0.84,
+    "dur": 3.747
+   },
+   {
+    "take": 3,
+    "speed": 0.9,
+    "dur": 3.568
+   },
+   {
+    "take": 4,
+    "speed": 0.96,
+    "dur": 3.445
+   }
+  ],
+  "chosen_take": 1,
+  "speech_dur": 4.286,
+  "file_dur": 7.886,
+  "lead_in": 1.4,
+  "file": "assets/audio/vo/VO6.wav"
+ },
+ "VO7": {
+  "speaker": "warrior",
+  "voice": "bm_lewis",
+  "text": "You took everything from me...",
+  "tts_text": "You took everything from me...",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.78,
+    "dur": 2.304
+   },
+   {
+    "take": 2,
+    "speed": 0.84,
+    "dur": 1.978
+   },
+   {
+    "take": 3,
+    "speed": 0.9,
+    "dur": 1.828
+   },
+   {
+    "take": 4,
+    "speed": 0.96,
+    "dur": 1.685
+   }
+  ],
+  "chosen_take": 1,
+  "speech_dur": 2.304,
+  "file_dur": 2.911,
+  "lead_in": 0.0,
+  "file": "assets/audio/vo/VO7.wav"
+ },
+ "VO8": {
+  "speaker": "warrior",
+  "voice": "bm_lewis",
+  "text": "But you made one mistake.",
+  "tts_text": "But you made, one mistake.",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.78,
+    "dur": 2.286
+   },
+   {
+    "take": 2,
+    "speed": 0.84,
+    "dur": 2.076
+   },
+   {
+    "take": 3,
+    "speed": 0.9,
+    "dur": 1.846
+   },
+   {
+    "take": 4,
+    "speed": 0.96,
+    "dur": 1.758
+   }
+  ],
+  "chosen_take": 2,
+  "speech_dur": 2.076,
+  "file_dur": 2.683,
+  "lead_in": 0.0,
+  "file": "assets/audio/vo/VO8.wav"
+ },
+ "VO9": {
+  "speaker": "warrior",
+  "voice": "bm_lewis",
+  "text": "YOU LET ME LIVE.",
+  "tts_text": "You let me live!",
+  "takes": [
+   {
+    "take": 1,
+    "speed": 0.95,
+    "dur": 1.085
+   },
+   {
+    "take": 2,
+    "speed": 1.0,
+    "dur": 1.032
+   },
+   {
+    "take": 3,
+    "speed": 1.06,
+    "dur": 1.006
+   }
+  ],
+  "chosen_take": 1,
+  "speech_dur": 1.085,
+  "file_dur": 1.692,
+  "lead_in": 0.0,
+  "file": "assets/audio/vo/VO9.wav"
+ }
+}

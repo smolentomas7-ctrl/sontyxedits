@@ -1,0 +1,7 @@
+# Heavy / regenerable media
+build/
+input/song/*.mp3
+input/reference/*.mp4
+assets/audio/*.wav
+__pycache__/
+*.blend1
