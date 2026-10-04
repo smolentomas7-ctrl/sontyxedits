@@ -331,6 +331,14 @@ def build_warrior(look="late", prefix="W_", rings=False, sword_glow=None, seed=7
         G.set_mat(palm, leath)
         attach(palm, rig, "hand_" + side)
         parts.append(palm)
+        # close the fist: domed leather cap over the palm tube's knuckle end (it read as a hollow ring head-on)
+        hdn0 = hd / np.linalg.norm(hd)
+        pcap = G.ellipsoid_cap(prefix + "palmcap_%s" % side, wr + hd * 0.98, (0.046, 0.046, 0.03),
+                               axis=V(*hdn0), polar=(0, math.pi / 2), N=20, M=6)
+        G.finish_plate(pcap, thick=0, bevel=0, subsurf=1)
+        G.set_mat(pcap, leath)
+        attach(pcap, rig, "hand_" + side)
+        parts.append(pcap)
         back = G.tube(prefix + "handplate_%s" % side, wr + hd * 0.1, wr + hd * 0.95,
                       lambda t, th: 0.05, N=18, M=5, arc=(-1.2, 1.2), front=(sx * 1.0, 0.0, 0))
         fin(back, "hand_" + side, thick=0.003, rolled=0.0022)

@@ -298,7 +298,7 @@ def underglow_material(name="arena_underglow", hot=HOTSPOTS):
     return m
 
 
-def pillar_material(name="arena_pillar"):
+def pillar_material(name="arena_pillar", crack=1.0):
     """Weathered dark stone: rain streaks, worn arrises (wear), grime in the flutes (cav), fresh chips
     (chip), water wicking up from the wet floor, faint ember hairline cracks at the base and a height
     fade (CTRL_fade) so the shafts dissolve into the dark above."""
@@ -338,8 +338,9 @@ def pillar_material(name="arena_pillar"):
     vor = b.n("ShaderNodeTexVoronoi", _feature="DISTANCE_TO_EDGE", Scale=0.8)
     b._in(vor, "Vector", wv)
     core = _mr(b, (vor, "Distance"), 0.001, 0.0045, 1.0, 0.0)
-    gate = b.math("MULTIPLY", _mr(b, (_noise(b, pos, 0.25, 2.0), "Fac"), 0.52, 0.6), _mr(b, (wz, "Z"), 3.2, 0.8))
-    estr = b.math("MULTIPLY", b.math("MULTIPLY", core, gate), b.math("MULTIPLY", glow, 9.0))
+    gate = b.math("MULTIPLY", _mr(b, (_noise(b, pos, 0.25, 2.0), "Fac"), 0.52 + 0.06 * (1 - crack), 0.6 + 0.06 * (1 - crack)),
+                  _mr(b, (wz, "Z"), 3.2, 0.8))
+    estr = b.math("MULTIPLY", b.math("MULTIPLY", core, gate), b.math("MULTIPLY", glow, 5.0 * crack))
     col = b.mix(b.math("MULTIPLY", core, gate), col, (0.0, 0.0, 0.0))
     fine = _noise(b, pos, 22.0, 6.0, 0.7)
     hgt = b.math("ADD", b.math("MULTIPLY", (fine, "Fac"), 0.35), b.math("MULTIPLY", (n2, "Fac"), 0.5))
@@ -354,8 +355,8 @@ def pillar_material(name="arena_pillar"):
 
 def fog_material(name, density=0.05, height=1.4, color=(0.5, 0.55, 0.6), anisotropy=0.35, scale=0.08,
                  wind=(0.45, 0.15, 0.0), emit_color=None, emit=0.0, center=None, radius=None, z0=0.0,
-                 contrast=(0.36, 0.66, 0.08, 1.45)):
-    """Drifting haze: density = CTRL_density * exp(-(z-z0)/height) * noise (wind-advected by CTRL_time).
+                 contrast=(0.36, 0.66, 0.08, 1.45), base=0.0):
+    """Drifting haze: density = CTRL_density * (exp(-(z-z0)/height) + base) * noise (wind-advected by CTRL_time).
     Optional radial falloff around `center`; emission (radiance per metre = CTRL_emit at full density)
     follows the density shape. contrast = noise map range (from lo, from hi, to lo, to hi)."""
     m, b = M.new(name)
@@ -373,7 +374,7 @@ def fog_material(name, density=0.05, height=1.4, color=(0.5, 0.55, 0.6), anisotr
     n = b.math("ADD", b.math("MULTIPLY", (nz, "Fac"), 0.75), b.math("MULTIPLY", (nz2, "Fac"), 0.25))
     nk = _mr(b, n, *contrast)
     hz = b.math("EXPONENT", b.math("MULTIPLY", b.math("SUBTRACT", (sep, "Z"), z0), -1.0 / height))
-    hz = b.math("MINIMUM", hz, 1.0)
+    hz = b.math("MINIMUM", b.math("ADD", hz, base), 1.0)
     shape = b.math("MULTIPLY", hz, nk)
     if center is not None:
         dc = b.n("ShaderNodeVectorMath", _operation="DISTANCE")
@@ -404,10 +405,11 @@ def shard_material(name="arena_halo_shard"):
 
 
 # ------------------------------------------------------------------ world
-def arena_world(density=0.0006, color=(0.55, 0.6, 0.66), anisotropy=0.55, horizon=1.0):
+def arena_world(density=0.0, color=(0.55, 0.6, 0.66), anisotropy=0.55, horizon=1.0):
     """Void background (teal-black) with an ember band low on the +Y horizon (also what the wet floor
     reflects through the world probe); thin uniform world haze.
-    Controls: CTRL_fog (volume density), CTRL_horizon (background band)."""
+    Controls: CTRL_fog (uniform volume density, default 0: the haze lives in the ARENA_fog_* boxes so it ends
+    at 45 m and god-ray sources stay invisible), CTRL_horizon (background band)."""
     sc = bpy.context.scene
     w = bpy.data.worlds.new("ArenaWorld")
     sc.world = w
@@ -454,11 +456,11 @@ def arena_world(density=0.0006, color=(0.55, 0.6, 0.66), anisotropy=0.55, horizo
     base.inputs["Color"].default_value = (0.0016, 0.0021, 0.0026, 1.0)
     add = nt.nodes.new("ShaderNodeAddShader")
     nt.links.new(base.outputs[0], add.inputs[0])
-    sc_band = nt.nodes.new("ShaderNodeMath")
-    sc_band.operation = "MULTIPLY"
-    nt.links.new(band, sc_band.inputs[0])
-    sc_band.inputs[1].default_value = 0.55
-    nt.links.new(sc_band.outputs[0], em.inputs["Strength"])
+    # camera sees a dim band (the glow itself comes from the emissive horizon haze); reflections (probe) see
+    # a brighter one so the wet floor mirrors the distant fire
+    lp = nt.nodes.new("ShaderNodeLightPath")
+    k = math("ADD", 0.6, math("MULTIPLY", lp.outputs["Is Camera Ray"], -0.45))
+    nt.links.new(math("MULTIPLY", band, k), em.inputs["Strength"])
     nt.links.new(em.outputs[0], add.inputs[1])
     nt.links.new(add.outputs[0], out.inputs["Surface"])
     pv = node("ShaderNodeVolumePrincipled", Color=(*color, 1.0), Anisotropy=anisotropy)
@@ -1055,8 +1057,9 @@ def build_arena(variant="approach", seed=999, pillars=True, far_pillars=True, ru
     A.world = arena_world()
     fm = floor_material()
     pm = pillar_material()
+    rm = pillar_material("arena_rubble", crack=0.3)
     um = underglow_material()
-    A.mats = {"floor": fm, "pillar": pm, "underglow": um, "world": A.world}
+    A.mats = {"floor": fm, "pillar": pm, "rubble": rm, "underglow": um, "world": A.world}
     impact = (IMPACT[0], IMPACT[1], 3.4) if variant in ("duel", "after") else None
     A.floor = build_floor(seed, impact=impact, mat=fm)
     A.floor_far = build_far_floor(fm)
@@ -1071,27 +1074,27 @@ def build_arena(variant="approach", seed=999, pillars=True, far_pillars=True, ru
             A.pillars.append(ob)
             if broken and rubble and nm.startswith("ARENA_col"):
                 A.rubble.append(scatter_rubble(nm + "_rubble", (x, y), r * 2.6, int(30 + broken * 3), seed + len(A.rubble),
-                                               size=(0.05, 0.8), mat=pm, ring=r * 1.3,
+                                               size=(0.05, 0.8), mat=rm, ring=r * 1.3,
                                                avoid=[(0.0, y, 2.5)]))
     if rubble:
         A.fallen += fallen_pillar("ARENA_fallenL", (-15.5, -30.5), math.radians(35), seed + 3, radius=1.75, drums=7,
-                                  mat=pm)
+                                  mat=rm)
         A.fallen += fallen_pillar("ARENA_fallenR", (17.0, 27.5), math.radians(200), seed + 5, radius=1.85, drums=5,
-                                  mat=pm)
+                                  mat=rm)
         # loose debris along the approach and around the court
         A.rubble.append(scatter_rubble("ARENA_debris_path", (0.0, -10.0), 26.0, 520, seed + 11, size=(0.025, 0.35),
-                                       mat=pm, avoid=[(0.0, yy, 1.4) for yy in range(-44, 14, 2)]))
+                                       mat=rm, avoid=[(0.0, yy, 1.4) for yy in range(-44, 14, 2)]))
         A.rubble.append(scatter_rubble("ARENA_debris_court", (0.0, 14.0), 13.0, 260, seed + 12, size=(0.025, 0.4),
-                                       mat=pm, ring=4.0, avoid=[(0.0, 14.0, 3.5), (0.0, 9.0, 2.5)]))
+                                       mat=rm, ring=4.0, avoid=[(0.0, 14.0, 3.5), (0.0, 9.0, 2.5)]))
     if variant in ("duel", "after"):
-        A.rubble.append(scatter_rubble("ARENA_impact_rubble", IMPACT, 4.2, 90, seed + 21, size=(0.03, 0.45), mat=pm,
+        A.rubble.append(scatter_rubble("ARENA_impact_rubble", IMPACT, 4.2, 90, seed + 21, size=(0.03, 0.45), mat=rm,
                                        ring=1.2, avoid=[(0.0, 8.8, 0.9), (0.0, 14.0, 1.6)]))
     if variant == "after":
         sm = shard_material()
         A.mats["shard"] = sm
         A.shards = halo_shards(mat=sm)
         A.rubble.append(scatter_rubble("ARENA_after_debris", (0.0, 13.0), 9.0, 160, seed + 31, size=(0.03, 0.5),
-                                       mat=pm, ring=2.0, avoid=[(0.0, 9.0, 1.2)]))
+                                       mat=rm, ring=2.0, avoid=[(0.0, 9.0, 1.2)]))
     else:
         A.shards = None
     A.fog = {}
@@ -1101,14 +1104,14 @@ def build_arena(variant="approach", seed=999, pillars=True, far_pillars=True, ru
         A.fog["ground"] = _box("ARENA_fog_ground", (-70, -75, -0.3), (70, 75, 5.0), A.mats["fog_ground"])
         A.mats["fog_haze"] = fog_material("arena_fog_haze", density=0.012, height=6.0, color=(0.55, 0.6, 0.66),
                                           anisotropy=0.5, scale=0.02, wind=(0.3, 0.1, 0.0),
-                                          contrast=(0.3, 0.7, 0.55, 1.3))
+                                          contrast=(0.3, 0.7, 0.55, 1.3), base=0.05)
         A.fog["haze"] = _box("ARENA_fog_haze", (-95, -90, -0.3), (95, 135, 45.0), A.mats["fog_haze"])
         A.mats["fog_blue"] = fog_material("arena_fog_blue", density=0.025, height=2.2, color=(0.6, 0.75, 1.0),
                                           anisotropy=0.2, scale=0.12, emit_color=BLUE, emit=0.003, center=GOD_POS[:2],
                                           radius=9.0, wind=(0.2, -0.3, 0.05))
         A.fog["blue"] = _box("ARENA_fog_blue", (-10, 4, -0.3), (10, 24, 10.0), A.mats["fog_blue"])
         A.mats["fog_horizon"] = fog_material("arena_fog_horizon", density=0.006, height=4.0, color=(0.8, 0.6, 0.5),
-                                             anisotropy=0.3, scale=0.03, emit_color=EMBER, emit=0.008,
+                                             anisotropy=0.3, scale=0.03, emit_color=EMBER, emit=0.006,
                                              wind=(0.6, 0.0, 0.0))
         A.fog["horizon"] = _box("ARENA_fog_horizon", (-140, 55, -0.5), (140, 135, 30.0), A.mats["fog_horizon"])
     return A
@@ -1152,7 +1155,7 @@ def horizon_glows(k=1.0, cutoff=95.0):
     """Ember fire far behind the god: big soft shadowless point lights that light the low haze around and
     behind him and rim the far pillars. Influence is cut at `cutoff` m so the near arena stays dark."""
     return {"horizon%d" % i: _L("POINT", "horizon%d" % i, (x, y, z), EMBER, 2.6e4 * e * k, size=8.0, volume=0.45,
-                                diffuse=0.6, specular=0.25, cutoff=cutoff)
+                                diffuse=0.25, specular=0.1, cutoff=cutoff)
             for i, (x, y, z, e) in enumerate(HORIZON)}
 
 
@@ -1187,7 +1190,7 @@ def god_rays(specs, color="#AFC2D6", k=1.0):
     out = {}
     for i, (top, floor, deg, e) in enumerate(specs):
         out["ray%d" % i] = _L("SPOT", "ray%d" % i, top, color, 3.0 * e * k, target=floor, size=1.0, spot=deg,
-                              blend=0.15, volume=1.0, specular=0.3, diffuse=0.25)
+                              blend=0.5, volume=1.0, specular=0.15, diffuse=0.12)
     return out
 
 
@@ -1287,7 +1290,8 @@ def lights_after(warrior=(0.0, 8.5, 0.0), cam=None, god=GOD_POS):
     L["rim_w"] = rim_light("rim_w", W + Vector((0, 0, 1.2)), cam, EMBER, 600.0, dist=2.6, height=1.0, side=1.0)
     L["bounce"] = _L("AREA", "bounce", W + Vector((0, 0, 0.05)), EMBER, 50.0, size=5.0, volume=0.0, specular=0.2)
     L["bounce"].rotation_euler = (math.pi, 0, 0)
-    L["shards"] = _L("POINT", "shards", Vector(HALO_REST) + Vector((0, 0, 0.4)), BLUE, 120.0, size=1.0, volume=0.3)
+    L["shards"] = _L("POINT", "shards", Vector(HALO_REST) + Vector((0, 0, 1.0)), BLUE, 60.0, size=1.0, volume=0.3,
+                     specular=0.3)
     L.update(god_rays([((-6.0, 3.0, 64.0), (-1.0, 7.0, 0.0), 3.5, 2.5e5),
                        ((10.0, 32.0, 70.0), (2.5, 16.0, 0.0), 3.0, 2.2e5)], color="#E8C6A0"))
     L.update(horizon_glows(1.3))

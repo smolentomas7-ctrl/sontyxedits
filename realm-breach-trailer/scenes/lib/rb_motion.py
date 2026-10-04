@@ -251,6 +251,19 @@ def _rest_grip():
 
 
 GRIP_ROT, GRIP_OFF = None, None
+_KSIGN = {}
+
+
+def _knuckle_sign(side):
+    """+1/-1: which way the fist's knuckle axis (wrist -> fingers) lies along the grip frame's local Y."""
+    global GRIP_ROT, GRIP_OFF
+    if side not in _KSIGN:
+        import rb_warrior as RW
+        if GRIP_ROT is None:
+            GRIP_ROT, GRIP_OFF = _rest_grip()
+        hd = (Vector(RW.J["fingers_" + side]) - Vector(RW.J["hand_" + side])).normalized()
+        _KSIGN[side] = 1.0 if hd.dot(GRIP_ROT.col[1]) >= 0 else -1.0
+    return _KSIGN[side]
 
 
 def aim_hand(ch, pose, side, blade_dir, edge_up=(0, 0, 1), root_loc=(0, 0, 0), root_rot=(0, 0, 0)):
@@ -263,6 +276,15 @@ def aim_hand(ch, pose, side, blade_dir, edge_up=(0, 0, 1), root_loc=(0, 0, 0), r
     parent_rot = W["forearm_" + side][1]
     z = Vector(blade_dir).normalized()
     up = Vector(edge_up)
+    # when the blade runs (nearly) along edge_up the roll is undefined and the wrist used to twist until the
+    # cuff faced forward; there, roll the fist so its knuckles continue the forearm (a natural wrist)
+    c = abs(up.normalized().dot(z))
+    if c > 0.72:
+        fd = W["hand_" + side][0] - W["forearm_" + side][0]
+        yt = fd - z * fd.dot(z)
+        if yt.length > 1e-4:
+            yt = yt.normalized() * _knuckle_sign(side)
+            up = up + yt * (2.5 * C.smooth(C.clamp01((c - 0.72) / 0.23)))
     x = up.cross(z)
     if x.length < 1e-4:
         x = Vector((1, 0, 0)).cross(z)

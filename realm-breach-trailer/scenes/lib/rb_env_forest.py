@@ -568,9 +568,7 @@ def mat_ground(name="forest_ground"):
     col = b.mix(_mr(b, (mid, "Fac"), 0.38, 0.62), (0.012, 0.011, 0.010), litter)
     moss = _mr(b, (big, "Fac"), 0.46, 0.62)
     col = b.mix(b.math("MULTIPLY", moss, 0.85), col, (0.012, 0.018, 0.009))
-    wet = b.attr("wet")
-    path = b.attr("path")
-    burn = b.attr("burn")
+    wet, path, burn = b.attr("wet"), b.attr("path"), b.attr("burn")
     col = b.mix(path, col, (0.022, 0.019, 0.016))
     col = b.mix(wet, col, (0.008, 0.0075, 0.007))
     ash = _noise(b, P, 2.2, 5.0, 0.6)
@@ -579,9 +577,15 @@ def mat_ground(name="forest_ground"):
     col = b.mix(burn, col, char)
     rough = b.math("SUBTRACT", 0.92, b.math("MULTIPLY", wet, 0.5))
     rough = b.math("SUBTRACT", rough, b.math("MULTIPLY", path, 0.12))
+    pn = _noise(b, P, 0.45, 3.0, 0.5)
+    puddle = b.math("MULTIPLY", _mr(b, (pn, "Fac"), 0.55, 0.59), b.math("MINIMUM", b.math("MULTIPLY", path, 1.6), 1.0))
+    puddle = b.math("MULTIPLY", puddle, b.math("SUBTRACT", 1.0, b.math("MINIMUM", b.math("MULTIPLY", burn, 4.0), 1.0)))
+    col = b.mix(puddle, col, (0.0035, 0.0035, 0.004))
+    rough = b.math("ADD", b.math("MULTIPLY", rough, b.math("SUBTRACT", 1.0, puddle)), b.math("MULTIPLY", puddle, 0.04))
     hgt = b.math("ADD", b.math("MULTIPLY", (lv, "Distance"), 0.6), b.math("MULTIPLY", (mid, "Fac"), 0.6))
     hgt = b.math("ADD", hgt, b.math("MULTIPLY", (lv2, "Distance"), 0.3))
-    bump = b.n("ShaderNodeBump", Strength=0.55, Distance=0.04, Height=hgt)
+    bump = b.n("ShaderNodeBump", Distance=0.04, Height=hgt)
+    b.link(b.math("MULTIPLY", b.math("SUBTRACT", 1.0, puddle), 0.55), bump.inputs["Strength"])
     # scorched fissures glowing near the hellgate
     warp = _noise(b, P, 0.35, 3.0, 0.5)
     wpos = _vm(b, "ADD", P, _vm(b, "SCALE", (warp, "Color"), scale=1.6))
@@ -896,8 +900,8 @@ def mat_gate_rock(name="gate_rock"):
     crack = b.math("MAXIMUM", c1, c2)
     n1 = _noise(b, O, 2.5, 6.0, 0.6)
     gloss = _mr(b, (n1, "Fac"), 0.5, 0.56)
-    col = b.ramp((n1, "Fac"), [(0.3, (0.006, 0.0055, 0.0055)), (0.7, (0.026, 0.024, 0.023))])
-    col = b.mix(crack, col, (0.02, 0.003, 0.0))
+    col = b.ramp((n1, "Fac"), [(0.3, (0.0025, 0.0024, 0.0024)), (0.7, (0.011, 0.0105, 0.01))])
+    col = b.mix(b.math("MULTIPLY", c1, 0.8), col, (0.012, 0.002, 0.0))
     fl = _noise(b, _comb(b, b.math("MULTIPLY", t, 1.7), 0.0, 0.0), 1.0, 2.0)
     # the W socket only exists once the node is 4D: set the dimensions first
     flk = b.n("ShaderNodeTexNoise", _noise_dimensions="4D", Vector=O, Scale=0.9, Detail=1.0)
@@ -908,7 +912,7 @@ def mat_gate_rock(name="gate_rock"):
     estr = b.math("MULTIPLY", estr, b.math("ADD", _mr(b, (flk, "Fac"), 0.35, 0.65, 0.35, 1.2),
                                            b.math("MULTIPLY", (fl, "Fac"), 0.2)))
     ecol = b.ramp(heat, [(0.2, (0.6, 0.03, 0.0)), (0.75, (1.0, 0.22, 0.02)), (1.0, (1.0, 0.45, 0.08))])
-    rough = b.mix(gloss, (0.55, 0.55, 0.55), (0.12, 0.12, 0.12))
+    rough = b.mix(gloss, (0.32, 0.32, 0.32), (0.07, 0.07, 0.07))
     hgt = b.math("SUBTRACT", b.math("MULTIPLY", (n1, "Fac"), 0.5), crack)
     bump = b.n("ShaderNodeBump", Strength=0.5, Distance=0.04, Height=hgt)
     bs = b.bsdf(**{"Base Color": col, "Roughness": (rough[0], rough[1]), "Normal": bump})
@@ -948,11 +952,16 @@ def mat_portal(name="hellgate_vortex", radius=3.0, spin=0.9, twist=2.3, flow=0.3
     smoke = _noise(b, polar(2.0, 2.2, 9.0), 1.0, 4.0, 0.55, 0.4)
     fire = b.math("ADD", b.math("MULTIPLY", (n1, "Fac"), 0.62), b.math("MULTIPLY", (n2, "Fac"), 0.38))
     fire = b.math("SUBTRACT", fire, b.math("MULTIPLY", _mr(b, (smoke, "Fac"), 0.5, 0.68), 0.3))
+    n3 = _noise(b, _comb(b, b.math("MULTIPLY", x, 0.9), b.math("MULTIPLY", z, 0.9), b.math("MULTIPLY", t, 0.7)), 1.0,
+                6.0, 0.6, 1.5)
+    fire = b.math("ADD", fire, b.math("MULTIPLY", b.math("SUBTRACT", (n3, "Fac"), 0.5), 0.45))
     fire = _mr(b, fire, 0.33, 0.74)
+    band = b.math("MULTIPLY", _mr(b, r, 0.62, 0.9), _mr(b, r, 1.0, 0.9))
+    fire = b.math("ADD", fire, b.math("MULTIPLY", band, b.math("MULTIPLY", _mr(b, (n3, "Fac"), 0.5, 0.72), 0.55)))
     core = b.math("POWER", _mr(b, r, 0.42, 0.0), 1.7)
     val = b.math("ADD", b.math("MULTIPLY", fire, b.math("ADD", 0.45, b.math("MULTIPLY", core, 0.55))),
                  b.math("MULTIPLY", core, 0.5), clamp=True)
-    val = b.math("MULTIPLY", val, _mr(b, r, 1.02, 0.72, 0.55, 1.0))
+    val = b.math("MULTIPLY", val, _mr(b, r, 1.02, 0.8, 0.7, 1.0))
     rimn = _noise(b, _comb(b, b.math("MULTIPLY", b.math("COSINE", a), 2.4), b.math("MULTIPLY", b.math("SINE", a), 2.4),
                            b.math("MULTIPLY", t, 1.3)), 1.4, 4.0)
     lick = _mr(b, b.math("SUBTRACT", r, b.math("MULTIPLY", (rimn, "Fac"), 0.2)), 0.96, 0.82)
@@ -1385,6 +1394,33 @@ def reeds(name, seed, spots, mat, n=(10, 24), h=(0.45, 1.3), radius=0.35):
     return acc.build(name, [mat])
 
 
+def debris(name, seed, F, center, radius, n, mat, length=(0.25, 1.3), r=(0.007, 0.03), avoid=None):
+    """Fallen dead sticks and branch pieces lying on the ground around `center` (crooked, partly sunk)."""
+    rnd = random.Random(seed)
+    acc = MeshAcc()
+    for _ in range(n):
+        a = rnd.uniform(0, 2 * math.pi)
+        d = radius * math.sqrt(rnd.random())
+        x, y = center[0] + d * math.cos(a), center[1] + d * math.sin(a)
+        if avoid is not None and avoid(x, y):
+            continue
+        L = rnd.uniform(*length)
+        ang = rnd.uniform(0, 2 * math.pi)
+        ctrl = _grow(rnd, (x, y, 0.0), (math.cos(ang), math.sin(ang), 0.0), L, 4, 0.3, 0.2, (0, 0, 0))
+        P = _catmull(ctrl, 0.06)
+        rr = rnd.uniform(*r)
+        P[:, 2] = F.h(P[:, 0:1], P[:, 1:2])[:, 0] + rr * 0.6
+        rad = rr * (1.0 - 0.6 * np.linspace(0, 1, len(P))) + 0.002
+        _tube(acc, P, np.repeat(rad[:, None], 6, 1), 0, {"groove": 0.4, "lvl": 2.0})
+        if rnd.random() < 0.5:                      # a side twig
+            i = rnd.randrange(1, len(P) - 1)
+            side = _grow(rnd, P[i], (math.cos(ang + 1.2), math.sin(ang + 1.2), 0.15), L * 0.35, 3, 0.4, 0.2, (0, 0, 0))
+            Ps = _catmull(side, 0.05)
+            _tube(acc, Ps, np.repeat((rad[i] * 0.45 * (1 - 0.7 * np.linspace(0, 1, len(Ps))) + 0.0015)[:, None], 5, 1),
+                  0, {"groove": 0.3, "lvl": 3.0})
+    return acc.build(name, [mat])
+
+
 # =================================================================== trees in the set
 def _tree_pool(seed, kinds, mat):
     """Unique dead-tree meshes {kind: [mesh objects]} (unlinked from the scene; instanced as linked dupes)."""
@@ -1786,7 +1822,7 @@ MARKS = {
 }
 MOON = {  # direction toward the moon, sun strength, world fog density
     "trees": ((0.24, 1.0, 0.49), 0.75, 0.005),
-    "waterfall": ((-0.62, -0.55, 0.62), 1.1, 0.005),
+    "waterfall": ((-0.62, -0.55, 0.62), 1.3, 0.005),
     "boards": ((-0.55, 1.0, 0.5), 0.8, 0.005),
     "hellgate": ((-0.35, 1.0, 1.05), 0.7, 0.005),
 }
@@ -1952,9 +1988,11 @@ def _set_trees(F, nz, rnd):
             if math.hypot(x - F.marks["warrior"][0], y - F.marks["warrior"][1]) > 1.2:
                 spots.append((x, y, F.ground_z(x, y)))
     F.objects.append(reeds("FOREST_reeds", F.seed + 21, spots, mat_reed()))
+    F.objects.append(debris("FOREST_debris", F.seed + 23, F, (2.5, -3.0), 9.0, 80, F.mats["bark"],
+                            avoid=lambda x, y: _poly_dist(np.array([x]), np.array([y]), riv)[0][0] < hw_of(np.array([0.0]))[0] + 0.3))
     pool = _tree_pool(F.seed, {"oak": 2, "claw": 2, "snag": 2, "spire": 2}, F.mats["bark"])
     fm = F.mats["bark_far"]
-    for kind, x, y, sc, rot in (("oak", 4.1, -6.2, 1.25, 0.6), ("claw", -6.8, 8.0, 1.3, 5.3), ("oak", 5.4, 4.6, 1.05, 4.1),
+    for kind, x, y, sc, rot in (("oak", 4.1, -6.2, 1.25, 2.4), ("claw", -6.8, 8.0, 1.3, 5.3), ("oak", 5.4, 4.6, 1.05, 4.1),
                                 ("snag", -4.6, -3.0, 1.05, 1.0), ("claw", 7.0, 13.5, 1.05, 5.3),
                                 ("spire", 0.6, 20.0, 1.1, 0.3), ("spire", -6.0, 25.0, 1.15, 1.2),
                                 ("oak", -8.5, 17.0, 1.1, 3.0), ("claw", 4.5, 29.0, 1.0, 0.9)):
@@ -2088,6 +2126,7 @@ def _set_boards(F, nz, rnd):
         y = float(np.interp(x, pth[:, 0], pth[:, 1])) + rnd.uniform(2.0, 4.0)
         spots.append((x, y, F.ground_z(x, y)))
     F.objects.append(reeds("FOREST_reeds", F.seed + 21, spots, mat_reed(), n=(5, 12), h=(0.3, 0.8), radius=0.25))
+    F.objects.append(debris("FOREST_debris", F.seed + 23, F, (-0.5, -2.5), 7.5, 90, F.mats["bark"]))
     rp = _rock_pool(F.seed, F.mats["rock"])
     for x, y, s in ((-3.6, 2.8, 0.45), (-1.4, 4.6, 0.3), (2.6, 5.0, 0.38), (5.6, 2.2, 0.5), (-5.2, -2.6, 0.7),
                     (3.4, -2.2, 0.35), (7.5, 4.5, 0.9), (-7.0, 6.0, 1.0)):
@@ -2144,6 +2183,8 @@ def _set_hellgate(F, nz, rnd):
     F.objects.append(embers("GATE_embers_wide", F.seed + 10, 160, (gx, gy - 4.0, gz), 9.0, height=(2.5, 7.0),
                             rise=(0.5, 1.2), drift=((-0.2, 0.2), (-0.3, 0.1)), size=(0.006, 0.014),
                             mat=F.mats["embers"]))
+    F.objects.append(debris("FOREST_debris", F.seed + 23, F, (0.0, 1.0), 8.0, 70, F.mats["gate"], r=(0.006, 0.02),
+                            avoid=lambda x, y: abs(x) < 0.9 and y < 5.0))
     rp = _rock_pool(F.seed, F.mats["rock"])
     for k in range(14):                                     # black rubble at the gate foot + a fallen piece
         a = rnd.uniform(-0.3, math.pi + 0.3) + math.pi
@@ -2179,7 +2220,7 @@ def build_forest(variant="trees", seed=101):
     F.mats.update(bark=mat_bark(), bark_far=mat_bark("forest_bark_far", shadow=False), ground=mat_ground(),
                   rock=mat_rock(), water=mat_water())
     if variant == "waterfall":
-        F.mats.update(cliff=mat_rock("cliff_rock", moss=0.55, base=0.042, wet_z=WATER_Z + 0.3), falls=mat_falls(),
+        F.mats.update(cliff=mat_rock("cliff_rock", moss=0.55, base=0.06, wet_z=WATER_Z + 0.3), falls=mat_falls(),
                       falls_back=mat_falls("falls_water_back", speed=4.6, back=True), foam=mat_foam())
     if variant == "boards":
         F.mats.update(post=mat_bark("post_bark", tint=(1.35, 1.3, 1.2)), iron=mat_iron(),
@@ -2224,7 +2265,7 @@ def flicker(light, base, amp=0.12, speed=1.0, phase=0.0):
     return light
 
 
-def ember_rim(warrior, cam, energy=34.0, follow=None, color=EMBER, cutoff=1.15):
+def ember_rim(warrior, cam, energy=14.0, follow=None, color=EMBER, cutoff=1.15):
     """Ember rim on the warrior (feet position `warrior`) as seen from `cam`: two small point lights just
     behind his shoulders and one behind the hood (on the far side from the camera), with a custom cutoff
     distance so the light dies before it reaches the ground (no orange pool on wet ground / rocks).
@@ -2236,8 +2277,8 @@ def ember_rim(warrior, cam, energy=34.0, follow=None, color=EMBER, cutoff=1.15):
     d.normalize()
     sv = Vector((-d.y, d.x, 0.0))
     out = []
-    for nm, off, z, e in (("rimL", 0.42, 1.42, 1.0), ("rimR", -0.42, 1.42, 1.0), ("rimH", 0.12, 1.86, 0.6)):
-        ob = _L("POINT", nm, w + d * 0.5 + sv * off + Vector((0, 0, z)), color, energy * e, size=0.12, volume=0.0,
+    for nm, off, z, e in (("rimL", 0.55, 1.38, 1.0), ("rimR", -0.55, 1.38, 1.0), ("rimH", 0.15, 1.95, 0.5)):
+        ob = _L("POINT", nm, w + d * 0.45 + sv * off + Vector((0, 0, z)), color, energy * e, size=0.1, volume=0.0,
                 specular=1.0)
         ob.data.use_custom_distance = True
         ob.data.cutoff_distance = cutoff
@@ -2283,13 +2324,18 @@ def lights_forest(variant, forest=None, warrior=None, cam=None, follow=None):
         bl.data.diffuse_factor = 0.0
         bl.data.specular_factor = 0.0
         L["spray_back"] = bl
+        hz = _L("SUN", "haze_back", Vector((0.2, 1.0, 0.3)).normalized() * 80.0, MOON_COL, 0.7, target=(0, 0, 0),
+                size=math.radians(2.0), volume=1.0)
+        hz.data.diffuse_factor = 0.0
+        hz.data.specular_factor = 0.0
+        L["haze_back"] = hz
 
     if variant == "boards":
         if "lantern" in mk:
             L["lantern"] = flicker(_L("POINT", "lantern", mk["lantern"], (1.0, 0.48, 0.16), 55.0, size=0.08,
                                       volume=0.5), 55.0, 0.1, 1.6, 0.5)
-        sky = _L("AREA", "sky_fill", (-5.0, -9.0, 7.5), (0.55, 0.65, 0.85), 2600.0, target=(0.6, 4.5, 2.0),
-                 size=8.0, volume=0.0, specular=0.4)
+        sky = _L("SPOT", "sky_fill", (-5.0, -9.0, 7.5), (0.55, 0.65, 0.85), 4500.0, target=(0.9, 4.6, 2.7), size=3.0,
+                 spot=36.0, blend=0.45, volume=0.0, specular=0.4)
         L["sky_fill"] = sky
     if variant == "hellgate":
         g = Vector(mk["gate"])
