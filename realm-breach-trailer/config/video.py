@@ -27,7 +27,7 @@ SUBJECT_X_RANGE = (WIDTH / 3.0, 2.0 * WIDTH / 3.0)
 
 # Subtitles: off-white serif, centred, just above the bottom safe zone
 SUBTITLE_FONT = "assets/fonts/Cinzel.ttf"
-SUBTITLE_SIZE = 62
+SUBTITLE_SIZE = 66
 SUBTITLE_COLOR = "#EDE6DA"
 SUBTITLE_BASELINE_Y = HEIGHT - SAFE_BOTTOM - 46
 SUBTITLE_MAX_W = WIDTH - SAFE_LEFT - SAFE_RIGHT - 80

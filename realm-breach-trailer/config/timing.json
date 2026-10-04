@@ -599,25 +599,25 @@
    "beat": -1,
    "t": -0.3348,
    "lowpass_hz": 300,
-   "gain_db": -5
+   "gain_db": -9
   },
   {
    "beat": 36,
    "t": 18.2207,
    "lowpass_hz": 300,
-   "gain_db": -5
+   "gain_db": -9
   },
   {
    "beat": 40,
    "t": 20.2267,
    "lowpass_hz": 320,
-   "gain_db": -5
+   "gain_db": -9
   },
   {
    "beat": 42.95,
    "t": 21.7062,
    "lowpass_hz": 2600,
-   "gain_db": -3
+   "gain_db": -4
   },
   {
    "beat": 43,

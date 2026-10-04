@@ -1,0 +1,161 @@
+{
+ "sub_hit": {
+  "dur": 1.6
+ },
+ "sub_hit_small": {
+  "dur": 0.9
+ },
+ "boom": {
+  "dur": 9.41
+ },
+ "footstep_a": {
+  "dur": 2.87
+ },
+ "footstep_b": {
+  "dur": 2.87
+ },
+ "footstep_c": {
+  "dur": 2.87
+ },
+ "footstep_heavy": {
+  "dur": 2.87
+ },
+ "chainmail": {
+  "dur": 0.8
+ },
+ "cloth_flap": {
+  "dur": 0.7
+ },
+ "wind": {
+  "dur": 34.0
+ },
+ "thunder": {
+  "dur": 12.01
+ },
+ "thunder_far": {
+  "dur": 13.01
+ },
+ "ember_crackle": {
+  "dur": 30.0
+ },
+ "drone": {
+  "dur": 34.0
+ },
+ "clash_big": {
+  "dur": 6.87
+ },
+ "clash_a": {
+  "dur": 5.87
+ },
+ "clash_b": {
+  "dur": 5.87
+ },
+ "whoosh_a": {
+  "dur": 0.55
+ },
+ "whoosh_b": {
+  "dur": 0.45
+ },
+ "whoosh_long": {
+  "dur": 0.9
+ },
+ "riser_4s": {
+  "dur": 6.53
+ },
+ "riser_2s": {
+  "dur": 4.53
+ },
+ "heartbeat": {
+  "dur": 4.871
+ },
+ "fire": {
+  "dur": 4.11
+ },
+ "portal_fire": {
+  "dur": 8.11
+ },
+ "lightning": {
+  "dur": 3.5
+ },
+ "debris": {
+  "dur": 5.81
+ },
+ "god_blast": {
+  "dur": 11.61
+ },
+ "growl_a": {
+  "dur": 4.69
+ },
+ "growl_o": {
+  "dur": 4.49
+ },
+ "growl_u": {
+  "dur": 4.89
+ },
+ "boss_roar": {
+  "dur": 5.49
+ },
+ "shriek": {
+  "dur": 5.41
+ },
+ "chime_low": {
+  "dur": 6.01
+ },
+ "glass_fizz": {
+  "dur": 1.5
+ },
+ "breath": {
+  "dur": 5.65
+ },
+ "stone_grind": {
+  "dur": 5.51
+ },
+ "water": {
+  "dur": 12.0
+ },
+ "meadow_wind": {
+  "dur": 20.0
+ },
+ "impact": {
+  "dur": 3.17
+ },
+ "impact_big": {
+  "dur": 3.77
+ },
+ "tick": {
+  "dur": 0.12
+ },
+ "reverse_swell": {
+  "dur": 1.5
+ },
+ "blade_ring": {
+  "dur": 6.51
+ },
+ "ring_slide": {
+  "dur": 4.71
+ },
+ "loot_0": {
+  "dur": 5.11
+ },
+ "loot_1": {
+  "dur": 5.11
+ },
+ "loot_2": {
+  "dur": 5.11
+ },
+ "loot_3": {
+  "dur": 5.11
+ },
+ "loot_4": {
+  "dur": 5.11
+ },
+ "loot_5": {
+  "dur": 5.11
+ },
+ "loot_6": {
+  "dur": 5.11
+ },
+ "loot_7": {
+  "dur": 5.11
+ }
+}

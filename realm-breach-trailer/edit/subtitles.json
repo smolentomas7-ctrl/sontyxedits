@@ -1,0 +1,135 @@
+[
+ {
+  "vo": "VO1",
+  "text": "So...",
+  "start": 8.336,
+  "end": 9.036,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO1",
+  "text": "you're the one",
+  "start": 9.036,
+  "end": 10.126,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO1",
+  "text": "who's been waiting for me.",
+  "start": 10.126,
+  "end": 11.882,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO2",
+  "text": "I have crossed worlds...",
+  "start": 13.401,
+  "end": 15.161,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO2",
+  "text": "faced death...",
+  "start": 15.161,
+  "end": 16.591,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO2",
+  "text": "and sacrificed everything.",
+  "start": 16.591,
+  "end": 18.567,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO3",
+  "text": "But now...",
+  "start": 18.567,
+  "end": 19.896,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO4",
+  "text": "The Fallen God...",
+  "start": 19.896,
+  "end": 21.926,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO5",
+  "text": "YOUR REIGN",
+  "start": 22.243,
+  "end": 23.043,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO5",
+  "text": "ENDS HERE!",
+  "start": 23.043,
+  "end": 24.071,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO6",
+  "text": "After everything",
+  "start": 53.346,
+  "end": 54.429,
+  "speaker": "god"
+ },
+ {
+  "vo": "VO6",
+  "text": "you've lost...",
+  "start": 54.429,
+  "end": 55.376,
+  "speaker": "god"
+ },
+ {
+  "vo": "VO6",
+  "text": "you still dare",
+  "start": 55.376,
+  "end": 56.429,
+  "speaker": "god"
+ },
+ {
+  "vo": "VO6",
+  "text": "to challenge me?",
+  "start": 56.429,
+  "end": 57.809,
+  "speaker": "god"
+ },
+ {
+  "vo": "VO7",
+  "text": "You took everything",
+  "start": 57.809,
+  "end": 59.319,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO7",
+  "text": "from me...",
+  "start": 59.319,
+  "end": 60.493,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO8",
+  "text": "But you made",
+  "start": 60.543,
+  "end": 61.573,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO8",
+  "text": "one mistake.",
+  "start": 61.573,
+  "end": 62.975,
+  "speaker": "warrior"
+ },
+ {
+  "vo": "VO9",
+  "text": "YOU LET ME LIVE.",
+  "start": 62.975,
+  "end": 64.44,
+  "speaker": "warrior"
+ }
+]

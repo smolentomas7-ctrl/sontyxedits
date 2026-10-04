@@ -330,7 +330,7 @@ def main():
     # Music automation: (song beat, low-pass Hz, gain dB). Linear interpolation of
     # gain and log interpolation of cutoff between keys. Applied in src/mix.py.
     music = [
-        (-1, 300, -5), (36, 300, -5), (BUILD_BEAT, 320, -5), (SILENT_BEAT - 0.05, 2600, -3),
+        (-1, 300, -9), (36, 300, -9), (BUILD_BEAT, 320, -9), (SILENT_BEAT - 0.05, 2600, -4),
         (SILENT_BEAT, 2600, -60), (SILENT_BEAT + 0.98, 2600, -60), (SILENT_BEAT + 1, 3200, -4),
         (D_BEAT - 0.02, 9000, -2), (D_BEAT, 20000, 0),
         (68, 20000, 0), (68.05, 520, -24), (69, 520, -22), (70, 1500, -8), (72, 20000, 0),
