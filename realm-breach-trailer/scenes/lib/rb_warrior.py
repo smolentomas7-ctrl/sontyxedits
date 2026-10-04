@@ -394,10 +394,27 @@ def build_warrior(look="late", prefix="W_", rings=False, sword_glow=None, seed=7
                                axis=V(sx, -0.3, 0), polar=(0, 1.2), N=24, M=8)
         fin(wing, "shin_" + side, thick=0.003, rolled=0.0024, mud_top=0.6)
         # greave with calf bulge
-        gr = G.tube(prefix + "greave_%s" % side, kn + (an - kn) * 0.1, an + V(0, 0, 0.035),
-                    lambda t, th: 0.06 + 0.016 * math.sin(min(1, t * 1.6) * math.pi) * (0.5 + 0.5 * math.cos(th - math.pi))
-                    - 0.014 * t, N=44, M=12)
+        def gr_r(t, th):
+            a = (th + math.pi) % (2 * math.pi) - math.pi
+            return (0.06 + 0.016 * math.sin(min(1, t * 1.6) * math.pi) * (0.5 + 0.5 * math.cos(th - math.pi))
+                    - 0.014 * t + 0.009 * math.exp(-(a / 0.22) ** 2))      # front ridge
+        g0, g1 = kn + (an - kn) * 0.1, an + V(0, 0, 0.035)
+        gr = G.tube(prefix + "greave_%s" % side, g0, g1, gr_r, N=72, M=14)
         fin(gr, "shin_" + side, thick=0.0035, rolled=0.0026, dent=2, mud_top=0.6)
+        # rivets at the strap points (hinge side and buckle side, top and bottom)
+        GX, GY, _ = G.frame_from_axis(np.array(g1 - g0), (0, -1, 0))
+        rp, rn = [], []
+        for t in (0.12, 0.86):
+            for th in (1.35, -1.35, 1.05, -1.05):
+                if (abs(th) < 1.2) != (t < 0.5):
+                    continue
+                d = V(*(GX * math.cos(th) + GY * math.sin(th)))
+                rp.append(g0 + (g1 - g0) * t + d * (gr_r(t, th % (2 * math.pi)) + 0.0045))
+                rn.append(d)
+        rv = G.rivets(prefix + "greave_rivets_%s" % side, rp, rn, radius=0.006, mat=plate)
+        G.bake_attributes(rv, mud_top=0)
+        attach(rv, rig, "shin_" + side)
+        parts.append(rv)
         # sabaton: arched lames from ankle to toe + sole
         fd = toe - an
         for k in range(5):
@@ -406,6 +423,10 @@ def build_warrior(look="late", prefix="W_", rings=False, sword_glow=None, seed=7
             lm = G.tube(prefix + "sab_%s%d" % (side, k), c, c + fd * 0.21, lambda tt, th, k=k: 0.062 - 0.006 * k,
                         N=20, M=3, arc=(-1.7, 1.7), front=(0, 0, 1))
             fin(lm, "foot_" + side, thick=0.003, rolled=0.0022, mud_top=0.6)
+            if k == 4:   # close the toe: a domed cap over the last lame's open end
+                tc = G.ellipsoid_cap(prefix + "sabtoe_%s" % side, c + fd * 0.2, (0.0375, 0.0375, 0.034),
+                                     axis=fd, up=(0, 0, 1), polar=(0, math.pi / 2), azim=(-1.7, 1.7), N=24, M=8)
+                fin(tc, "foot_" + side, thick=0.003, rolled=0.0022, mud_top=0.6)
         sole = G.tube(prefix + "sole_%s" % side, an + V(0, 0.07, -0.07), toe + V(0, -0.02, -0.015),
                       lambda t, th: 0.052 - 0.012 * t, N=16, M=6, shape=lambda t, th: (0, 0))
         sole.scale = (1.0, 1.0, 1.0)

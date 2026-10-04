@@ -6,3 +6,7 @@
 - O3 (arena WIP): two floor hot spots bottom-left; warrior reads thin in profile (cape not visible);
   foreground parallax pillar missing (clear_view hides it). Fix: camera inside the nave, keep one
   out-of-focus broken drum in the foreground, check the cape side.
+- O4: greaves were featureless tubes and the sabaton toe was an open tube (hollow visible) ->
+  fixed in rb_warrior (front ridge, strap rivets, domed toe cap). Dust puff VFX pending rb_vfx.
+- O7: good (god centred, halo reads). Blue underlight hot spot at the very bottom (inside the bottom
+  safe zone, acceptable); robe reads as a flat sheet — consider folds/tatter in rb_god if time allows.
