@@ -25,9 +25,9 @@ cam = rb_cam.Rig(lens=50, fstop=2.8)
 def cam_fn(f):
     u = C.ease_in_out(shot.u(f))
     a = math.radians(-15 + 30 * u)
-    r = 2.7 - 0.55 * u
-    loc = Vector((r * math.sin(a), -r * math.cos(a), 0.85 - 0.1 * u))
-    return dict(loc=loc, target=Vector((0, 0, 0.55)), focus=Vector((0, 0, 0.3)))
+    r = 4.4 - 0.8 * u                      # outside the beam: item, beam and the room all read
+    loc = Vector((r * math.sin(a), -r * math.cos(a), 1.25 - 0.15 * u))
+    return dict(loc=loc, target=Vector((0, 0, 0.75)), focus=Vector((0, 0, 0.2)))
 
 
 cam.key_range(shot.frames_all, cam_fn)

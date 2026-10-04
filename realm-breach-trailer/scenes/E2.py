@@ -22,8 +22,11 @@ cam = rb_cam.Rig(lens=35, fstop=8.0)
 
 
 def cam_fn(f):
+    # crane down on the line through both: the exhausted warrior lower centre (back to us), the kneeling god
+    # behind and above him (stacked for the vertical frame)
     u = C.ease_out(shot.u(f))
-    return dict(loc=r + Vector((3.0, -4.6, 4.2 - 2.6 * u)), target=r + Vector((-0.6, 4.6, 1.6 - 0.4 * u)), focus=7.0)
+    loc = Vector((-0.6, 0.6, 5.0 - 3.0 * u))
+    return dict(loc=loc, target=Vector((-0.1, 8.6, 0.5 + 0.2 * u)), focus=4.6)
 
 
 cam.key_range(shot.frames_all, cam_fn)

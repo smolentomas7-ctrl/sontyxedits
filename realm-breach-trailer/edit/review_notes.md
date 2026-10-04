@@ -28,3 +28,7 @@
 - F2a: obsidian blade invisible against the dark, god small -> 7 m, edge_glow x4. Re-render.
 - F2b: sparks great but hid both blades -> key 1479, sparks 0.75, camera 3.7 m slightly higher. Re-render.
 - F2c: reads (thrown, cape flying, god behind) -> key 1512 for a bigger figure. Re-render.
+- F7: strong — god attack blast floods the hall, warrior foreground right, inside safe zones.
+- E2: warrior at the left edge -> camera on the line through warrior and kneeling god (stacked), crane 5 -> 2 m.
+- M106 (smoke test): 0.9 m blade cropped -> 1.75 m. M401: camera inside the beam at god rarity -> orbit r 4.4 -> 3.6.
+- VFX + dungeon/props modules landed (dungeon ~35-45 s/frame uncontended at full res: needs light culling).

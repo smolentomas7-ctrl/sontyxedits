@@ -20,11 +20,11 @@ D, w = MT.scene(shot, "floor1", look="early")
 MT.walk(w, shot, (0.05, 0.62, 0.0), 0.0, key_frame=MT.imp(55.5), stop_frame=MT.imp(55.5), carry=True)
 L = PR.loot(item="sword", rarity="common", loc=(0.0, 0.0, 0.0), rot_z=math.radians(62), seed=shot.seed)
 cam = rb_cam.Rig(lens=50, fstop=2.8)
-LOC = Vector((0.06, -1.05, 0.2))
+LOC = Vector((0.1, -1.75, 0.24))      # far enough to hold the whole 0.9 m blade
 
 
 def cam_fn(f):
-    return dict(loc=LOC + Vector((0, 0.06, 0)) * shot.u(f), target=Vector((0.0, 0.05, 0.13)), focus=Vector((0, 0, 0.05)))
+    return dict(loc=LOC + Vector((0, 0.06, 0)) * shot.u(f), target=Vector((0.0, 0.1, 0.16)), focus=Vector((0, 0, 0.05)))
 
 
 cam.key_range(shot.frames_all, cam_fn)
