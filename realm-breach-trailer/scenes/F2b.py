@@ -12,7 +12,7 @@ import rb_intro  # noqa: E402
 import rb_shot  # noqa: E402
 import rb_story as ST  # noqa: E402
 
-shot = rb_shot.Shot("F2b", key_frame=1481)
+shot = rb_shot.Shot("F2b", key_frame=1479)   # 1 frame after the impact: compact burst, blades visible
 S = rb_intro.build(shot, variant="duel", act="battle")
 import rb_env_arena as AR  # noqa: E402
 
@@ -22,13 +22,13 @@ cam = rb_cam.Rig(lens=50, fstop=2.8)
 cam.shake(int(ST.bf(98.0)) - 1, amp=0.03, seed=shot.seed)
 # 3 m from the contact, from his right rear and a little below: helm + grip, the contact and the obsidian
 # blade crashing down from the top of frame all read in one vertical image
-loc = c + Vector((1.0, -0.8, -0.15)).normalized() * 3.0
+loc = c + Vector((1.0, -0.8, 0.05)).normalized() * 3.7
 cam.key_range(shot.frames_all, lambda f: dict(loc=loc + Vector((-0.08, 0.1, 0.0)) * shot.u(f),
                                               target=c + Vector((0.1, 0.15, 0.05)), focus=c))
 AR.lights_duel(warrior=tuple(rb_intro.warrior_pos_battle(shot.key_frame)), cam=tuple(loc))
 try:
     import rb_vfx as VFX
-    VFX.sparks(int(ST.bf(98.0)) - 1, tuple(c), seed=shot.seed, scale=1.4)
+    VFX.sparks(int(ST.bf(98.0)) - 1, tuple(c), seed=shot.seed, scale=0.75)
 except Exception as e:
     print("vfx missing:", e)
 rb_intro.clear_view(rb_intro.cam_samples(cam, shot), rb_intro.cam_target_sample(cam, shot))

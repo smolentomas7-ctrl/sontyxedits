@@ -26,3 +26,4 @@
 - F1a: good (cape streams, sparks); warrior's cape crossed the right safe zone -> camera back 0.8 m, aim between them. Re-render.
 - F1d: god's halo/robe in the right safe zone; key frame after the bolt -> camera back, aim weighted to the god, key 1391. Re-render.
 - F2a: obsidian blade invisible against the dark, god small -> 7 m, edge_glow x4. Re-render.
+- F2b: sparks great but hid both blades -> key 1479, sparks 0.75, camera 3.7 m slightly higher. Re-render.

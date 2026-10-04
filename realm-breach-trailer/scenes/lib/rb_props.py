@@ -179,7 +179,7 @@ def mat_leather(name="PR_leather"):
     return DG._tag(m)
 
 
-def mat_item(name, fuller=(1.0, 0.0), base_glow=0.06, steel=(0.06, 0.059, 0.057)):
+def mat_item(name, fuller=(1.0, 0.0), base_glow=0.06, steel=(0.06, 0.059, 0.057), edge_k=2.2):
     """Loot item metal: worn steel (or navy for 'fallen equip', CTRL_navy) whose edges (baked 'wear') and fuller
     line glow in CTRL_color * CTRL_rarity * CTRL_glow. fuller = (x0, x1) span of the fuller in object X."""
     m, b = M.new(name)
@@ -202,7 +202,7 @@ def mat_item(name, fuller=(1.0, 0.0), base_glow=0.06, steel=(0.06, 0.059, 0.057)
                 b.math("MULTIPLY", DG._mr(b, (sep, "X"), fuller[0], fuller[0] + 0.04),
                        DG._mr(b, (sep, "X"), fuller[1], fuller[1] - 0.06)))
     fl = b.math("MULTIPLY", fl, DG._mr(b, (n2, "Fac"), 0.35, 0.5, 0.5, 1.0))
-    mask = b.math("ADD", base_k, b.math("ADD", b.math("MULTIPLY", b.math("POWER", wear, 1.5), 2.2),
+    mask = b.math("ADD", base_k, b.math("ADD", b.math("MULTIPLY", b.math("POWER", wear, 1.5), edge_k),
                                         b.math("MULTIPLY", fl, 3.0)))
     estr = b.math("MULTIPLY", b.math("MULTIPLY", mask, rk), b.math("MULTIPLY", gk, 4.0))
     rough = b.math("ADD", 0.3, b.math("MULTIPLY", (n1, "Fac"), 0.2))
@@ -387,7 +387,9 @@ def loot(item="greatsword", rarity="common", loc=(0, 0, 0), rot_z=0.0, seed=0, i
         parts.append(_blade("PR_loot_blade", Lb, 0.036 if g else 0.026, 0.028 if g else 0.021, 0.0065 if g else 0.005,
                             0.16 if g else 0.1, mi, x0=0.02))
         parts += _hilt("PR_loot", 0.2 if g else 0.11, 0.32 if g else 0.13, 0.0165 if g else 0.014,
-                       0.034 if g else 0.024, mi, leather)
+                       0.034 if g else 0.024, mat_item("PR_loot_hilt_mat", base_glow=0.0, steel=(0.09, 0.088, 0.085),
+                                                       edge_k=0.12), leather)
+        L.mats["hilt"] = parts[-2].data.materials[0]
         span = (-(0.32 if g else 0.13) - 0.07, Lb + 0.02)
     elif item == "scythe":
         mi = mat_item("PR_loot_item_mat", fuller=(1.0, 0.0))
@@ -723,14 +725,14 @@ def mat_obsidian(name="PR_obsidian"):
     return DG._tag(m)
 
 
-def mat_gold_glow(name, base=1.0, k=1.0):
+def mat_gold_glow(name, base=1.0, k=1.0, front=("Y", -1.0)):
     """Ember-gold carved letters / inlay: gold metal + emission (CTRL_glow); fronts burn brighter than bevels."""
     m, b = M.new(name)
     tc = b.n("ShaderNodeTexCoord")
     nrm = b.n("ShaderNodeSeparateXYZ", Vector=(tc, "Normal"))
     gk = b.ctrl("glow", base)
     nz = DG._noise(b, (tc, "Object"), 9.0, 3.0)
-    front = DG._mr(b, b.math("MULTIPLY", (nrm, "Y"), -1.0), 0.3, 0.95, 0.35, 1.0)
+    front = DG._mr(b, b.math("MULTIPLY", (nrm, front[0]), front[1]), 0.3, 0.95, 0.35, 1.0)
     heat = b.math("MULTIPLY", front, DG._mr(b, (nz, "Fac"), 0.3, 0.7, 0.75, 1.1))
     ecol = b.ramp(heat, [(0.3, hexcol("#FF6A1A")), (0.75, hexcol("#F2B544")), (1.0, hexcol("#FFE9A8"))])
     bs = b.bsdf(**{"Base Color": (0.9, 0.6, 0.25), "Metallic": 1.0, "Roughness": 0.28, "Emission Color": ecol,
@@ -770,7 +772,7 @@ def rebirth_plaque(loc=(0, 0, 0), rot_z=0.0, scale=1.0, word="REBIRTH"):
     P = _H()
     P.root = _root("PR_plaque", loc, rot_z, scale)
     obs = mat_obsidian()
-    P.mat = mat_gold_glow("PR_plaque_glow")
+    P.mat = mat_gold_glow("PR_plaque_glow", front=("Z", 1.0))
     aura = mat_aura("PR_plaque_aura")
     inl_mat = mat_gold_glow("PR_plaque_inlay", k=0.22)
     P.mats = [P.mat, aura, inl_mat]
@@ -828,6 +830,7 @@ def rebirth_plaque(loc=(0, 0, 0), rot_z=0.0, scale=1.0, word="REBIRTH"):
     P.text.rotation_euler = (math.pi / 2, 0, 0)
     P.text.location = (0, -T - 0.012 - 0.006, -0.004)
     _child(P.text, P.root)
+    P.glyphs = _union_glyphs(P.text, P.mat)
     me = bpy.data.meshes.new("PR_plaque_aura")
     me.from_pydata([(-1.3, T + 0.06, -0.7), (1.3, T + 0.06, -0.7), (1.3, T + 0.06, 0.7), (-1.3, T + 0.06, 0.7)], [],
                    [(0, 1, 2, 3)])
@@ -844,6 +847,79 @@ def rebirth_plaque(loc=(0, 0, 0), rot_z=0.0, scale=1.0, word="REBIRTH"):
     _child(P.light, P.root)
     P.base = 1.0
     return P
+
+
+def _union_glyphs(txt, mat):
+    """Blender fills a glyph's contours even-odd, so fonts that keep overlapping contours (variable Cinzel: the
+    E's arms) get holes. Rebuild the text as curve objects holding ONE outer contour each (+ the counters inside
+    it) parented to the text object (which is then hidden in render): overlapping strokes union visually."""
+    tmp = txt.copy()
+    tmp.data = txt.data.copy()
+    tmp.parent = None
+    link(tmp)
+    vl = bpy.context.view_layer
+    for o in bpy.context.selected_objects:
+        o.select_set(False)
+    vl.objects.active = tmp
+    tmp.select_set(True)
+    bpy.ops.object.convert(target="CURVE")
+    tmp = vl.objects.active
+    cu = tmp.data
+
+    def pts_of(sp):
+        return [(p.co.x, p.co.y) for p in (sp.bezier_points if sp.type == "BEZIER" else sp.points)]
+
+    def area(pts):
+        return 0.5 * sum(x0 * y1 - x1 * y0 for (x0, y0), (x1, y1) in zip(pts, pts[1:] + pts[:1]))
+
+    def inside(pt, poly):
+        x, y = pt
+        c = False
+        for (x0, y0), (x1, y1) in zip(poly, poly[1:] + poly[:1]):
+            if (y0 > y) != (y1 > y) and x < x0 + (y - y0) * (x1 - x0) / (y1 - y0):
+                c = not c
+        return c
+
+    sps = [(sp, pts_of(sp)) for sp in cu.splines if len(pts_of(sp)) > 2]
+    if not sps:
+        bpy.data.objects.remove(tmp)
+        return []
+    ar = [area(p) for _, p in sps]
+    sgn = 1.0 if ar[max(range(len(ar)), key=lambda i: abs(ar[i]))] > 0 else -1.0
+    outers = [i for i, a_ in enumerate(ar) if a_ * sgn > 0]
+    holes = [i for i, a_ in enumerate(ar) if a_ * sgn <= 0]
+    out = []
+    for k, oi in enumerate(outers):
+        members = [oi] + [h for h in holes if inside(sps[h][1][0], sps[oi][1])]
+        nc = bpy.data.curves.new("PR_plaque_glyph", "CURVE")
+        nc.dimensions = "2D"
+        nc.fill_mode = "BOTH"
+        for attr in ("extrude", "bevel_depth", "bevel_resolution", "resolution_u", "offset"):
+            setattr(nc, attr, getattr(cu, attr))
+        for mi in members:
+            sp = sps[mi][0]
+            if sp.type == "BEZIER":
+                ns = nc.splines.new("BEZIER")
+                ns.bezier_points.add(len(sp.bezier_points) - 1)
+                for a_, b_ in zip(ns.bezier_points, sp.bezier_points):
+                    a_.handle_left_type, a_.handle_right_type = "FREE", "FREE"
+                    a_.co, a_.handle_left, a_.handle_right = b_.co, b_.handle_left, b_.handle_right
+            else:
+                ns = nc.splines.new("POLY")
+                ns.points.add(len(sp.points) - 1)
+                for a_, b_ in zip(ns.points, sp.points):
+                    a_.co = b_.co
+            ns.use_cyclic_u = True
+            ns.resolution_u = sp.resolution_u
+        nc.materials.append(mat)
+        ob = bpy.data.objects.new("PR_plaque_glyph", nc)
+        link(ob)
+        ob.parent = txt
+        ob.location = (0, 0, 0.00004 * (k % 3))
+        out.append(ob)
+    bpy.data.objects.remove(tmp)
+    txt.hide_render = True
+    return out
 
 
 def plaque_pulse(plaque, f0, frames=12, peak=1.0):
