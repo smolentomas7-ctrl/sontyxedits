@@ -943,13 +943,13 @@ def _near_lens(cam, f0, f1, rg, falling, color, strength, n):
     vel = _vel(pos, F, 0.05)
     env = _ss(0.0, 0.15, a) * (1 - _ss(0.75, 1.0, a))
     win = _window(F, f0, f1)
-    heat = env * (0.65 + 0.3 * _vn(F[:, None] * 0.35, ps + 5)) * 0.85 * win
+    heat = env * (0.65 + 0.3 * _vn(F[:, None] * 0.35, ps + 5)) * 0.45 * win
     sz = depth * rg.uniform(0.022, 0.04, n) * (0.6 + 0.4 * env) * win
     spd = np.linalg.norm(vel, axis=-1)
     scl = np.stack([sz, sz, sz + spd * 0.3], -1)
     Vt, Ft = _uv_sphere(16, 8)
     fx.add_tiled(Vt, Ft, P, rot=_align_euler(vel), scl=scl, heat=heat)
-    mat = glow_mat("ember_lens_%s_%.2f" % (color, strength), color, strength=2.6 * strength, soft=0.55, heat_pow=1.0)
+    mat = glow_mat("ember_lens_%s_%.2f" % (color, strength), color, strength=6.0 * strength, soft=0.9, heat_pow=1.0)
     return fx.build([mat], parent=camob)
 
 
@@ -969,7 +969,7 @@ def ash(f0, f1, center, radius=4.0, height=4.0, count=220, seed=0, color=(0.55, 
                      band=0.7)
     P, a = pos(F)
     env = _ss(0.0, 0.15, a) * (1 - _ss(0.82, 1.0, a)) * _window(F, f0, f1)
-    size = np.exp(rg.uniform(np.log(0.006), np.log(0.02), N))
+    size = np.exp(rg.uniform(np.log(0.008), np.log(0.026), N))
     shape = np.stack([np.ones(N), rg.uniform(0.45, 1.0, N), np.ones(N)], -1)
     scl = (size[None, :, None] * shape[None]) * env[..., None]
     rot0 = rg.uniform(0, 2 * math.pi, (N, 3))
@@ -996,22 +996,23 @@ def dust_puff(frame, loc, seed=0, scale=1.0, floor=None, color=(0.42, 0.38, 0.33
     fx = _FX("dust", f - 1, f + 30)
     F = fx.F
     a = (F - f)[:, None]
-    N = 22
-    ring = np.arange(N) < 16
-    th = 2 * math.pi * np.arange(N) / 16 + rg.uniform(-0.2, 0.2, N)
+    N = 30
+    ring = np.arange(N) < 22
+    th = 2 * math.pi * np.arange(N) / 22 + rg.uniform(-0.2, 0.2, N)
     th = np.where(ring, th, rg.uniform(0, 2 * math.pi, N))
     dmax = s * np.where(ring, rg.uniform(0.45, 0.8, N), rg.uniform(0.08, 0.3, N))
     rr = s * 0.08 + dmax * _eo(a / rg.uniform(10, 15, N))
     rise = rg.uniform(0.6, 1.3, N)
     z = fl + s * (0.03 + 0.15 * rise * _eo(a / 18.0))
     P = np.stack([L[0] + rr * np.cos(th), L[1] + rr * np.sin(th), np.broadcast_to(z, rr.shape)], -1)
-    rad = s * rg.uniform(0.7, 1.3, N) * (0.05 + 0.2 * _eo(a / 16.0)) * (a >= 0)
-    flat = np.stack([rad, rad, rad * 0.7], -1)
-    alpha = rg.uniform(0.5, 0.8, N) * _ss(-0.5, 2.0, a) * (1 - _ss(4.0, 20.0, a)) * opacity
+    rad = s * rg.uniform(0.6, 1.2, N) * (0.05 + 0.18 * _eo(a / 16.0)) * (a >= 0)
+    flat = np.stack([rad, rad * 0.8, rad * 0.5], -1)
+    alpha = rg.uniform(0.4, 0.65, N) * _ss(-0.5, 2.0, a) * (1 - _ss(4.0, 20.0, a)) * opacity
     rot = rg.uniform(0, 2 * math.pi, (N, 3))[None] + 0.03 * a[..., None]
     Vt, Ft = _uv_sphere(10, 6)
     fx.add_tiled(Vt, Ft, P, rot=rot, scl=flat, alpha=alpha)
-    mat = soft_mat("dust_%.2f_%.2f_%.2f" % tuple(color), color, soft=1.4, noise=0.75, nscale=3.0 / max(s, 0.3))
+    mat = soft_mat("dust_%.2f_%.2f_%.2f_%.2f" % (tuple(color) + (s,)), color, soft=2.0, noise=1.0, nscale=7.0 / max(s, 0.3),
+                   nspeed=0.8)
     mats = [mat]
     if grit:
         G = 18
@@ -1103,7 +1104,7 @@ def sparks(frame, loc, seed=0, scale=1.0, direction=None, count=None, color=SPAR
     a = (F - f)[:, None]
     alive = (a >= 0) & (a < life_f[None])
     x = np.clip(a / life_f[None], 0, 1)
-    heat = 1.6 * (1 - x) ** 1.4 * np.where(hit, 0.7, 1.0) * (0.8 + 0.2 * _hash(F[:, None].astype(np.int64) * 31 +
+    heat = 1.25 * (1 - x) ** 1.5 * np.where(hit, 0.7, 1.0) * (0.8 + 0.2 * _hash(F[:, None].astype(np.int64) * 31 +
                                                                                  np.arange(N), seed))
     heat = heat * alive
     r = math.sqrt(s) * rg.uniform(0.0035, 0.006, N) * np.where(blob, 2.2, 1.0)
@@ -1141,17 +1142,17 @@ def shockwave(frame, loc, seed=0, scale=1.0, floor=None, dust=True, color=EMBER,
     F = fx.F
     a = F - f
     on = (a >= 0).astype(float)
-    Va, Fa, va = _annulus(128, 4, 0.74, 1.0)
+    Va, Fa, va = _annulus(128, 4, 0.82, 1.0)
     # floor ring (leading edge bright), slightly irregular via noise in the material
     R1 = s * (0.25 + 4.4 * _eo(a / 12.0)) * on
-    h1 = 1.45 * (1 - _ss(0, 13, a)) ** 1.5 * on
+    h1 = 1.1 * (1 - _ss(0, 13, a)) ** 1.5 * on
     fx.add(Va, Fa, np.array([L[0], L[1], fl + 0.02])[None, None] + 0 * F[:, None, None],
            rot=np.array([0, 0, rg.uniform(0, 6.28)]), scl=np.stack([R1, R1, R1], -1)[:, None], heat=h1[:, None],
            v=va, mat=0)
     # air ring, thinner and faster
     Vb, Fb, vb = _annulus(128, 3, 0.9, 1.0)
     R2 = s * (0.3 + 6.0 * _eo(a / 8.0)) * on
-    h2 = 0.9 * (1 - _ss(0, 9, a)) ** 2 * on
+    h2 = 0.5 * (1 - _ss(0, 9, a)) ** 2 * on
     zr = max(L[2], fl + 0.45 * s)
     fx.add(Vb, Fb, np.array([L[0], L[1], zr])[None, None] + 0 * F[:, None, None],
            scl=np.stack([R2, R2, R2], -1)[:, None], heat=h2[:, None], v=vb, mat=0)
@@ -1162,7 +1163,7 @@ def shockwave(frame, loc, seed=0, scale=1.0, floor=None, dust=True, color=EMBER,
     fx.add(Vs, Fs, np.array([L[0], L[1], fl])[None, None] + 0 * F[:, None, None],
            scl=np.stack([rd, rd, rd * 0.7], -1)[:, None], heat=hd[:, None], mat=1)
     ring = glow_mat("shock_ring_%s_%.2f" % (color, strength), color, strength=7.0 * strength, profile="v",
-                    stops=[(0.0, (0, 0, 0)), (0.72, (1, 1, 1)), (1.0, (0, 0, 0))], noise=0.75,
+                    stops=[(0.0, (0, 0, 0)), (0.72, (1, 1, 1)), (1.0, (0, 0, 0))], noise=0.95,
                     nscale=1.6 / max(s, 0.3), nspeed=2.0, cull=False)
     dome = glow_mat("shock_dome_%s_%.2f" % (color, strength), color, strength=8.0 * strength, soft=2.2)
     ob = fx.build([ring, dome])
@@ -1251,7 +1252,7 @@ def smoke_burst(frame, loc, seed=0, scale=1.0, color="#1A1220", glow="#A04DFF", 
     P[..., 2] += 0.014 * s * np.clip(a, 0, None)
     rad = s * rg.uniform(0.14, 0.24, N) * (0.6 + 2.3 * _eo(a / 16.0)) * on
     alpha = rg.uniform(0.6, 0.9, N) * _ss(-0.5, 1.5, a) * (1 - _ss(5.0, 22.0, a))
-    heat = 1.7 * np.exp(-np.clip(a, 0, None) / 4.5) * (1.25 - 0.6 * reach) * on
+    heat = 1.6 * np.exp(-np.clip(a, 0, None) / 4.0) * (1.3 - 0.9 * reach) * on
     rot = rg.uniform(0, 6.28, (N, 3))[None] + 0.04 * a[..., None]
     Vt, Ft = _uv_sphere(12, 8)
     fx.add_tiled(Vt, Ft, P, rot=rot, size=rad, heat=heat, alpha=alpha, mat=0)
@@ -1261,8 +1262,8 @@ def smoke_burst(frame, loc, seed=0, scale=1.0, color="#1A1220", glow="#A04DFF", 
     hc = 1.5 * (1 - _ss(0, 11, ac)) ** 1.3 * (ac >= 0)
     Vs, Fs = _uv_sphere(14, 9)
     fx.add(Vs, Fs, L[None, None] + 0 * F[:, None, None], size=rc[:, None], heat=hc[:, None], mat=1)
-    smoke = soft_mat("smoke_%s_%s" % (color, glow), color, glow=glow, glow_strength=16.0 * strength, soft=1.1,
-                     noise=0.8, nscale=2.4 / max(s, 0.3), nspeed=0.9)
+    smoke = soft_mat("smoke_%s_%s_%.2f" % (color, glow, s), color, glow=glow, glow_strength=7.0 * strength, soft=1.6,
+                     noise=0.95, nscale=5.0 / max(s, 0.3), nspeed=1.2)
     core = glow_mat("smoke_core_%s" % glow, glow, hot=_lighten(glow, 0.75), strength=9.0 * strength, soft=2.0,
                     noise=0.5, nscale=4.0, nspeed=2.0)
     ob = fx.build([smoke, core])
@@ -1315,7 +1316,7 @@ def fireball(frame, start, end, seed=0, scale=1.0, travel=6, floor=None, color=F
     rot_off = od[None] * ca + np.cross(ax, od)[None] * sa + ax[None] * (ax * od).sum(1)[None, :, None] * (1 - ca)
     Pk = B[:, None] + rot_off * (s * 0.1)
     rk = s * rg.uniform(0.12, 0.2, K)[None] * (0.3 + 0.7 * charge[:, None]) * vis[:, None]
-    hk = rg.uniform(0.85, 1.15, K)[None] * vis[:, None] * (0.6 + 0.4 * charge[:, None])
+    hk = rg.uniform(0.7, 1.0, K)[None] * vis[:, None] * (0.6 + 0.4 * charge[:, None])
     fx.add_tiled(Vs, Fs, Pk, size=rk, heat=hk, rot=rg.uniform(0, 6.28, (K, 3)), mat=0)
     # halo
     fx.add(Vs, Fs, B[:, None], size=(s * 0.45 * (0.4 + 0.6 * charge) * vis)[:, None],
@@ -1330,10 +1331,10 @@ def fireball(frame, start, end, seed=0, scale=1.0, travel=6, floor=None, color=F
     drift = (-dirn * 0.012 * s + np.array([0, 0, 0.01 * s]))[None, None] * np.clip(ag, 0, None)[..., None]
     Pt = pb[None] + drift
     rt = s * rg.uniform(0.8, 1.2, T)[None] * (0.09 + 0.2 * _eo(ag / lifep[None])) * alive
-    ht = 1.2 * np.clip(1 - ag / lifep[None], 0, 1) ** 1.6 * alive
+    ht = 0.95 * np.clip(1 - ag / lifep[None], 0, 1) ** 1.6 * alive
     fx.add_tiled(Vs, Fs, Pt, size=rt, heat=ht, rot=rg.uniform(0, 6.28, (T, 3)), mat=0)
     # explosion
-    X = 30
+    X = 40
     dx = rg.normal(size=(X, 3))
     dx[:, 2] = np.abs(dx[:, 2]) * 0.5 + dx[:, 2] * 0.5 + 0.25
     dx = _unit(dx)
@@ -1345,12 +1346,12 @@ def fireball(frame, start, end, seed=0, scale=1.0, travel=6, floor=None, color=F
     Px[..., 2] += 0.02 * s * np.clip(ae, 0, None)
     if E[2] - flz < 1.0:
         Px[..., 2] = np.maximum(Px[..., 2], flz + 0.15 * s)
-    rx = s * rg.uniform(0.22, 0.38, X)[None] * (0.55 + 1.7 * _eo(ae / 10.0)) * onx * (ae < lx[None])
-    hx = 1.3 * (1 - _ss(0, 1, ae / lx[None])) ** 1.3 * onx
+    rx = s * rg.uniform(0.14, 0.4, X)[None] * (0.55 + 1.7 * _eo(ae / 10.0)) * onx * (ae < lx[None])
+    hx = 1.05 * (1 - _ss(0, 1, ae / lx[None])) ** 1.3 * onx
     fx.add_tiled(Vs, Fs, Px, size=rx, heat=hx, rot=rg.uniform(0, 6.28, (X, 3)), mat=0)
     af = F - fh
-    rfl = s * (0.25 + 0.65 * _eo(af / 3.0)) * (af >= 0) * (af < 6)
-    hfl = 1.5 * np.clip(1 - af / 5.5, 0, 1) ** 2 * (af >= 0)
+    rfl = s * (0.2 + 0.5 * _eo(af / 3.0)) * (af >= 0) * (af < 6)
+    hfl = 1.1 * np.clip(1 - af / 5.5, 0, 1) ** 2 * (af >= 0)
     fx.add(Vs, Fs, E[None, None] + 0 * F[:, None, None], size=rfl[:, None], heat=hfl[:, None], mat=3)
     fire = glow_mat("fire_%s_%.2f_%.2f" % (color, s, strength), color, strength=5.0 * strength, hot="#FFE7A8",
                     soft=1.25, noise=0.95, nscale=2.8 / max(s, 0.3), nspeed=1.8)
@@ -1379,7 +1380,7 @@ def fireball(frame, start, end, seed=0, scale=1.0, travel=6, floor=None, color=F
     e1 = 420.0 * s * strength * np.clip((lf - fl_ + 4) / 4.0, 0, 1) * (0.85 + 0.3 * fb_) * (lf < fh)
     l1 = _light("fireball_light", "#FF7A2A", lf, e1, locs=ball(lf.astype(float)), size=0.15, volume=0.8)
     lx_ = np.arange(fh, fh + 16)
-    e2 = 2200.0 * s * strength * np.clip(1 - (lx_ - fh) / 15.0, 0, 1) ** 2 * \
+    e2 = 1500.0 * s * strength * np.clip(1 - (lx_ - fh) / 15.0, 0, 1) ** 2 * \
         (0.85 + 0.3 * np.array([_hash(np.array([k]), wseed)[0] for k in lx_]))
     l2 = _light("fireball_blast", "#FF8A3A", lx_, e2, loc=E + np.array([0, 0, 0.25 * s]), size=0.5, volume=0.8)
     h = _handles(ob, [ob, obs], [l1, l2], mats={"fire": fire, "core": core, "halo": halo, "smoke": smat},
@@ -1404,7 +1405,7 @@ def _bolt(a, b, rg, levels=6, disp=0.13):
             r -= d * (r @ d) / L2
             new += [(p + q) / 2 + r * math.sqrt(L2) * amp, q]
         pts = new
-        amp *= 0.92
+        amp *= 0.78
     return np.array(pts)
 
 
@@ -1446,7 +1447,7 @@ def lightning(frame, start, end, seed=0, scale=1.0, duration=8, color=BOLT_GLOW,
             g[2].append(np.asarray(u))
             g[3] += len(V)
         for e in ends:
-            main = _bolt(S, e, rg, 6, 0.13)
+            main = _bolt(S, e, rg, 6, 0.17)
             if leader:
                 main = main[:int(len(main) * 0.55)]
             n = len(main)
@@ -1488,7 +1489,7 @@ def lightning(frame, start, end, seed=0, scale=1.0, duration=8, color=BOLT_GLOW,
                             soft=2.6, deep="#0E2350")])
     mid = (S + np.mean(ends, 0)) / 2
     lf = F.astype(int)
-    e1 = 1300.0 * s * strength * inten
+    e1 = 750.0 * s * strength * inten
     l1 = _light("bolt_light", core, lf, e1, loc=mid, size=0.5, volume=0.8, specular=0.7)
     l2 = _light("bolt_impact", BOLT_CORE, lf, 650.0 * s * strength * inten * (lf >= f), loc=np.mean(ends, 0) +
                 np.array([0, 0, 0.3]), size=0.4, volume=0.6)
@@ -1518,8 +1519,8 @@ def god_attack(frame, origin, target, seed=0, scale=1.0, column=False, height=45
     pre = (a >= -6) & (a < 0)
     post = a >= 0
     r0 = np.where(pre, s * (0.03 + 0.17 * bu), s * (0.2 + 0.3 * _eo(a / 4.0)) * (a < 9))
-    h0 = np.where(pre, 0.4 + 1.1 * bu, 1.6 * (1 - _ss(0, 9, a)))
-    fx.add(Vs, Fs, O[None, None] + 0 * F[:, None, None], size=(r0 * (a >= -6))[:, None], heat=h0[:, None], mat=0)
+    h0 = np.where(pre, 0.4 + 0.9 * bu, 1.25 * (1 - _ss(0, 9, a)))
+    fx.add(Vs, Fs, O[None, None] + 0 * F[:, None, None], size=(r0 * (a >= -6))[:, None], heat=h0[:, None], mat=4)
     # converging motes (build-up)
     K = 36
     md = _unit(rg.normal(size=(K, 3)))
@@ -1535,8 +1536,8 @@ def god_attack(frame, origin, target, seed=0, scale=1.0, column=False, height=45
     alive = (a[:, None] >= ms[None]) & (a[:, None] < 0)
     vm = np.gradient(Pm, axis=0)
     rm = s * 0.012 * alive
-    sm = np.stack([rm, rm, rm + np.linalg.norm(vm, axis=-1) * 0.8 * alive], -1)
-    fx.add_tiled(*_uv_sphere(6, 4), Pm, rot=_align_euler(vm), scl=sm, heat=(0.6 + 0.9 * u_) * alive, mat=0)
+    sm = np.stack([rm, rm, rm + np.linalg.norm(vm, axis=-1) * 0.4 * alive], -1)
+    fx.add_tiled(*_uv_sphere(6, 4), Pm, rot=_align_euler(vm), scl=sm, heat=(0.5 + 0.6 * u_) * alive, mat=0)
     lights = []
     gold = glow_mat("god_core_%.2f" % strength, color, strength=12.0 * strength, hot="#FFFFFF", soft=1.4,
                     deep="#8A4A08")
@@ -1544,7 +1545,9 @@ def god_attack(frame, origin, target, seed=0, scale=1.0, column=False, height=45
                     noise=0.55, nscale=1.3 / max(s, 0.3), nspeed=3.0, deep="#8A4A08")
     haze = glow_mat("god_haze_%.2f" % strength, GOLD_DEEP, strength=2.2 * strength, hot=color, soft=2.6,
                     deep="#5A2A04")
-    shell = glow_mat("god_shell_%.2f" % strength, color, strength=5.0 * strength, hot="#FFFFFF", soft=2.2,
+    flash = glow_mat("god_flash_%.2f" % strength, color, strength=9.0 * strength, hot="#FFFFFF", soft=2.4,
+                     deep="#8A4A08")
+    shell = glow_mat("god_shell_%.2f" % strength, color, strength=2.5 * strength, hot="#FFFFFF", soft=4.0,
                      profile="shell", deep="#8A4A08")
     lf = np.arange(f - 6, f + 18)
     al = lf - f
@@ -1565,15 +1568,15 @@ def god_attack(frame, origin, target, seed=0, scale=1.0, column=False, height=45
                    scl=np.stack([rad, rad, Ln * ext], -1)[:, None], heat=(hh * fade * (a >= -1))[:, None], u=ub,
                    mat=m)
         ai = a - 1
-        rs = s * (0.3 + 3.4 * _eo(ai / 10.0)) * (ai >= 0) * (ai < 12)
+        rs = s * (0.3 + 2.4 * _eo(ai / 10.0)) * (ai >= 0) * (ai < 12)
         fx.add(Vs, Fs, T[None, None] + 0 * F[:, None, None], size=rs[:, None],
                heat=(1.5 * (1 - _ss(0, 11, ai)) * (ai >= 0))[:, None], mat=3)
         ri = s * (0.25 + 0.55 * _eo(ai / 4.0)) * (ai >= 0) * (ai < 9)
         fx.add(Vs, Fs, T[None, None] + 0 * F[:, None, None], size=ri[:, None],
-               heat=(1.6 * (1 - _ss(0, 8, ai)) * (ai >= 0))[:, None], mat=0)
+               heat=(1.25 * (1 - _ss(0, 8, ai)) * (ai >= 0))[:, None], mat=4)
         lt = np.arange(f + 1, f + 18)
         lights.append(_light("god_flood", color, lt, 5500.0 * s * strength * np.clip(1 - (lt - f - 1) / 15.0, 0, 1)
-                             ** 2, loc=T - _unit(Dv) * 0.6, size=1.0, volume=0.7))
+                             ** 2, loc=T - _unit(Dv) * 0.6, size=1.0, volume=0.3))
         sub.append(sparks(f + 1, T, seed=seed + 3, scale=1.4 * s, color=color, count=int(110 * max(s, 0.4)),
                           speed=(3.0, 12.0), flash=False, light=False, floor=floor))
         sun_dir = _unit(_unit(Dv) + np.array([0, 0, -1.0]))
@@ -1582,7 +1585,7 @@ def god_attack(frame, origin, target, seed=0, scale=1.0, column=False, height=45
         ext = _eo((a + 1) / 4.0) * (a >= -1)
         pulse = 1 + 0.6 * np.exp(-np.clip(a, 0, None) / 3.0) * post
         fade = 1 - _ss(10, 24, a)
-        for rr, hh, m in ((0.12, 1.9, 1), (0.42, 0.95, 1), (1.25, 0.45, 2)):
+        for rr, hh, m in ((0.12, 1.5, 1), (0.42, 0.7, 1), (1.25, 0.32, 2)):
             rad = s * rr * pulse * (0.4 + 0.6 * fade) * (a >= -1) * (fade > 0)
             fx.add(Vb, Fb, base[None, None] + 0 * F[:, None, None],
                    scl=np.stack([rad, rad, height * ext], -1)[:, None], heat=(hh * fade * (a >= -1))[:, None], u=ub,
@@ -1605,15 +1608,15 @@ def god_attack(frame, origin, target, seed=0, scale=1.0, column=False, height=45
                      heat=1.3 * (1 - np.clip(aq / ql[None], 0, 1)) * aliveq, mat=0)
         lt = np.arange(f, f + 22)
         lights.append(_light("god_flood", color, lt, 6000.0 * s * strength * np.clip(1 - (lt - f) / 20.0, 0, 1) ** 2,
-                             loc=base + np.array([0, 0, 1.8]), size=1.5, volume=0.7))
+                             loc=base + np.array([0, 0, 1.8]), size=1.5, volume=0.3))
         sub.append(shockwave(f, base, seed=seed + 5, scale=1.2 * s, floor=flz, color=GOLD_DEEP))
         sun_dir = np.array([0.2, 0.3, -1.0])
-    ob = fx.build([gold, beam, haze, shell])
+    ob = fx.build([gold, beam, haze, shell, flash])
     ls = np.arange(f, f + 12)
     sun_rot = Vector(tuple(_unit(sun_dir))).to_track_quat("-Z", "Y").to_euler()
-    lights.append(_light("god_sun", "#FFF1CF", ls, 1.4 * s * strength * np.clip(1 - (ls - f) / 11.0, 0, 1) ** 2,
+    lights.append(_light("god_sun", "#FFF1CF", ls, 0.8 * s * strength * np.clip(1 - (ls - f) / 11.0, 0, 1) ** 2,
                          loc=O + np.array([0, 0, 3.0]), kind="SUN", size=0.1, volume=0.6, rot=sun_rot))
-    h = _handles(ob, [ob], lights, mats={"core": gold, "beam": beam, "haze": haze, "shell": shell},
+    h = _handles(ob, [ob], lights, mats={"core": gold, "beam": beam, "haze": haze, "shell": shell, "flash": flash},
                  frames=(fx.fa, fx.fb), flood=lights[1], sun=lights[-1])
     for sh in sub:
         _merge(h, sh)
@@ -1634,7 +1637,7 @@ def _auto_span(obj, width):
     e0, e1 = ctr.copy(), ctr.copy()
     e0[ax], e1[ax] = lo[ax], hi[ax]
     tip, other = (e1, e0) if np.linalg.norm(e1) >= np.linalg.norm(e0) else (e0, e1)
-    root = tip + (other - tip) * 0.7
+    root = tip + (other - tip) * 0.4
     return tuple(root), tuple(tip)
 
 
@@ -1676,7 +1679,7 @@ def ember_trail(obj, f0, f1, seed=0, color=EMBER, width=0.08, span=None, offset=
     Wv = W[idx]
     age = j[None] / (Mc - 1)
     ps = int(rg.integers(1, 2 ** 30))
-    heat = (1 - age) ** 1.4 * valid * (0.85 + 0.25 * _vn(te * 0.7, ps)) * 1.15
+    heat = (1 - age) ** 1.4 * valid * (0.85 + 0.25 * _vn(te * 0.7, ps)) * 0.85
     wl = np.linalg.norm(Wv, axis=-1)
     if span is not None:
         z0, z1 = 0.0, 1.0
@@ -1737,7 +1740,7 @@ def petals(f0, f1, center, radius=6.0, height=4.0, count=150, seed=0, colors=("#
                      band=0.5, wind=(0.004, 0.0))
     P, a = pos(F)
     env = _ss(0.0, 0.06, a) * (1 - _ss(0.92, 1.0, a)) * _window(F, f0, f1)
-    size = rg.uniform(0.022, 0.034, N)
+    size = rg.uniform(0.03, 0.045, N)
     rot0 = rg.uniform(0, 2 * math.pi, (N, 3))
     spin = rg.uniform(-0.15, 0.15, (N, 3))
     tt = F[:, None, None]
