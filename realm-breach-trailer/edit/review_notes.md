@@ -24,3 +24,4 @@
 - O11b: cape flew up over the helm in the charge (arm proxies, friction 8) -> violent intro shots (O11a/O11b/O12) use the battle cloth settings. Re-render O11b.
 - M103: cold key works (iron reads as metal). Early hood crown read as a paper cone side-on -> elliptical dome (rb_warrior._early_head). Re-render M103/M105/M106 later.
 - F1a: good (cape streams, sparks); warrior's cape crossed the right safe zone -> camera back 0.8 m, aim between them. Re-render.
+- F1d: god's halo/robe in the right safe zone; key frame after the bolt -> camera back, aim weighted to the god, key 1391. Re-render.

@@ -12,7 +12,7 @@ import rb_intro  # noqa: E402
 import rb_shot  # noqa: E402
 import rb_story as ST  # noqa: E402
 
-shot = rb_shot.Shot("F1d", key_frame=1396)
+shot = rb_shot.Shot("F1d", key_frame=1391)   # mid-bolt (lightning 1388-1396)
 S = rb_intro.build(shot, variant="duel", act="battle")
 import rb_env_arena as AR  # noqa: E402
 
@@ -20,8 +20,8 @@ import rb_env_arena as AR  # noqa: E402
 cam = rb_cam.Rig(lens=35, fstop=4.0)
 cam.handheld(amp=0.02, rot_deg=0.5, freq=1.4, seed=shot.seed)
 # pulled back so both fit the vertical frame: his casting hand lower left, the god upper right (lightning between)
-loc = Vector((3.2, 4.2, 1.0))
-cam.key_range(shot.frames_all, lambda f: dict(loc=loc, target=Vector((-0.63, 11.2, 2.4)), focus=7.5))
+loc = Vector((4.4, 1.6, 1.0))
+cam.key_range(shot.frames_all, lambda f: dict(loc=loc, target=Vector((0.6, 9.75, 2.03)), focus=9.0))
 AR.lights_duel(warrior=tuple(rb_intro.warrior_pos_battle(shot.key_frame)), cam=tuple(loc))
 try:
     import rb_vfx as VFX
