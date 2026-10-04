@@ -108,7 +108,7 @@ def trail_rig():
 
 FB = dict(start=(-0.45, -0.8, 1.3), end=(0.55, 4.0, 2.3))
 LT = dict(start=(-0.3, -0.6, 1.5), end=[(-1.0, 3.5, 0.0), (0.3, 4.6, 1.1), (1.2, 3.0, 0.0)])
-GD = dict(origin=(0.0, -0.4, 1.7), target=(0.25, 5.0, 3.0))
+GD = dict(origin=(-0.2, -0.4, 1.6), target=(0.6, 3.5, 5.0))
 
 
 def build(key, cam):
