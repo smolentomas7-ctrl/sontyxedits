@@ -227,7 +227,9 @@ def mat_beam(name, height=7.0):
     h = b.math("DIVIDE", (sep, "Z"), height)
     vert = b.math("MULTIPLY", b.math("POWER", DG._mr(b, h, 0.0, 1.0, 1.0, 0.0), 1.6), DG._mr(b, (sep, "Z"), 0.0, 0.35))
     lw = b.n("ShaderNodeLayerWeight", Blend=0.5)
-    edge = b.math("ADD", 0.04, b.math("MULTIPLY", b.math("POWER", (lw, "Facing"), 2.5), 0.96))
+    fac = (lw, "Facing")
+    edge = b.math("ADD", 0.05, b.math("MULTIPLY", b.math("MULTIPLY", b.math("POWER", fac, 1.5),
+                                                           b.math("SUBTRACT", 1.0, b.math("POWER", fac, 5.0))), 1.4))
     ang = b.math("ARCTAN2", (sep, "Y"), (sep, "X"))
     sv = b.n("ShaderNodeCombineXYZ", X=b.math("MULTIPLY", ang, 1.6), Y=0.0, Z=b.math("SUBTRACT", (sep, "Z"),
                                                                                    b.math("MULTIPLY", tm, 1.1)))
@@ -385,7 +387,7 @@ def loot(item="greatsword", rarity="common", loc=(0, 0, 0), rot_z=0.0, seed=0, i
         parts.append(_blade("PR_loot_blade", Lb, 0.036 if g else 0.026, 0.028 if g else 0.021, 0.0065 if g else 0.005,
                             0.16 if g else 0.1, mi, x0=0.02))
         parts += _hilt("PR_loot", 0.2 if g else 0.11, 0.32 if g else 0.13, 0.0165 if g else 0.014,
-                       0.034 if g else 0.024, iron, leather)
+                       0.034 if g else 0.024, mi, leather)
         span = (-(0.32 if g else 0.13) - 0.07, Lb + 0.02)
     elif item == "scythe":
         mi = mat_item("PR_loot_item_mat", fuller=(1.0, 0.0))

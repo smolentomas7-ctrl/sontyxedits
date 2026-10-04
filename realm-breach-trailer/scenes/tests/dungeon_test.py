@@ -80,7 +80,7 @@ def shot_b(sc):
     L = PR.loot("sword", "common", (0.15, -0.75, 0.0), rot_z=math.radians(62))
     cam = cam_at((0.55, -2.55, 0.25), (0.12, -0.6, 0.22), 50, 2.8)
     cam.data.dof.focus_distance = (Vector((0.15, -0.75, 0.05)) - cam.location).length
-    DG.lights_dungeon("floor1", D, (0.1, 0.0, 0), cam.location)
+    DG.lights_dungeon("floor1", D, (0.05, 0.55, 0), cam.location)
     return 1
 
 
@@ -136,7 +136,7 @@ def shot_f(sc):
 def shot_g(sc):
     D = DG.build_dungeon("legend")
     warrior("late", 1, "idle", (0, 0, 0), 0.0)
-    PR.ring((0.42, -0.62, 0.0), rot=(0, 0, 0.5), gem="#FFE9A8")
+    PR.ring((0.38, 0.2, 0.0), rot=(0, 0, 0.5), gem="#FFE9A8")
     c, aim, lens = D.marks["mid"]
     cam = cam_at(c, aim, lens, 2.8)
     DG.lights_dungeon("legend", D, (0, 0, 0), cam.location)

@@ -73,21 +73,21 @@ ISLANDS = [(-36.0, 26.0, -16.0, 7.0), (42.0, 24.0, -26.0, 9.0), (-26.0, -44.0, -
 
 # per-depth look: seam colour/strength, practicals, fog, world, light colours / energies
 LOOK = {
-    "floor1": dict(seam="#FF6A1A", seam_k=0.3, circle=0.12, brazier=0.7, vein=0.35, magma=0.3, heat=0.06, haze="#8FA2B6", haze_e=0.9, moon_e=0.3,
+    "floor1": dict(seam="#FF6A1A", seam_k=0.3, circle=0.05, brazier=0.7, vein=0.35, magma=0.3, heat=0.06, haze="#8FA2B6", haze_e=0.55, moon_e=0.3,
                    fog_col=(0.52, 0.55, 0.58), fog=0.07, world_fog=0.016, bg=(0.0030, 0.0034, 0.0040),
                    void="#5A6B7E", void_k=0.45, key="#A9B6C4", key_e=950.0, top="#BCC8D4", top_e=5200.0,
                    rim_k=1.0, back="#93A9BF", back_e=260.0, fill="#7F8FA0", fill_e=100.0, stone=1.0),
-    "struggle": dict(seam="#FF6A1A", seam_k=0.7, circle=0.3, brazier=0.85, vein=0.6, magma=0.55, heat=0.25, haze="#4FA6A0", haze_e=0.8, moon_e=0.25,
+    "struggle": dict(seam="#FF6A1A", seam_k=0.7, circle=0.3, brazier=0.85, vein=0.6, magma=0.55, heat=0.25, haze="#4FA6A0", haze_e=0.5, moon_e=0.25,
                      fog_col=(0.36, 0.56, 0.56), fog=0.08, world_fog=0.018, bg=(0.0016, 0.0038, 0.0044),
                      void="#1F6E6A", void_k=0.9, key="#6FA4A6", key_e=760.0, top="#8CC2C4", top_e=4300.0,
                      rim_k=1.1, back="#4FD2C8", back_e=380.0, fill="#3F6E70", fill_e=80.0, stone=0.8),
-    "deep": dict(seam="#FF5A1A", seam_k=0.2, circle=0.06, brazier=0.3, vein=0.18, magma=0.2, heat=0.02, haze="#8A9098", haze_e=0.5, moon_e=0.15,
+    "deep": dict(seam="#FF5A1A", seam_k=0.2, circle=0.06, brazier=0.3, vein=0.18, magma=0.2, heat=0.02, haze="#8A9098", haze_e=0.3, moon_e=0.15,
                  fog_col=(0.47, 0.48, 0.5), fog=0.09, world_fog=0.02, bg=(0.0014, 0.0015, 0.0017),
                  void="#3A3F46", void_k=0.35, key="#9EA2A8", key_e=430.0, top="#C9CCD0", top_e=3600.0,
                  rim_k=0.75, back="#8E959E", back_e=200.0, fill="#5A6068", fill_e=45.0, stone=0.7),
-    "legend": dict(seam="#FF9A2A", seam_k=1.4, circle=0.8, brazier=1.6, vein=1.2, magma=1.0, heat=0.45, haze="#FFB070", haze_e=1.0, moon_e=0.35,
-                   fog_col=(0.78, 0.58, 0.42), fog=0.07, world_fog=0.016, bg=(0.0045, 0.0026, 0.0015),
-                   void="#FF5A14", void_k=1.2, key="#FFB65C", key_e=1300.0, top="#FFD27A", top_e=6200.0,
+    "legend": dict(seam="#FF9A2A", seam_k=1.4, circle=0.8, brazier=1.6, vein=1.2, magma=1.0, heat=0.45, haze="#FFB070", haze_e=0.42, moon_e=0.35,
+                   fog_col=(0.72, 0.56, 0.44), fog=0.06, world_fog=0.012, bg=(0.0045, 0.0026, 0.0015),
+                   void="#FF5A14", void_k=1.2, key="#FFB65C", key_e=1000.0, top="#FFD27A", top_e=6200.0,
                    rim_k=1.3, back="#F2B544", back_e=520.0, fill="#7A4A2A", fill_e=80.0, stone=1.05),
 }
 
@@ -504,7 +504,7 @@ def mat_floor(depth):
     flick = _mr(b, (flick, "Fac"), 0.3, 0.7, 0.5, 1.0)
     estr = b.math("MULTIPLY", b.math("ADD", b.math("MULTIPLY", crack, 5.0), b.math("MULTIPLY", halo, 0.15)), seg)
     estr = b.math("MULTIPLY", b.math("MULTIPLY", estr, flick), glow)
-    estr = b.math("ADD", estr, b.math("MULTIPLY", b.math("MULTIPLY", cmask, circ), 5.0))
+    estr = b.math("ADD", estr, b.math("MULTIPLY", b.math("MULTIPLY", cmask, circ), 3.0))
     # bump
     pits = b.n("ShaderNodeTexVoronoi", Vector=xy, Scale=16.0)
     hgt = b.math("ADD", b.math("MULTIPLY", (n_fine, "Fac"), 0.3), b.math("MULTIPLY", (n_mid, "Fac"), 0.25))

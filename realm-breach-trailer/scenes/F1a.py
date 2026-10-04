@@ -20,8 +20,10 @@ import rb_env_arena as AR  # noqa: E402
 cam = rb_cam.Rig(lens=24, fstop=8.0)
 cam.handheld(amp=0.03, rot_deg=0.6, freq=1.4, seed=shot.seed)
 cam.shake(int(ST.bf(88.5)) - 1, amp=0.05, seed=shot.seed)
-loc = Vector((-2.5, 5.3, 1.05))
-cam.key_range(shot.frames_all, lambda f: dict(loc=loc + Vector((0, 0.4 * shot.u(f), 0)), target=Vector((0.0, 11.0, 3.0)), focus=5.0))
+# a little further back and aimed between them: god left third, warrior right third (cape clear of the
+# right safe zone)
+loc = Vector((-2.9, 4.5, 1.05))
+cam.key_range(shot.frames_all, lambda f: dict(loc=loc + Vector((0, 0.4 * shot.u(f), 0)), target=Vector((0.2, 11.0, 3.0)), focus=5.5))
 AR.lights_duel(warrior=tuple(rb_intro.warrior_pos_battle(shot.key_frame)), cam=tuple(loc))
 try:
     import rb_vfx as VFX
