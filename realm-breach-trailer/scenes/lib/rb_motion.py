@@ -275,8 +275,8 @@ def aim_hand(ch, pose, side, blade_dir, edge_up=(0, 0, 1), root_loc=(0, 0, 0), r
     return new
 
 
-def sword_pose(ch, pose, grip_pos, blade_dir, edge_up=(0, 0, 1), elbow_pole=(0.6, 0.6, -0.5), two_hands=True,
-               left_pole=(-0.6, 0.6, -0.5), root_loc=(0, 0, 0), root_rot=(0, 0, 0), left_slide=0.13):
+def sword_pose(ch, pose, grip_pos, blade_dir, edge_up=(0, 0, 1), elbow_pole=(-0.6, 0.4, -0.6), two_hands=True,
+               left_pole=(0.6, 0.4, -0.6), root_loc=(0, 0, 0), root_rot=(0, 0, 0), left_slide=0.13):
     """Place the right fist's grip centre at grip_pos (world) with the blade along blade_dir; optionally
     bring the left fist onto the grip `left_slide` metres further toward the pommel."""
     global GRIP_ROT, GRIP_OFF
@@ -389,3 +389,35 @@ def solve_walk(ch, upper_pose, root, heading_deg, feet, hip_drop=0.0):
         pos, pitch = feet[side]
         p = foot_pose(ch, p, side, pos, heading_deg, pitch, loc, root_rot)
     return p, loc, root_rot
+
+
+# ================================================================== Fallen God: blade-driven arms
+def god_blade_matrix(pivot_loc, pivot_rot_deg):
+    """World matrix of the god's blade for a blade_pivot location/rotation (rest: point-down)."""
+    R = Euler([math.radians(v) for v in pivot_rot_deg], "XYZ").to_matrix().to_4x4()
+    M = Matrix.Translation(Vector(pivot_loc)) @ R @ Matrix.Rotation(math.pi, 4, "X")
+    return M
+
+
+def god_grip_pose(g, pose, pivot_loc, pivot_rot_deg, root_loc=(0, 0, 0), root_rot=(0, 0, 0),
+                  right_s=0.14, left_s=0.42, poles=((-0.8, 0.5, -0.4), (0.8, 0.5, -0.4)), one_hand=None):
+    """IK the god's fists onto the obsidian grip (grip runs 0..1 m from the guard along blade -Z).
+    pivot_* are WORLD values of g.blade_pivot. one_hand='R'|'L' frees the other arm."""
+    M = god_blade_matrix(pivot_loc, pivot_rot_deg)
+    p = dict(pose)
+    for side, s, pole in (("R", right_s, poles[0]), ("L", left_s, poles[1])):
+        if one_hand and side != one_hand:
+            continue
+        grip = M @ Vector((0, 0, -s))
+        W = fk(g, p, root_loc, root_rot)
+        sh = W["upperarm_" + side][0]
+        wrist = grip + (sh - grip).normalized() * 0.16
+        p = two_bone(g, p, ("upperarm_" + side, "forearm_" + side, "hand_" + side), wrist, Vector(pole), root_loc, root_rot)
+    return p
+
+
+def key_god_blade(g, frame, pivot_loc, pivot_rot_deg):
+    g.blade_pivot.location = pivot_loc
+    g.blade_pivot.rotation_euler = Euler([math.radians(v) for v in pivot_rot_deg], "XYZ")
+    g.blade_pivot.keyframe_insert("location", frame=frame)
+    g.blade_pivot.keyframe_insert("rotation_euler", frame=frame)

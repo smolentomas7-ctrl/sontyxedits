@@ -757,7 +757,7 @@ def cloth_panel(w, name, joint, top_z, length, half_top, half_bot, y_fn, cols, r
     st.compression_stiffness = 80
     st.shear_stiffness = 40
     st.bending_stiffness = 2.0
-    st.air_damping = 3.0
+    st.air_damping = 1.0
     st.vertex_group_mass = "pin"
     st.pin_stiffness = 1.0
     cs = cl.collision_settings
@@ -804,7 +804,6 @@ def _collision_proxies(w, prefix):
     rig = w.rig
     specs = [("chest", (0, 0.0, 1.27), (0.2, 0.155, 0.26)), ("pelvis", (0, 0.0, 0.98), (0.2, 0.15, 0.13)),
              ("thigh_L", (0.11, 0.0, 0.72), (0.09, 0.09, 0.24)), ("thigh_R", (-0.11, 0.0, 0.72), (0.09, 0.09, 0.24)),
-             ("shin_L", (0.12, 0.01, 0.30), (0.07, 0.075, 0.24)), ("shin_R", (-0.12, 0.01, 0.30), (0.07, 0.075, 0.24)),
              ("upperarm_L", (0.27, 0.02, 1.37), (0.09, 0.09, 0.12)), ("upperarm_R", (-0.27, 0.02, 1.37), (0.09, 0.09, 0.12))]
     w.proxies = []
     for joint, c, r in specs:
