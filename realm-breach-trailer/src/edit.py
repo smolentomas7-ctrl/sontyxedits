@@ -460,14 +460,14 @@ def main():
         proc.stdin.close()
         proc.wait()
         print("wrote", out, stats)
+    else:
+        print("stills written", stats)
     if fallbacks:
         for (sid, kind), fs in sorted(fallbacks.items()):
             print("FALLBACK %-6s %-7s %d frames (%d-%d)" % (sid, kind, len(fs), fs[0], fs[-1]))
         if not a.allow_fallback:
             print("final render incomplete: frames above are not final renders (pass --allow-fallback to accept)")
             sys.exit(1)
-    else:
-        print("stills written", stats)
 
 
 if __name__ == "__main__":

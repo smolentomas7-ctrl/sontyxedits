@@ -92,3 +92,4 @@
 - Preview review: M203-M209, M301-M304 (M302 now lands on screen with dust), M401, M403 good. M402: 2/3 of the shot was empty floor (king above the macro frame) -> camera opens on the king's collapse and tilts down with the ring; re-render preview after the pass.
 - Preview review: M404-M407, M501 (lunge now peaks on the last frame), M502-M508, M510, F1a, F1b good. QA 'flicker' in M404/M405/F1b = fireball/lightning/floor-smash flashes (intended).
 - Preview review: F1c-F1e, F2a-F2d, F3 (very slow push under the god's line), F4 (rise, crack and eyes) good. F1d brightness jump = lightning light.
+- Preview pass complete (95 jobs, 0 failures, 4.4 h); M402 re-rendered (opens on the king's collapse). All 65 shots reviewed in motion. Preview edit: 2207 preview frames, no stills; verify: all pass except 540x960 (preview). True peak -1.06 dBTP after AAC -> limiter ceiling -2.7 dBFS for margin.

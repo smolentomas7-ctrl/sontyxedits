@@ -103,7 +103,7 @@ def compressor(x, thr_db=-18, ratio=2.0, attack=0.01, release=0.15):
     return x * db(gdb)[:, None]
 
 
-AAC_CEILING_DB = -2.4
+AAC_CEILING_DB = -2.7
 
 
 def limiter(x, ceiling_db=-1.0, look=0.005, release=0.08, block=32):
