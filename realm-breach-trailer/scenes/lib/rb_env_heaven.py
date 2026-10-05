@@ -1011,7 +1011,7 @@ def lights_gate(gate, warrior=None, cam=None, follow=None):
 
 
 # =================================================================== E4 — sky / eevee
-def sky_world(sun_dir=SUN_DIR, fog=0.0018):
+def sky_world(sun_dir=SUN_DIR, fog=0.0004):
     """Soft warm sky: warm white #FFF4DC at the horizon -> pale blue zenith, a broad sun glow (sun out of
     frame), a few faint low wisps. CTRL_fog = uniform volume density (light haze), CTRL_sky = brightness."""
     w = bpy.data.worlds.new("MEADOW_sky")
@@ -1023,8 +1023,8 @@ def sky_world(sun_dir=SUN_DIR, fog=0.0018):
     Dn = b.n("ShaderNodeVectorMath", _operation="NORMALIZE", Vector=D)
     e = (_sep(b, (Dn, 0)), "Z")
     hz = _lin(HEAVEN)
-    sky = b.ramp(_mr(b, e, -0.08, 0.75), [(0.0, (0.80, 0.74, 0.62)), (0.105, (hz[0] * 1.0, hz[1] * 0.98, hz[2] * 0.93)),
-                                         (0.3, (0.74, 0.79, 0.82)), (1.0, (0.38, 0.52, 0.72))])
+    sky = b.ramp(_mr(b, e, -0.08, 0.75), [(0.0, (0.66, 0.6, 0.5)), (0.1, (hz[0], hz[1] * 0.96, hz[2] * 0.86)),
+                                         (0.26, (0.58, 0.66, 0.74)), (1.0, (0.24, 0.38, 0.62))])
     dot = b.n("ShaderNodeVectorMath", _operation="DOT_PRODUCT", Vector=(Dn, 0))
     dot.inputs[1].default_value = tuple(sun_dir)
     g = b.math("MAXIMUM", (dot, "Value"), 0.0)
@@ -1039,7 +1039,7 @@ def sky_world(sun_dir=SUN_DIR, fog=0.0018):
     b._in(c2, "Factor", glow)
     b._in(c2, 6, c1)
     b._in(c2, 7, (1.0, 0.84, 0.6))
-    k = b.ctrl("sky", 1.55)
+    k = b.ctrl("sky", 1.05)
     bg = b.n("ShaderNodeBackground", Color=(c2, 2), Strength=k)
     b.link(bg, out.inputs["Surface"])
     f = b.ctrl("fog", fog)
@@ -1075,7 +1075,7 @@ def tune_meadow(sc=None):
 
 
 # =================================================================== E4 — materials
-def _aerial(b, shader, k=1.0, scale=230.0, color=(1.0, 0.93, 0.81), strength=1.45):
+def _aerial(b, shader, k=1.0, scale=420.0, color=(0.97, 0.9, 0.78), strength=0.98):
     """Aerial perspective: blend toward a luminous warm haze with view distance."""
     cd = b.n("ShaderNodeCameraData")
     fac = b.math("SUBTRACT", 1.0, b.math("EXPONENT", b.math("MULTIPLY", (cd, "View Distance"), -k / scale)))
@@ -1095,9 +1095,9 @@ def mat_meadow_ground(name="meadow_ground"):
     big = _noise(b, p, 0.035, 4.0, 0.55)
     mid = _noise(b, p, 0.25, 4.0, 0.55)
     fine = _noise(b, _mapv(b, p, (9.0, 9.0, 3.0)), 1.0, 6.0, 0.65)
-    c = b.mix(_mr(b, (big, "Fac"), 0.35, 0.68), (mg[0] * 0.55, mg[1] * 0.62, mg[2] * 0.45), mg)
-    c = b.mix(_mr(b, (mid, "Fac"), 0.55, 0.75, 0.0, 0.55), c, (0.46, 0.44, 0.2))
-    c = b.mix(_mr(b, (fine, "Fac"), 0.3, 0.7, 0.55, 0.0), c, (0.05, 0.085, 0.03))
+    c = b.mix(_mr(b, (big, "Fac"), 0.35, 0.68), (mg[0] * 0.3, mg[1] * 0.4, mg[2] * 0.22), (mg[0] * 0.62, mg[1] * 0.7, mg[2] * 0.48))
+    c = b.mix(_mr(b, (mid, "Fac"), 0.55, 0.75, 0.0, 0.5), c, (0.3, 0.29, 0.1))
+    c = b.mix(_mr(b, (fine, "Fac"), 0.3, 0.7, 0.6, 0.0), c, (0.025, 0.045, 0.012))
     vor = b.n("ShaderNodeTexVoronoi", Vector=p, Scale=5.0)
     dots = _mr(b, (vor, "Distance"), 0.05, 0.11, 1.0, 0.0)
     patch = _mr(b, (_noise(b, p, 0.12, 3.0, 0.5), "Fac"), 0.45, 0.62, 0.15, 1.0)
@@ -1108,7 +1108,7 @@ def mat_meadow_ground(name="meadow_ground"):
     fcol.color_ramp.interpolation = "CONSTANT"
     c = b.mix(b.math("MULTIPLY", b.math("MULTIPLY", dots, patch), far), c, (fcol, "Color"))
     bump = b.n("ShaderNodeBump", Strength=0.4, Distance=0.02, Height=(fine, "Fac"))
-    bs = b.bsdf(**{"Base Color": c, "Roughness": 0.88, "Specular IOR Level": 0.25, "Sheen Weight": 0.6,
+    bs = b.bsdf(**{"Base Color": c, "Roughness": 0.88, "Specular IOR Level": 0.2, "Sheen Weight": 0.25,
                    "Sheen Roughness": 0.5, "Normal": bump})
     b.out(_aerial(b, bs))
     return m
@@ -1122,15 +1122,15 @@ def mat_grass(name="meadow_grass"):
     p = _pos(b)
     mg = _lin(MEADOW)
     v = (_sep(b, (b.n("ShaderNodeUVMap", _uv_map="UVMap"), "UV")), "Y")
-    col = b.ramp(v, [(0.0, (0.022, 0.04, 0.014)), (0.45, (mg[0] * 0.62, mg[1] * 0.7, mg[2] * 0.52)),
-                     (1.0, (0.40, 0.48, 0.2))])
+    col = b.ramp(v, [(0.0, (0.012, 0.024, 0.006)), (0.45, (mg[0] * 0.42, mg[1] * 0.52, mg[2] * 0.3)),
+                     (1.0, (0.3, 0.4, 0.13))])
     n1 = _noise(b, p, 0.18, 3.0, 0.5)
     n2 = _noise(b, p, 1.3, 2.0, 0.5)
-    c = b.mix(_mr(b, (n1, "Fac"), 0.55, 0.72, 0.0, 0.7), (col, "Color"), (0.42, 0.40, 0.17))
+    c = b.mix(_mr(b, (n1, "Fac"), 0.55, 0.72, 0.0, 0.6), (col, "Color"), (0.34, 0.32, 0.11))
     c = b.mix(_mr(b, (n2, "Fac"), 0.3, 0.7, 0.25, 0.0), c, (0.03, 0.05, 0.02))
     bs = b.bsdf(**{"Base Color": c, "Roughness": 0.5, "Specular IOR Level": 0.35})
     tr = b.n("ShaderNodeBsdfTranslucent", Color=c)
-    mx = b.n("ShaderNodeMixShader", Fac=0.38)
+    mx = b.n("ShaderNodeMixShader", Fac=0.28)
     b.link(bs, mx.inputs[1])
     b.link(tr, mx.inputs[2])
     b.out(_aerial(b, mx))
@@ -1281,8 +1281,9 @@ def _meadow_height(nz):
         X = np.asarray(X, float)
         Y = np.asarray(Y, float)
         z = 0.5 * nz.fbm(X / 26.0, Y / 26.0, 0.37, 3) + 0.04 * nz.fbm(X / 6.0, Y / 6.0, 2.7, 2)
+        z = z + 2.2 * nz.fbm(X / 55.0, Y / 45.0, 4.2, 2) * S(10.0, 45.0, np.hypot(X, Y))
         z = z + 0.6 * np.exp(-((X / 18.0) ** 2 + ((Y - 3.0) / 15.0) ** 2))
-        z = z - 5.5 * S(25.0, 85.0, Y) * (1.0 - S(100.0, 190.0, Y))
+        z = z - 4.0 * S(30.0, 85.0, Y) * (1.0 - S(100.0, 190.0, Y))
         z = z + S(110.0, 260.0, Y) * (16.0 + 12.0 * nz.fbm(X / 120.0, Y / 90.0, 5.1, 4))
         z = z + S(330.0, 520.0, Y) * (40.0 + 28.0 * nz.fbm(X / 260.0, Y / 200.0, 9.3, 3))
         z = z + 9.0 * S(70.0, 260.0, np.abs(X)) * S(-40.0, 60.0, Y)
@@ -1321,7 +1322,7 @@ def build_meadow(seed=0):
     pg = mat_petal("meadow_petal_gold", (0.86, 0.67, 0.26))
     pk = mat_petal("meadow_petal_pink", (0.83, 0.52, 0.58))
     drift = mat_drift_petals()
-    mist = mat_fog("meadow_mist", 0.010, 9.0, (0.97, 0.94, 0.9), anisotropy=0.5, scale=0.02,
+    mist = mat_fog("meadow_mist", 0.0035, 9.0, (0.97, 0.94, 0.9), anisotropy=0.5, scale=0.02,
                    wind=(0.4, 0.2, 0.0), z0=W.z - 7.0, contrast=(0.3, 0.75, 0.35, 1.2))
     Mw.mats = dict(ground=ground, grass=grass, centre=centre, petal_white=pw, petal_gold=pg, petal_pink=pk,
                    drift=drift, mist=mist)
@@ -1379,7 +1380,7 @@ def build_meadow(seed=0):
     X, Y = X[keep], Y[keep]
     patch = FO._smooth(0.0, 0.45, nz.fbm(X / 7.0, Y / 7.0, 3.3, 3))
     rw = np.hypot(X - W.x, Y - W.y)
-    rho = 0.35 + 6.5 * patch + np.interp(rw, [1.0, 6.0], [3.0, 0.0])
+    rho = 0.4 + 8.6 * patch + np.interp(rw, [1.0, 6.0], [3.0, 0.0])
     acc_ = rng.random(len(X)) < rho / rho_fmax
     X, Y = X[acc_], Y[acc_]
     nf = len(X)
@@ -1388,7 +1389,7 @@ def build_meadow(seed=0):
     idx = np.where(u < 0.55, rng.integers(0, 2, nf), rng.integers(2, 4, nf))
     idx = np.where(rng.random(nf) < 0.07 + 0.3 * pinkz, 4, idx)
     dc = np.hypot(X - camf.x, Y - camf.y)
-    scl = rng.uniform(0.8, 1.2, nf) * (1.0 + np.maximum(dc - 18.0, 0.0) / 40.0)
+    scl = rng.uniform(1.0, 1.45, nf) * (1.0 + np.maximum(dc - 16.0, 0.0) / 30.0)
     rot = np.column_stack([rng.normal(0, 0.06, nf), rng.normal(0, 0.06, nf), rng.uniform(0, 2 * math.pi, nf)])
     fp = _points("MEADOW_flowers", np.column_stack([X, Y, h(X, Y) - 0.02]), dict(idx=("INT", idx), scl=scl, rot=rot))
     fp.modifiers.new("scatter", "NODES").node_group = _scatter_tree("MEADOW_flowers_gn", fcol, sway=(0.06, 0.05))
@@ -1400,13 +1401,13 @@ def build_meadow(seed=0):
     wind = Vector((0.8, 0.52, 0.16)).normalized()
     for _ in range(npt):
         px = W.x + rnd.uniform(-12.0, 12.0)
-        py = W.y + (-14.0 + 36.0 * rnd.random() ** 1.4)
+        py = W.y + (-17.0 + 34.0 * rnd.random() ** 1.6)
         pz = Mw.ground_z(px, py) + rnd.uniform(0.25, 5.5) ** 1.0
         P.append((px, py, pz))
         A["phase"].append(rnd.random())
         A["spd"].append(rnd.uniform(0.45, 0.95))
         A["len"].append(rnd.uniform(16.0, 24.0))
-        A["sz"].append(rnd.uniform(0.85, 1.35))
+        A["sz"].append(rnd.uniform(1.3, 2.0))
         A["sway"].append(rnd.uniform(0.25, 0.55))
         A["sfq"].append(rnd.uniform(0.6, 1.1))
         d = (wind + Vector((rnd.uniform(-0.15, 0.15), rnd.uniform(-0.15, 0.15), rnd.uniform(-0.08, 0.08)))).normalized()
@@ -1441,7 +1442,7 @@ def lights_meadow(meadow, warrior=None, cam=None, follow=None):
     Cm = Vector(cam if cam is not None else mk["cam"])
     L = {}
     sd = Vector(mk.get("sun_dir", SUN_DIR))
-    sun = _L("SUN", "sun", W + sd * 100.0, "#FFE2BC", 3.4, target=tuple(W), size=math.radians(2.2), shadow=True,
+    sun = _L("SUN", "sun", W + sd * 100.0, "#FFDDB0", 4.6, target=tuple(W), size=math.radians(2.2), shadow=True,
              volume=0.6, prefix="MEADOW_")
     s = sun.data
     s.shadow_cascade_count = 4
