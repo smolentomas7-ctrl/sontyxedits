@@ -42,3 +42,4 @@
 - M401/M406/M505 washed white -> beam glow 0.38, god attack strength 0.45/0.4. M304 black blob -> cold rim key.
   M407 only bokeh -> side-on push along the blade. M303/E6 props too small -> tighter fit.
 - O11a re-render: good (low front angle, roar, blade blazing, centred).
+- O11b re-render: cape streams horizontally behind the charge (foreshortened to a band from the low rear camera) - physically right, accepted; judge in the preview motion.
