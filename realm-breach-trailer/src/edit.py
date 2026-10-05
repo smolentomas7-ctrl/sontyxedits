@@ -136,6 +136,9 @@ def grade(img, look, H, W, vignette_map):
     teal = np.array(look.get("shadow_tint", (-0.010, 0.006, 0.012)), np.float32)
     warm = np.array(look.get("high_tint", (0.035, 0.008, -0.03)), np.float32)
     img = img + sh * teal + hi * warm
+    bp = look.get("black", 0.0)      # black point: pulls haze-lifted blacks back down (legend dungeon)
+    if bp:
+        img = (img - bp) / (1.0 - bp)
     img = srgb_curve(np.clip(img, 0, 1), look.get("contrast", 1.15))
     lift = look.get("lift", 0.012)
     img = img * (1 - lift) + lift * np.array(look.get("lift_color", (0.55, 0.85, 1.0)), np.float32)
@@ -149,8 +152,8 @@ LOOKS = {
     "phase1": dict(sat=0.82, shadow_tint=(-0.012, 0.004, 0.016), high_tint=(0.0, 0.004, 0.012)),
     "phase2": dict(sat=0.9),
     "phase3": dict(sat=0.65, gain=0.9, contrast=1.2),
-    "phase4": dict(sat=1.05, high_tint=(0.045, 0.02, -0.03)),
-    "phase5": dict(sat=1.0, high_tint=(0.045, 0.015, -0.03)),
+    "phase4": dict(sat=1.05, high_tint=(0.045, 0.02, -0.03), black=0.07, contrast=1.22),
+    "phase5": dict(sat=1.0, high_tint=(0.045, 0.015, -0.03), black=0.07, contrast=1.22),
     "heaven": dict(sat=0.95, shadow_tint=(0.01, 0.008, 0.0), high_tint=(0.02, 0.012, -0.005), lift=0.03,
                    lift_color=(1.0, 0.95, 0.85), contrast=1.05),
     "white": dict(),

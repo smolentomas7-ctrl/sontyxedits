@@ -44,5 +44,6 @@ def cam_fn(f):
 
 cam.key_range(shot.frames_all, cam_fn)
 MT.light(shot, "legend", D, P, hilt - side * 1.0, follow=w.root)
-MT.fx("embers", shot.sim_start, shot.render_end, tuple(hilt.lerp(tp, 0.5)), radius=0.8, height=1.2, count=60, seed=shot.seed)
+MT.fx("embers", shot.sim_start, shot.render_end, tuple(hilt.lerp(tp, 0.5) + side * 0.7), radius=0.45, height=1.0, count=45,
+      seed=shot.seed)    # behind the blade: embers near the lens bloomed into big white blobs
 shot.render()
