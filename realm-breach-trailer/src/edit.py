@@ -181,7 +181,13 @@ class Sources:
             return None
         im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         if im.shape[1] != self.W or im.shape[0] != self.H:
-            im = cv2.resize(im, (self.W, self.H), interpolation=cv2.INTER_AREA if im.shape[1] > self.W else cv2.INTER_CUBIC)
+            if im.shape[1] > self.W:
+                im = cv2.resize(im, (self.W, self.H), interpolation=cv2.INTER_AREA)
+            else:
+                # renders come in at 0.75 scale for the final: Lanczos up + a gentle unsharp mask
+                im = cv2.resize(im, (self.W, self.H), interpolation=cv2.INTER_LANCZOS4)
+                blur = cv2.GaussianBlur(im, (0, 0), 1.2)
+                im = cv2.addWeighted(im, 1.35, blur, -0.35, 0)
         return im.astype(np.float32) / 255.0
 
     def frame(self, shot, f):

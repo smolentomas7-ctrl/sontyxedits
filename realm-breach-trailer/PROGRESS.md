@@ -26,6 +26,6 @@ Update after every step so work can resume after an interruption.
 ## Render budget notes
 - Dungeon sets: ~35-45 s/frame full res 8 spp uncontended (25 lights in volumetrics) -> cull/trim per shot before the final.
 - Renders need only the frames the edit uses (render_shots.py --handles 1 default).
-- EEVEE on llvmpipe: ~5 s fixed + ~1.2 s per TAA sample per frame at 1080x1920. 2 parallel Blender workers ≈ 11 s/frame effective at 8 samples.
+- Benchmark F3 (contended, load ~5): full res 12 spp ~85 s/frame; 0.75 scale 8 spp vol tile 16/32 ~30 s/frame and visually equal after Lanczos upscale -> final profile. Preview 0.5x 6 spp.
 - Keep shadow-casting lights to 1–2 per shot; rims without shadows.
 - Never wait on `pgrep -f <pattern>` inside the same shell command that contains the pattern (it matches itself).

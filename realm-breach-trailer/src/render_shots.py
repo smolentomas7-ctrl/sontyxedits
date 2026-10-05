@@ -7,7 +7,7 @@ python3 src/render_shots.py --mode still|preview|final [--shots O2,O5,...] [--wo
   O1, E1, END — are pure 2D and built in src/edit.py).
 * still   : one key frame per shot (build/stills/<ID>/).
 * preview : 50% resolution, the frames the edit uses ± --handles (default 1) (build/shots/<ID>/preview/).
-* final   : 100% resolution (build/shots/<ID>/final/).
+* final   : 0.75 scale (810x1440), 8 spp, light volumetrics; upscaled to 1080x1920 in the edit (build/shots/<ID>/final/).
 * Shots are split into frame-range chunks distributed over N parallel Blender
   workers; cloth/particle shots re-step their simulation from the shot's sim start
   inside each chunk, so chunks are independent and deterministic. Already-rendered
@@ -26,6 +26,12 @@ sys.path.insert(0, os.path.join(ROOT, "config"))
 import video  # noqa: E402
 
 BLENDER = ["xvfb-run", "-a", "-s", "-screen 0 1920x1080x24", "blender", "-b", "--factory-startup", "-P"]
+
+
+PROFILES = {
+    "preview": dict(scale="0.5", samples="6", vol_tile="16", vol_samples="24"),
+    "final": dict(scale="0.75", samples="8", vol_tile="16", vol_samples="32"),
+}
 
 
 def jobs_for(shot, mode, chunk, handles=1):
@@ -84,11 +90,15 @@ def main():
     want = set(a.shots.split(",")) if a.shots else None
     shots = [s for s in tl["shots"] if os.path.exists(os.path.join(ROOT, "scenes", "%s.py" % s["id"]))
              and (want is None or s["id"] in want)]
+    # render profiles (benchmarked on F3: the final profile is ~3x faster than 1.0x/12 spp and visually equal after
+    # the editor's Lanczos upscale to 1080x1920 + grain). CLI --scale/--samples override.
+    prof = PROFILES.get(a.mode, {})
     extra = []
-    if a.scale:
-        extra += ["--scale", a.scale]
-    if a.samples:
-        extra += ["--samples", a.samples]
+    extra += ["--scale", a.scale or prof.get("scale")] if (a.scale or prof.get("scale")) else []
+    extra += ["--samples", a.samples or prof.get("samples")] if (a.samples or prof.get("samples")) else []
+    for k in ("vol_tile", "vol_samples"):
+        if k in prof:
+            extra += ["--" + k, prof[k]]
     if a.frame:
         extra += ["--frame", a.frame]
     jobs = [j for s in shots for j in jobs_for(s, a.mode, a.chunk, min(a.handles, video.HANDLE_FRAMES))]

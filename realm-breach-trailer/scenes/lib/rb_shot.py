@@ -103,8 +103,28 @@ class Shot:
                 sc.frame_set(k)
         sc.frame_set(f)
 
+    def _apply_overrides(self):
+        """CLI render-quality overrides applied after the scene is built (sets may tune EEVEE themselves):
+        --vol_tile 4|8|16 --vol_samples N --shadow_cube 512.. --shadow_cascade 1024.. --soft_shadows 0|1
+        --gtao 0|1 --ssr 0|1 --motion_blur 0|1."""
+        e, a = self.scene.eevee, self.args
+        if "vol_tile" in a:
+            e.volumetric_tile_size = str(a["vol_tile"])
+        if "vol_samples" in a:
+            e.volumetric_samples = int(a["vol_samples"])
+        if "shadow_cube" in a:
+            e.shadow_cube_size = str(a["shadow_cube"])
+        if "shadow_cascade" in a:
+            e.shadow_cascade_size = str(a["shadow_cascade"])
+        for k, attr in (("soft_shadows", "use_soft_shadows"), ("gtao", "use_gtao"), ("ssr", "use_ssr")):
+            if k in a:
+                setattr(e, attr, str(a[k]) == "1")
+        if "motion_blur" in a:
+            self.scene.render.use_motion_blur = str(a["motion_blur"]) == "1"
+
     def render(self, frames=None):
         sc = self.scene
+        self._apply_overrides()
         os.makedirs(self.out, exist_ok=True)
         if self.mode == "still":
             frames = [self.key_frame] if frames is None else list(frames)
