@@ -74,3 +74,5 @@
 - E3: excellent (warrior from behind walking into the light pouring through the gate).
 - E4: excellent (warrior small lower-middle, calm sky for the title, hills, flowers).
 - M202 re-render: good (bad angel diving, red halo, low angle behind him).
+- M205 re-render: good (king towers over the pauldron, axe up, eyes lit). M204: good (rune ring, wraiths + skeletons around him).
+- M206 re-render: still beige at the hit frame (spark light ~100 W at 0.3 m in fog) -> key 942 (bones flying, light decayed), sparks 0.35.

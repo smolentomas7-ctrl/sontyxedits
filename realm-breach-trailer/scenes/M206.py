@@ -11,7 +11,7 @@ import rb_core as C  # noqa: E402
 import rb_montage as MT  # noqa: E402
 import rb_shot  # noqa: E402
 
-shot = rb_shot.Shot("M206", key_frame=941)
+shot = rb_shot.Shot("M206", key_frame=942)
 D, w = MT.scene(shot, "struggle", look="mid")
 F_HIT = int(round(MT.ST.bf(62.25))) - 1
 P = Vector((0, 0, 0))
@@ -26,5 +26,5 @@ LOC = Vector((-1.25, 0.35, 1.4))
 cam.key_range(shot.frames_all, lambda f: dict(loc=LOC, target=Vector((0.1, 1.05, 1.2)), focus=1.6))
 MT.light(shot, "struggle", D, P, LOC, follow=w.root)
 MT.fx("debris", F_HIT, (0.15, 1.25, 1.25), seed=shot.seed, kind="bone", scale=0.8)
-MT.fx("sparks", F_HIT, (0.1, 1.2, 1.3), seed=shot.seed + 1, scale=0.8, strength=0.5)   # close: full flash washed the teal set beige
+MT.fx("sparks", F_HIT, (0.1, 1.2, 1.3), seed=shot.seed + 1, scale=0.8, strength=0.35)   # close: a full flash washed the teal set beige
 shot.render()
