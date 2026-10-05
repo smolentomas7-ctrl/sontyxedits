@@ -76,3 +76,5 @@
 - M202 re-render: good (bad angel diving, red halo, low angle behind him).
 - M205 re-render: good (king towers over the pauldron, axe up, eyes lit). M204: good (rune ring, wraiths + skeletons around him).
 - M206 re-render: still beige at the hit frame (spark light ~100 W at 0.3 m in fog) -> key 942 (bones flying, light decayed), sparks 0.35.
+- M208 re-render (key 957): flash filled the whole frame (sparks sprayed at the lens, scale 1.3 at 1.2 m) -> spray forward/away, scale 0.7, strength 0.45.
+- M301 re-render: evil reads (horns, veins) but he was cut at the right edge (only the gauntlet, in the safe zone) and sparks washed it warm -> target on him (y 0.18), camera 5.6 m, sparks across frame at 0.45.

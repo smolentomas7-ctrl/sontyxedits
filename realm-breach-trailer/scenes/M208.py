@@ -23,5 +23,6 @@ cam.shake(F_HIT, amp=0.02, seed=shot.seed)
 LOC = Vector((-1.05, -0.85, 1.72))
 cam.key_range(shot.frames_all, lambda f: dict(loc=LOC, target=Vector((-0.24, 0.05, 1.5)), focus=1.2))
 MT.light(shot, "struggle", D, P, LOC, follow=w.root)
-MT.fx("sparks", F_HIT, (-0.3, 0.05, 1.6), seed=shot.seed, scale=1.3, direction=(-1.0, -0.5, 0.6))
+MT.fx("sparks", F_HIT, (-0.3, 0.05, 1.6), seed=shot.seed, scale=0.7, direction=(-0.5, 0.8, 0.5),
+      strength=0.45)   # spray forward, away from the lens: aimed at the camera the flash filled the frame
 shot.render()
