@@ -36,7 +36,18 @@ MT.key_glow(ring, [(shot.sim_start, 0.15), (F_LAND, 0.15), (F_LAND + 2, 1.6), (F
 # centre on dark stone and the king's ash pile stays soft behind it (from 1.6 m the frame was all gold fog)
 cam = rb_cam.Rig(lens=50, fstop=5.6)
 LOC = RING_AT + Vector((0.1, -0.48, 0.1))
-cam.key_range(shot.frames_all, lambda f: dict(loc=LOC, target=RING_AT + Vector((0.0, 0.0, 0.03)), focus=RING_AT))
+KING = Vector((0.0, 1.6, 1.0))
+
+
+def cam_fn(f):
+    # opens on the king collapsing to ash behind, then tilts down with the falling ring and lands on it (a fixed
+    # macro on the ring showed two thirds of the shot as empty floor)
+    e = C.ease_in_out(C.clamp01((f - (F_LAND - 9)) / 8.0))
+    tgt = KING.lerp(RING_AT + Vector((0.0, 0.0, 0.03)), e)
+    return dict(loc=LOC, target=tgt, focus=tgt)
+
+
+cam.key_range(shot.frames_all, cam_fn)
 MT.light(shot, "legend", D, (0, 1.0, 0), LOC)
 MT.fx("ash", shot.sim_start, shot.render_end, (0, 1.6, 1.5), radius=1.5, height=3.0, count=200, seed=shot.seed, rise=0.8)
 shot.render()
