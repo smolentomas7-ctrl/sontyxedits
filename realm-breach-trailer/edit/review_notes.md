@@ -73,3 +73,4 @@
 - M507: reads (fireball detonates on the evil); frame flooded orange -> fireball strength 0.7.
 - E3: excellent (warrior from behind walking into the light pouring through the gate).
 - E4: excellent (warrior small lower-middle, calm sky for the title, hills, flowers).
+- M202 re-render: good (bad angel diving, red halo, low angle behind him).
