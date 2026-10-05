@@ -14,13 +14,15 @@ import rb_shot  # noqa: E402
 
 import rb_props as PR  # noqa: E402
 
-shot = rb_shot.Shot("M401", key_frame=1110)
+shot = rb_shot.Shot("M401", key_frame=1100)   # key still on a saturated tier (mythic)
 D, _ = MT.scene(shot, "legend", warrior=False)
-L = PR.loot(item="greatsword", rarity="common", loc=(0.0, 0.0, 0.0), rot_z=math.radians(35), seed=shot.seed)
+L = PR.loot(item="greatsword", rarity="common", loc=(0.0, 0.0, 0.0), rot_z=math.radians(35), seed=shot.seed,
+            beam_radius=0.22)                     # the top tiers widen the beam; keep it a pillar, not a wall
 for k, name in enumerate(PR.RARITY_ORDER):
     PR.set_rarity(L, int(round(MT.ST.bf(72 + 0.25 * k))) - 1 if k else shot.sim_start, name)
 for ob in (L.root, L.pillar):
     MT.key_glow(ob, [(shot.sim_start, 0.38)])     # the top rarities clipped the frame to white
+shot.scene.view_settings.exposure = -0.8      # the ladder peaks near white: hold the highlights
 cam = rb_cam.Rig(lens=50, fstop=2.8)
 
 

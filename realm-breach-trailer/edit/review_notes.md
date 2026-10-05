@@ -46,3 +46,4 @@
 - O12 re-render: strong (blades meet, spark burst, shockwave + dust). Air ring edge-on reads as a line in a still; fine in motion.
 - M303 re-render: good (orbs fill the width, the right one mid-death).
 - M304 re-render: good (bowed helm, hands on the pommel, ash; cold rim makes the armour read).
+- M401: god tier beam still a cream wall -> beam_radius 0.22, exposure -0.8, key still on mythic (1100).
