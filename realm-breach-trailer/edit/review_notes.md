@@ -78,3 +78,6 @@
 - M206 re-render: still beige at the hit frame (spark light ~100 W at 0.3 m in fog) -> key 942 (bones flying, light decayed), sparks 0.35.
 - M208 re-render (key 957): flash filled the whole frame (sparks sprayed at the lens, scale 1.3 at 1.2 m) -> spray forward/away, scale 0.7, strength 0.45.
 - M301 re-render: evil reads (horns, veins) but he was cut at the right edge (only the gauntlet, in the safe zone) and sparks washed it warm -> target on him (y 0.18), camera 5.6 m, sparks across frame at 0.45.
+- M402 re-render: frame all gold fog, the real-size ring a speck in the bottom safe zone -> floor-level macro 0.5 m from a 2.2x ring, king's ash soft behind.
+- M302 re-render: tight 85 mm chest from 3 m at 14 deg down = headless dark torso, fall unreadable -> camera high in front (z 4, ~43 deg down) tracking the chest: his front and helm turn up to us as he falls.
+- M405 re-render: reads (lightning past his shoulder into the skeletons). M502 re-render: reads (cleave into the morbidious, both in frame). Raw haze to judge on the graded sheet.

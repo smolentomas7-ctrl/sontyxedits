@@ -22,7 +22,8 @@ F_DIE = shot.f0 + 1
 MT.enemy_act(kg, shot, "death", F_DIE + 8, 14, (0.0, 1.6, 0.0), 0)
 EN.dissolve(kg, F_DIE, frames=12, mode="ash")
 RING_AT = Vector((0.06, -0.45, 0.012))
-ring = PR.ring(loc=tuple(RING_AT), rot=(0, 0, math.radians(30)), gem="#FFE9A8")
+# hero-sized drop (a real 2.4 cm ring was a speck even at 1.2 m)
+ring = PR.ring(loc=tuple(RING_AT), rot=(0, 0, math.radians(30)), gem="#FFE9A8", scale=2.2)
 F_LAND = MT.imp(74.75)
 # the ring drops out of the ash and lands with a small bounce, its gem lighting up on landing
 for f in shot.frames_all:
@@ -31,9 +32,11 @@ for f in shot.frames_all:
     ring.location = (RING_AT.x, RING_AT.y + 0.4 * (1 - u), z)
     ring.keyframe_insert("location", frame=f)
 MT.key_glow(ring, [(shot.sim_start, 0.15), (F_LAND, 0.15), (F_LAND + 2, 1.6), (F_LAND + 8, 1.0)])
-cam = rb_cam.Rig(lens=50, fstop=2.8)
-LOC = Vector((0.28, -1.6, 0.2))
-cam.key_range(shot.frames_all, lambda f: dict(loc=LOC, target=Vector((0.0, -0.2, 0.42)), focus=RING_AT))
+# floor-level macro: 0.5 m from the ring (frame ~0.2 m wide there), looking slightly down so the ring sits just below
+# centre on dark stone and the king's ash pile stays soft behind it (from 1.6 m the frame was all gold fog)
+cam = rb_cam.Rig(lens=50, fstop=5.6)
+LOC = RING_AT + Vector((0.1, -0.48, 0.1))
+cam.key_range(shot.frames_all, lambda f: dict(loc=LOC, target=RING_AT + Vector((0.0, 0.0, 0.03)), focus=RING_AT))
 MT.light(shot, "legend", D, (0, 1.0, 0), LOC)
 MT.fx("ash", shot.sim_start, shot.render_end, (0, 1.6, 1.5), radius=1.5, height=3.0, count=200, seed=shot.seed, rise=0.8)
 shot.render()
