@@ -48,3 +48,4 @@
 - M304 re-render: good (bowed helm, hands on the pommel, ash; cold rim makes the armour read).
 - M401: god tier beam still a cream wall -> beam_radius 0.22, exposure -0.8, key still on mythic (1100).
 - M406: reads (arch, brazier, god attack column). Legend haze lifted the blacks -> grade black point 0.07 + contrast 1.22 for phases 4/5. M407: blade + crack read; near-lens ember blob -> embers moved behind the blade.
+- M505: column hid the warrior -> column behind him, silhouette against the light.
