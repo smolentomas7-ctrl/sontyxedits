@@ -53,3 +53,4 @@
 - God robe: fold + wrinkle bump (large distorted bands + noise) so it reads as heavy cloth, not a sheet.
 - F1d re-render: strong (bolt from his hand to the god's chest, both in frame).
 - F2a: blade now reads but glows white (x4 + rim) -> edge_glow 1.8, keep the specular rim (bible: near-black, faint blue edge).
+- F2b: side-on still unreadable (sparks dominate, obsidian invisible) -> rim light + edge glow like F2a, sparks 0.5, key 1478.
