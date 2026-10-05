@@ -55,3 +55,4 @@
 - F2a: blade now reads but glows white (x4 + rim) -> edge_glow 1.8, keep the specular rim (bible: near-black, faint blue edge).
 - F2b: side-on still unreadable (sparks dominate, obsidian invisible) -> rim light + edge glow like F2a, sparks 0.5, key 1478.
 - F2c re-render: good (thrown toward the lens, god behind). F2b (test 0.3x): helm + greatsword + compact burst read as the clash; obsidian still faint - accepted for a 15-frame insert.
+- Batch 5: O6 (3/4 helm) good; M401 thin mythic-red beam over the greatsword - reads as loot; M407 blade crack reads; M505 warrior silhouetted against the column. All accepted.
