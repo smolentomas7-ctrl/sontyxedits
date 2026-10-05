@@ -18,11 +18,12 @@ F_HIT = MT.imp(65)
 P = Vector((0, 0, 0))
 MT.act(w, shot, "hit_react", F_HIT, 12, P, 180, slowmo=0.5)
 ev = MT.enemy("evil", "EV1_", seed=shot.seed)
-MT.enemy_act(ev, shot, "attack", F_HIT, 12, (0.05, 1.25, 0), 0, slowmo=0.5)
+MT.enemy_act(ev, shot, "attack", F_HIT, 12, (0.05, 1.75, 0), 0, slowmo=0.5)   # its attack pose leans ~1 m forward
 cam = rb_cam.Rig(lens=85, fstop=2.0)
-cam.key_range(shot.frames_all, lambda f: dict(loc=Vector((-3.3 + 0.35 * C.ease_in_out(shot.u(f)), 0.55, 1.45)),
-                                              target=Vector((0.0, 0.45, 1.38)), focus=Vector((0.0, 0.2, 1.38))))
-MT.light(shot, "deep", D, P, (-3.3, 0.55, 1.45), follow=w.root)
+# side-on on his chest; at 5 m the 85 mm frame is ~1.2 m wide: his chest plate and the claw arriving from the left
+cam.key_range(shot.frames_all, lambda f: dict(loc=Vector((-5.0 + 0.4 * C.ease_in_out(shot.u(f)), 0.35, 1.45)),
+                                              target=Vector((0.0, 0.5, 1.4)), focus=Vector((0.0, 0.2, 1.4))))
+MT.light(shot, "deep", D, P, (-5.0, 0.35, 1.45), follow=w.root)
 MT.fx("sparks", F_HIT, (0.0, 0.25, 1.35), seed=shot.seed, scale=1.2, time_scale=0.5, direction=(-0.6, -0.4, 0.5))
 MT.fx("ash", shot.sim_start, shot.render_end, (0, 0.4, 1.4), radius=2.0, height=3.0, seed=shot.seed)
 shot.render()
