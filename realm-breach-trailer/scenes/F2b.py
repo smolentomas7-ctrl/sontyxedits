@@ -20,11 +20,11 @@ import rb_env_arena as AR  # noqa: E402
 c = ST.CONTACT[98.0]
 cam = rb_cam.Rig(lens=50, fstop=2.8)
 cam.shake(int(ST.bf(98.0)) - 1, amp=0.03, seed=shot.seed)
-# 3 m from the contact, from his right rear and a little below: helm + grip, the contact and the obsidian
-# blade crashing down from the top of frame all read in one vertical image
-loc = c + Vector((1.0, -0.8, 0.05)).normalized() * 3.7
-cam.key_range(shot.frames_all, lambda f: dict(loc=loc + Vector((-0.08, 0.1, 0.0)) * shot.u(f),
-                                              target=c + Vector((0.1, 0.15, 0.05)), focus=c))
+# side-on to the clash (the blades move in the warrior's Y-Z plane): the obsidian comes down from upper left onto
+# the greatsword held up from the right; camera kept inside the nave (pillar plinths reach |x| ~ 3.1)
+loc = Vector((-2.9, 8.6, 1.95))
+cam.key_range(shot.frames_all, lambda f: dict(loc=loc + Vector((0.08, 0.05, 0.0)) * shot.u(f),
+                                              target=c + Vector((0.05, -0.05, -0.02)), focus=c))
 AR.lights_duel(warrior=tuple(rb_intro.warrior_pos_battle(shot.key_frame)), cam=tuple(loc))
 try:
     import rb_vfx as VFX

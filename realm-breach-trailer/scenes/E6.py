@@ -19,7 +19,7 @@ C.world((0.0, 0.0, 0.0), volume_density=0.004)
 Pq = PR.rebirth_plaque(loc=(0.0, 0.0, 0.0), rot_z=0.0, scale=1.0)
 PR.plaque_pulse(Pq, MT.imp(147), frames=14, peak=1.0)
 kids = [o for o in Pq.root.children_recursive if o.type in ("MESH", "FONT")] or [Pq.root]
-LOC, CTR = MT.frame_fit(kids, 50, margin=1.15, axis=(0.0, -1.0, 0.0))
+LOC, CTR = MT.frame_fit(kids, 50, margin=0.8, axis=(0.0, -1.0, 0.0))
 cam = rb_cam.Rig(lens=50, fstop=8.0)
 cam.key_range(shot.frames_all, lambda f: dict(loc=LOC + (CTR - LOC) * (0.04 * shot.u(f)), target=CTR, focus=(LOC - CTR).length))
 C.light("AREA", "E6_key", tuple(CTR + Vector((-0.8, -1.2, 1.0))), color="#FFB070", energy=40, size=1.0, target=tuple(CTR), shadow=False)

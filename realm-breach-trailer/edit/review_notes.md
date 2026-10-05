@@ -32,3 +32,12 @@
 - E2: warrior at the left edge -> camera on the line through warrior and kneeling god (stacked), crane 5 -> 2 m.
 - M106 (smoke test): 0.9 m blade cropped -> 1.75 m. M401: camera inside the beam at god rarity -> orbit r 4.4 -> 3.6.
 - VFX + dungeon/props modules landed (dungeon ~35-45 s/frame uncontended at full res: needs light culling).
+## Preliminary checkpoint sheet review (build/checkpoint2_pre)
+- O6 ECU blurred (0.62 m at 85 mm) -> head-and-shoulders at 1.15 m f/8. O11a dark, no blade -> low-angle 35 mm
+  knees-up with ember under-light. O11b cape still a wad -> cloth goal only holds the top 35% (torso-relative goal
+  pulled the cape up the back when pitched forward).
+- F2a obsidian still invisible (edge glow driven by a near-zero wear attr) -> big cool area rim behind the blade.
+  F2b sparks hid both blades -> side-on to the clash. F2c warrior cropped left -> camera on his flight line,
+  target tracks him. F7 key frame was under the edit's white flash -> 1935.
+- M401/M406/M505 washed white -> beam glow 0.38, god attack strength 0.45/0.4. M304 black blob -> cold rim key.
+  M407 only bokeh -> side-on push along the blade. M303/E6 props too small -> tighter fit.

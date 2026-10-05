@@ -31,9 +31,18 @@ hilt = w.sword.matrix_world.translation.copy()
 tp = tip.matrix_world.translation.copy()
 axis = (tp - hilt).normalized()
 side = axis.cross(Vector((0, 0, 1))).normalized()
-cam = rb_cam.Rig(lens=50, fstop=2.8)
-cam.key_range(shot.frames_all, lambda f: dict(loc=hilt + side * 0.32 + Vector((0, 0, -0.06)) + axis * (0.1 + 0.35 * C.ease_in_out(shot.u(f))),
-                                              target=tp, focus=hilt.lerp(tp, 0.45)))
-MT.light(shot, "legend", D, P, hilt + side * 0.4, follow=w.root)
+up = side.cross(axis).normalized()
+cam = rb_cam.Rig(lens=50, fstop=4.0)
+
+
+def cam_fn(f):
+    # side-on to the blade (it crosses the vertical frame diagonally), pushing from the hilt toward the tip as
+    # the crack ignites
+    mid = hilt.lerp(tp, 0.32 + 0.3 * C.ease_in_out(shot.u(f)))
+    return dict(loc=mid - side * 1.05 + up * 0.12, target=mid, focus=mid)
+
+
+cam.key_range(shot.frames_all, cam_fn)
+MT.light(shot, "legend", D, P, hilt - side * 1.0, follow=w.root)
 MT.fx("embers", shot.sim_start, shot.render_end, tuple(hilt.lerp(tp, 0.5)), radius=0.8, height=1.2, count=60, seed=shot.seed)
 shot.render()

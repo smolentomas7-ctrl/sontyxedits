@@ -783,7 +783,9 @@ def cloth_panel(w, name, joint, top_z, length, half_top, half_bot, y_fn, cols, r
             # soft goal for violent action: the cloth keeps its drape against the body and swings around
             # it instead of being flung into the collision proxies and staying tangled there
             t = min(1.0, max(0.0, (top_z - v.co.z) / length))
-            vg.add([v.index], w.cloth_goal * (1 - t) ** 1.6, "REPLACE")
+            # only the upper part is held (the goal is torso-relative: with the torso pitched forward in a charge a
+            # long goal pulls the cape up onto the back)
+            vg.add([v.index], w.cloth_goal * max(0.0, 1 - t / 0.35) ** 2, "REPLACE")
     G.set_mat(ob, mat)
     attach(ob, w.rig, joint)
     cl = ob.modifiers.new("Cloth", "CLOTH")

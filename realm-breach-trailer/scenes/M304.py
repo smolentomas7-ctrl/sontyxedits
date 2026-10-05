@@ -20,6 +20,7 @@ cam = rb_cam.Rig(lens=85, fstop=2.2)
 cam.key_range(shot.frames_all, lambda f: dict(loc=Vector((1.75, 3.35, 1.05)).lerp(Vector((1.5, 2.95, 1.0)), C.ease_in_out(shot.u(f))),
                                               target=Vector((0.0, 0.1, 0.85)), focus=Vector((0, 0.15, 1.0))))
 MT.light(shot, "deep", D, P, (1.75, 3.35, 1.05), follow=w.root)
+C.parent_keep(MT.cold_key(P + Vector((0, 0, 0.9)), (1.75, 3.35, 1.05), side=-1.0, energy=200.0, dist=2.2), w.root)
 MT.fx("ash", shot.sim_start, shot.render_end, (0, 0.3, 1.0), radius=2.0, height=2.5, seed=shot.seed)
 MT.fx("embers", shot.sim_start, shot.render_end, (0, 0.6, 1.2), radius=2.5, height=3.0, count=40, seed=shot.seed + 1, strength=0.5)
 shot.render()

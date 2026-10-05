@@ -19,6 +19,8 @@ D, _ = MT.scene(shot, "legend", warrior=False)
 L = PR.loot(item="greatsword", rarity="common", loc=(0.0, 0.0, 0.0), rot_z=math.radians(35), seed=shot.seed)
 for k, name in enumerate(PR.RARITY_ORDER):
     PR.set_rarity(L, int(round(MT.ST.bf(72 + 0.25 * k))) - 1 if k else shot.sim_start, name)
+for ob in (L.root, L.pillar):
+    MT.key_glow(ob, [(shot.sim_start, 0.38)])     # the top rarities clipped the frame to white
 cam = rb_cam.Rig(lens=50, fstop=2.8)
 
 

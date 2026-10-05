@@ -17,14 +17,15 @@ S = rb_intro.build(shot, variant="approach", god=True)
 import rb_env_arena as AR  # noqa: E402
 
 head = ST.STOP + Vector((0, 0, 1.763))
-cam = rb_cam.Rig(lens=85, fstop=5.6)
+cam = rb_cam.Rig(lens=85, fstop=8.0)
 cam.handheld(amp=0.0025, rot_deg=0.12, freq=0.35, seed=shot.seed)
 
 
 def cam_fn(f):
     br = 0.004 * math.sin(f / 30 * 2 * math.pi / 3.6)
-    return dict(loc=head + Vector((0.02, 0.62, -0.03 + br)), target=head + Vector((0, 0, 0.0)),
-                focus=head + Vector((0, 0.15, 0)))
+    # head-and-shoulders at 1.15 m (0.62 m gave ~1 cm of focus and bloomed eyes); O9 is the tight helm shot
+    return dict(loc=head + Vector((0.03, 1.15, -0.05 + br)), target=head + Vector((0, 0, -0.08)),
+                focus=head + Vector((0, 0.12, 0)))
 
 
 cam.key_range(shot.frames_all, cam_fn)

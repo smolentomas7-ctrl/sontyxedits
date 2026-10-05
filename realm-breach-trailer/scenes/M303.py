@@ -19,7 +19,7 @@ D, _ = MT.scene(shot, "deep", warrior=False)
 O = PR.life_orbs(loc=(0.0, 0.0, 1.2), rot_z=0.0, scale=1.0)
 PR.orb_dark(O, 2, MT.imp(69), frames=10)
 kids = [o for o in O.root.children_recursive if o.type == "MESH"] or [O.root]
-LOC, CTR = MT.frame_fit(kids, 85, margin=1.25, axis=(0.0, -1.0, 0.08))
+LOC, CTR = MT.frame_fit(kids, 85, margin=0.9, axis=(0.0, -1.0, 0.08))
 cam = rb_cam.Rig(lens=85, fstop=4.0)
 cam.key_range(shot.frames_all, lambda f: dict(loc=LOC, target=CTR, focus=(LOC - CTR).length))
 MT.light(shot, "deep", D, CTR - Vector((0, 0, 1.2)), LOC)
