@@ -23,7 +23,7 @@ MT.enemy_act(ev, shot, "hit", F_HIT, 12, EV, 0)
 cam = rb_cam.Rig(lens=35, fstop=4.0)
 cam.handheld(amp=0.01, rot_deg=0.3, freq=1.2, seed=shot.seed)
 cam.shake(F_HIT, amp=0.03, seed=shot.seed)
-LOC = Vector((0.95, 3.9, 2.25))
+LOC = Vector((1.3, 4.7, 2.55))      # far enough that the evil reads as a horned silhouette, not a purple mass
 cam.key_range(shot.frames_all, lambda f: dict(loc=LOC + Vector((0, -0.2, 0)) * shot.u(f),
                                               target=Vector((0.0, 0.3, 1.45)), focus=3.7))
 MT.light(shot, "struggle", D, P, LOC, follow=w.root)
