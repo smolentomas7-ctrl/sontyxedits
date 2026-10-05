@@ -90,3 +90,4 @@
 - Preview review: O5 (cracks climb, halo last), O6 (eyes), O8 (raise to salute) good; O7 nearly static (spec: very slow) - acceptable.
 - Preview review: O10, O11a (holds through 703 after the charge fix), O11b (cape streaming from 704, whip inside the cut), O12, M101-M106, M201, M202 good. M105 'flicker' = the clash spark (intended).
 - Preview review: M203-M209, M301-M304 (M302 now lands on screen with dust), M401, M403 good. M402: 2/3 of the shot was empty floor (king above the macro frame) -> camera opens on the king's collapse and tilts down with the ring; re-render preview after the pass.
+- Preview review: M404-M407, M501 (lunge now peaks on the last frame), M502-M508, M510, F1a, F1b good. QA 'flicker' in M404/M405/F1b = fireball/lightning/floor-smash flashes (intended).
