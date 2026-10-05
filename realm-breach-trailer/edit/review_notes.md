@@ -62,3 +62,4 @@
 - M206: reads (slash shatters the skeleton) but the spark flash washed the teal set beige -> sparks strength 0.5.
 - M207: good (evil bursts into purple smoke + sparks, warrior foreground).
 - M208: framing good but key frame before the hit -> 957.
+- M209: reads (evil presses, warrior driven back, boot sparks); recoil pose a bit stiff in a still - judge in motion.
