@@ -337,8 +337,7 @@ def mat_floor(name="heaven_floor"):
     tone = _mr(b, (b.n("ShaderNodeSeparateColor", Color=(slabc, "Color")), 0), 0.0, 1.0, 0.65, 1.35)
     grain = _noise(b, p, 9.0, 6.0, 0.6)
     base = b.mix(_mr(b, (grain, "Fac"), 0.3, 0.7), (0.020, 0.022, 0.024), (0.045, 0.046, 0.047))
-    base = b.mix(tone, (0.0, 0.0, 0.0), base)
-    base = b.mix(_mr(b, tone, 0.0, 1.0, 0.0, 1.0), base, base)
+    base = b.mix(1.0, base, tone, "MULTIPLY")
     col = b.mix(cut, base, (0.006, 0.006, 0.007))
     wet = _mr(b, (_noise(b, p, 0.09, 3.0, 0.55), "Fac"), 0.47, 0.56)
     r = b.math("ADD", b.math("MULTIPLY", wet, -0.5), 0.6)
@@ -768,7 +767,7 @@ def _arch(acc, rnd):
              (r0, y0, w0), (r1, y0, w1), (r1, y1, w1), (r0, y1, w0)]
         P = [(p[0], p[1], p[2]) for p in P]
         xf = Matrix.Translation((0, 0, ZE)) @ Matrix.Rotation(-a, 4, "Y")
-        acc.hexa([P[0], P[1], P[5], P[4], P[3], P[2], P[6], P[7]], 1, xf)
+        acc.hexa(P, 1, xf)
     # keystone (tapered)
     P = [(-0.5, GATE_Y - 1.55, ZE + 5.0), (0.5, GATE_Y - 1.55, ZE + 5.0), (0.5, GATE_Y + 1.3, ZE + 5.0),
          (-0.5, GATE_Y + 1.3, ZE + 5.0), (-0.72, GATE_Y - 1.55, ZE + 6.5), (0.72, GATE_Y - 1.55, ZE + 6.5),
@@ -1033,7 +1032,7 @@ def sky_world(sun_dir=SUN_DIR, fog=0.0018):
     band = b.math("MULTIPLY", _mr(b, e, 0.015, 0.06), _mr(b, e, 0.12, 0.2, 1.0, 0.0))
     wk = b.math("MULTIPLY", _mr(b, (wisp, "Fac"), 0.52, 0.72, 0.0, 0.22), band)
     c1 = b.mix(wk, sky, (1.0, 0.95, 0.88), "ADD")
-    c2 = b.n("ShaderNodeMix", _data_type="RGBA", _blend_type="ADD")
+    c2 = b.n("ShaderNodeMix", _data_type="RGBA", _blend_type="ADD", _clamp_factor=False)
     b._in(c2, "Factor", glow)
     b._in(c2, 6, c1)
     b._in(c2, 7, (1.0, 0.84, 0.6))
@@ -1124,8 +1123,7 @@ def mat_grass(name="meadow_grass"):
                      (1.0, (0.40, 0.48, 0.2))])
     n1 = _noise(b, p, 0.18, 3.0, 0.5)
     n2 = _noise(b, p, 1.3, 2.0, 0.5)
-    c = b.mix(_mr(b, (n1, "Fac"), 0.55, 0.72, 0.0, 0.7), (col, "Color"),
-              b.math("MULTIPLY", 1.0, 1.0) and (0.42, 0.40, 0.17))
+    c = b.mix(_mr(b, (n1, "Fac"), 0.55, 0.72, 0.0, 0.7), (col, "Color"), (0.42, 0.40, 0.17))
     c = b.mix(_mr(b, (n2, "Fac"), 0.3, 0.7, 0.25, 0.0), c, (0.03, 0.05, 0.02))
     bs = b.bsdf(**{"Base Color": c, "Roughness": 0.5, "Specular IOR Level": 0.35})
     tr = b.n("ShaderNodeBsdfTranslucent", Color=c)
@@ -1204,15 +1202,15 @@ def _seed_stalk(rnd):
     V, F, UV = [], [], []
     h = rnd.uniform(0.6, 0.8)
     _blade(V, F, UV, rnd, 0.0, 0.0, h, 0.12, 0.006, rnd.uniform(0, 6.28), segs=3)
-    tip = (0.12 * h * math.cos(0.0), 0.0, h)
+    tx, ty, tz = V[-1]
     for k in range(2):
         a = k * math.pi / 2
         b0 = len(V)
         ca, sa = math.cos(a) * 0.012, math.sin(a) * 0.012
-        V += [(-ca, -sa, h - 0.1), (ca, sa, h - 0.1), (ca * 0.4, sa * 0.4, h + 0.02), (-ca * 0.4, -sa * 0.4, h + 0.02)]
+        V += [(tx - ca, ty - sa, tz - 0.1), (tx + ca, ty + sa, tz - 0.1), (tx + ca * 0.4, ty + sa * 0.4, tz + 0.02),
+              (tx - ca * 0.4, ty - sa * 0.4, tz + 0.02)]
         UV += [(0, 0.85), (1, 0.85), (1, 1.0), (0, 1.0)]
         F.append((b0, b0 + 1, b0 + 2, b0 + 3))
-    del tip
     return V, F, UV
 
 
@@ -1225,9 +1223,7 @@ def _flower(rnd, kind):
     Fm += [0] * (len(F) - n0)
     # head frame: tilt toward +Y (the sun) a little
     tilt = Matrix.Rotation(rnd.uniform(-0.45, -0.1), 3, "X") @ Matrix.Rotation(rnd.uniform(-0.3, 0.3), 3, "Y")
-    top = Vector((0.1 * hs * 0.0, 0.0, hs))
-    # find stem tip (last vertex)
-    top = Vector(V[-1])
+    top = Vector(V[-1])          # stem tip
 
     def put(p):
         return tuple(top + tilt @ Vector(p))

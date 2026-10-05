@@ -103,6 +103,9 @@ def compressor(x, thr_db=-18, ratio=2.0, attack=0.01, release=0.15):
     return x * db(gdb)[:, None]
 
 
+AAC_CEILING_DB = -2.4
+
+
 def limiter(x, ceiling_db=-1.0, look=0.005, release=0.08, block=32):
     """Look-ahead peak limiter on a 4x-oversampled (true-peak) estimate:
     instant attack, exponential release, gain applied per small block."""
@@ -206,11 +209,12 @@ def main():
     mixbus = music * db(-3.0) + vo * db(-1.0) + fx * db(-4.0)
     mixbus = compressor(mixbus, -16, 1.8)
     meter = pyln.Meter(SR)
-    # converge: gain to -14 LUFS, then true-peak limit (the limiter is always the last stage)
+    # converge: gain to -14 LUFS, then true-peak limit (the limiter is always the last stage). The ceiling sits
+    # below -1 dBTP because AAC encoding overshoots by ~1.1 dB (measured: -1.21 dBTP wav -> -0.08 dBTP decoded).
     for _ in range(4):
         loud = meter.integrated_loudness(mixbus)
         mixbus *= db(-14.0 - loud)
-        mixbus = limiter(mixbus, -1.2)
+        mixbus = limiter(mixbus, AAC_CEILING_DB)
     out = os.path.join(ROOT, "build", "audio", "mix.wav")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     sf.write(out, mixbus.astype(np.float32), SR, subtype="FLOAT")
