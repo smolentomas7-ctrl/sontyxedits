@@ -65,3 +65,4 @@
 - M209: reads (evil presses, warrior driven back, boot sparks); recoil pose a bit stiff in a still - judge in motion.
 - M301: evil (attack pose leans 1 m) overlapped the warrior and filled the 85 mm frame -> evil back to 1.75, camera 5 m side-on. M302: side-on 85 mm lost the falling body -> camera from his feet side, tracking his chest, cold rim.
 - M302 test: holds him but helm hidden -> camera z 2.15. M402: ring still airborne at the key -> key 1131.
+- M405: lightning reads, frame washed white -> strength 0.6. M501: good OTS (morbidious lunging, green pustules).

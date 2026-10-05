@@ -28,5 +28,5 @@ cam.shake(F_CAST, amp=0.03, seed=shot.seed)
 cam.key_range(shot.frames_all, lambda f: dict(loc=Vector((-1.0, -3.3, 1.75)).lerp(Vector((-0.8, -2.6, 1.7)), C.ease_in_out(shot.u(f))),
                                               target=Vector((0.2, 2.6, 1.35)), focus=4.5))
 MT.light(shot, "legend", D, P, (-1.0, -3.3, 1.75), follow=w.root)
-MT.fx("lightning", F_CAST, tuple(src), targets, seed=shot.seed, duration=9)
+MT.fx("lightning", F_CAST, tuple(src), targets, seed=shot.seed, duration=9, strength=0.6)   # full strength washed the frame white
 shot.render()
