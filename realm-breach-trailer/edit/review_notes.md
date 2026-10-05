@@ -83,3 +83,5 @@
 - M405 re-render: reads (lightning past his shoulder into the skeletons). M502 re-render: reads (cleave into the morbidious, both in frame). Raw haze to judge on the graded sheet.
 - Graded check: M405, M502, M508 good. M506 washed white-grey (lightning 0.5 + full sparks 260 W in gold fog) -> lightning 0.35, sparks 0.4. M507 still flooded orange, evil lost -> fireball 0.4.
 - Batch 8: M206 good (teal back, blade through ribs). M302 good (topples back, arms flung, helm visible). M402 good (ring glowing on wet stone, centred). M208 flash sphere still hid the pauldron -> flash=False. M301 recoil carried him to the right edge -> camera 6.2 m, target y 0.02.
+- Batch 9/10 graded: M208 acceptable for a 7 f fill (streaks big at 1.2 m; weak-shot candidate), M301 good (him inside the frame), M506 good (crowd reads), M507 good (evil reads through the blast).
+- CHECKPOINT 2 sheets built (69 shots, none missing); animatic rebuilt (74.733 s, -14.05 LUFS, -1.28 dBTP, no letterbox, loop seam 0.0032); review page published: https://claude.ai/artifact/XTGQ2xVExTb1sZTJEW7UbV. WAITING for the user's OK before animation renders.
