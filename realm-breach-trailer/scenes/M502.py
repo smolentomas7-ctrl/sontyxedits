@@ -23,7 +23,7 @@ MT.enemy_act(mb, shot, "hit", F_HIT, 8, (0.0, 1.45, 0.0), 0)
 EN.dissolve(mb, F_HIT + 1, frames=6, mode="shatter")
 cam = rb_cam.Rig(lens=24, fstop=5.6)
 cam.shake(F_HIT, amp=0.05, seed=shot.seed)
-LOC = Vector((-2.4, 0.2, 1.1))
+LOC = Vector((-3.1, 0.3, 1.2))      # both fighters fully in frame, cape clear of the right safe zone
 cam.key_range(shot.frames_all, lambda f: dict(loc=LOC, target=Vector((0.0, 0.85, 1.35)), focus=2.5))
 MT.light(shot, "legend", D, (0, 0.6, 0), LOC, follow=w.root)
 MT.fx("smoke_burst", F_HIT + 1, (0.0, 1.45, 1.1), seed=shot.seed, color="#0D1A08", glow="#6BFF4A", scale=1.1)
