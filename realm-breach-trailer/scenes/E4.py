@@ -36,5 +36,5 @@ cam.key_range(shot.frames_all, lambda f: dict(loc=CN.lerp(CF, C.ease_in_out(C.cl
                                               focus=W + Vector((0, 0, 1.0))))
 shot.scene.frame_set(shot.key_frame)
 HV.lights_meadow(Mw, warrior=tuple(W), cam=tuple(CN), follow=w.root)
-MT.fx("petals", shot.sim_start, shot.render_end, tuple(W + Vector((0, 0, 1.5))), radius=7.0, height=4.0, count=160, seed=shot.seed)
+# petals: the meadow set animates its own (frame-driven), no extra layer
 shot.render()
