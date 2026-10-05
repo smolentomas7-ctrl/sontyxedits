@@ -60,3 +60,4 @@
 - M203: evil too close (purple mass) -> camera pulled back to 4.7 m.
 - M205: king read same size as the warrior -> tight OTS looking steeply up (pauldron lower-left, king + axe fill the frame).
 - M206: reads (slash shatters the skeleton) but the spark flash washed the teal set beige -> sparks strength 0.5.
+- M207: good (evil bursts into purple smoke + sparks, warrior foreground).
