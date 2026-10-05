@@ -41,3 +41,4 @@
   target tracks him. F7 key frame was under the edit's white flash -> 1935.
 - M401/M406/M505 washed white -> beam glow 0.38, god attack strength 0.45/0.4. M304 black blob -> cold rim key.
   M407 only bokeh -> side-on push along the blade. M303/E6 props too small -> tighter fit.
+- O11a re-render: good (low front angle, roar, blade blazing, centred).
