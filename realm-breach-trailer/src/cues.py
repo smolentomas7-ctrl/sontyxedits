@@ -81,17 +81,17 @@ CUES += [
     (60.25, "growl_o", -14, {"pan": 0.5}),
     (61.0, "sub_hit_small", -5, {}),
     (61.05, "boss_roar", -8, {}),
-    (62.0, "impact", -9, {}),
+    (62.23, "impact", -9, {}),          # M206 slash lands at 941
     (62.5, "sub_hit_small", -5, {}),
     (62.5, "impact", -9, {}),
-    (63.0, "clash_b", -11, {}),
+    (63.23, "clash_b", -11, {}),        # M208 blade glances at 956
     (63.5, "impact", -9, {}),
     # phase 3 — sacrifice (slow motion)
-    (63.9, "whoosh_long", -12, {"rate": 0.7}),
-    (64.15, "impact_big", -2, {"rate": 0.6}),
-    (64.2, "clash_a", -8, {"rate": 0.5}),
-    (67.0, "impact", -6, {"rate": 0.6}),
-    (67.1, "debris", -12, {"rate": 0.7}),
+    (64.6, "whoosh_long", -12, {"rate": 0.7}),
+    (64.87, "impact_big", -2, {"rate": 0.6}),   # M301: the claw lands at 981 (imp(65))
+    (64.9, "clash_a", -8, {"rate": 0.5}),
+    (67.4, "impact", -6, {"rate": 0.6}),        # M302: he lands at 1019 (imp(67.5))
+    (67.5, "debris", -12, {"rate": 0.7}),
     (68.0, "heartbeat", -2, {}),
     (68.3, "glass_fizz", -8, {}),
     (70.0, "breath", -14, {}),
@@ -106,14 +106,15 @@ CUES += [
     (75.1, "ring_slide", -10, {}),
     (75.95, "fire", -6, {}),
     (76.95, "lightning", -6, {}),
-    (77.9, "riser_2s", -14, {"align": "peak", "dur": 0.1}),
-    (78.0, "god_blast", -7, {"fade_out": 1.5, "dur": 2.0}),
-    (78.0, "impact_big", -6, {}),
+    (78.33, "riser_2s", -14, {"align": "peak", "dur": 0.1}),
+    (78.43, "god_blast", -7, {"fade_out": 1.5, "dur": 2.0}),   # M406 release at 1185
+    (78.43, "impact_big", -6, {}),
     (79.0, "fire", -11, {"dur": 1.2, "fade_out": 0.4}),
     # phase 5 — legend
     (80.0, "growl_u", -12, {}),
 ]
-for i, b in enumerate([80.0, 80.5, 81.0, 81.5, 82.0, 82.5, 83.0, 83.5]):
+# phase-5 hits on the frames the kills land (M501-M508), not the half-beat grid
+for i, b in enumerate([80.0, 80.71, 81.0, 81.71, 82.0, 82.70, 83.24, 83.70]):
     CUES.append((b, ["impact", "clash_a", "impact_big", "clash_b", "impact", "clash_a", "impact", "clash_b"][i],
                  -10, {"pan": (-0.3 if i % 2 else 0.3), "dur": 0.6, "fade_out": 0.2}))
 CUES += [(82.0, "god_blast", -12, {"dur": 1.0, "fade_out": 0.4})]
@@ -123,8 +124,8 @@ CUES += [
     (86.0, "sub_hit", -4, {}),
     (86.0, "cloth_flap", -14, {}),
     # ---- ACT V — the last life
-    (87.85, "whoosh_a", -8, {}),
-    (88.0, "clash_big", -3, {}),
+    (88.25, "whoosh_a", -8, {}),
+    (88.4, "clash_big", -3, {}),       # F1a blades meet at 1335
     (89.9, "whoosh_long", -8, {}),
     (90.35, "impact_big", -4, {}),
     (90.4, "debris", -9, {}),

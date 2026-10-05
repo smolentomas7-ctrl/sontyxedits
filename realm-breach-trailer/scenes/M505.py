@@ -13,9 +13,10 @@ import rb_shot  # noqa: E402
 
 shot = rb_shot.Shot("M505", key_frame=1242)
 D, w = MT.scene(shot, "legend", look="late")
-F_HIT = shot.f0 + 2
+F_HIT = shot.f0   # 0.7 f before beat 82 (f0 + 2 landed after it)
 P = Vector((0, 0, 0))
-MT.act(w, shot, "god_attack", F_HIT, 14, P, 180)
+MT.act(w, shot, "god_attack", F_HIT, 14, P, 180,
+       crack=lambda f: 5.0 + 3.0 * max(0.0, 1 - abs(f - F_HIT) / 6.0))   # ignited blade (M407 -> M508), flares on the hit
 cam = rb_cam.Rig(lens=24, fstop=8.0)
 cam.shake(F_HIT, amp=0.08, seed=shot.seed)
 LOC = Vector((1.6, -4.0, 0.35))

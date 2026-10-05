@@ -21,9 +21,22 @@ h = Vector(ST._RISE) + Vector((0, 0, 1.763))
 cam = rb_cam.Rig(lens=85, fstop=5.6)
 
 
+import rb_motion as MO  # noqa: E402
+
+
+def _head(f):
+    return MO.fk(S["w"], *ST.warrior_battle(S["w"], f))["head"][0]
+
+
+_H0 = _head(shot.key_frame)
+
+
 def cam_fn(f):
+    # the camera rides with the head: the god-attack wind-up (from ~1910) arches him back by up to ~18 cm, far outside
+    # the few millimetres of depth of field at 0.5 m
+    hh = h + (_head(f) - _H0)
     u = C.ease_in(shot.u(f))
-    return dict(loc=h + Vector((0.03, 1.1 - 0.55 * u, -0.02)), target=h, focus=h + Vector((0, 0.15, 0)))
+    return dict(loc=hh + Vector((0.03, 1.1 - 0.55 * u, -0.02)), target=hh, focus=hh + Vector((0, 0.15, 0)))
 
 
 cam.key_range(shot.frames_all, cam_fn)

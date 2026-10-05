@@ -17,7 +17,8 @@ import rb_props as PR  # noqa: E402
 shot = rb_shot.Shot("M106", key_frame=840)
 D, w = MT.scene(shot, "floor1", look="early")
 # he walks toward the lens and stops just behind the drop (boots only in frame)
-MT.walk(w, shot, (0.05, 0.62, 0.0), 0.0, key_frame=MT.imp(55.5), stop_frame=MT.imp(55.5), carry=True)
+# the walk ends on a footfall (beat 55) inside the shot: stopping mid-swing at 839 left a boot floating over the blade
+MT.walk(w, shot, (0.05, 0.62, 0.0), 0.0, key_frame=MT.ST.bf(55) - 1, stop_frame=MT.ST.bf(55) - 1, carry=True)
 L = PR.loot(item="sword", rarity="common", loc=(0.0, 0.0, 0.0), rot_z=math.radians(62), seed=shot.seed)
 cam = rb_cam.Rig(lens=50, fstop=2.8)
 LOC = Vector((0.1, -1.75, 0.24))      # far enough to hold the whole 0.9 m blade

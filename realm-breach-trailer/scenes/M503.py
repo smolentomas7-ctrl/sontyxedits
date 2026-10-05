@@ -15,9 +15,10 @@ import rb_enemies as EN  # noqa: E402
 
 shot = rb_shot.Shot("M503", key_frame=1226)
 D, w = MT.scene(shot, "legend", look="late")
-F_HIT = shot.f0 + 1
+F_HIT = shot.f0   # 0.65 f before beat 81 (f0 + 1 landed after it)
 P = Vector((0, -0.4, 0))
-MT.act(w, shot, "slash", F_HIT, 10, P, 180)
+MT.act(w, shot, "slash", F_HIT, 10, P, 180,
+       crack=lambda f: 5.0 + 3.0 * max(0.0, 1 - abs(f - F_HIT) / 6.0))   # ignited blade (M407 -> M508), flares on the hit
 kg = MT.enemy("skeleton_king", "KG1_", seed=shot.seed)
 MT.enemy_act(kg, shot, "hit", F_HIT, 8, (0.0, 1.9, 0.0), 0)
 EN.dissolve(kg, F_HIT + 1, frames=7, mode="shatter")

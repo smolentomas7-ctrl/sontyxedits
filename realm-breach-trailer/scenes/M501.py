@@ -15,9 +15,10 @@ import rb_shot  # noqa: E402
 shot = rb_shot.Shot("M501", key_frame=1212)
 D, w = MT.scene(shot, "legend", look="late")
 P = Vector((0, 0, 0))
-MT.stand(w, shot, P, 180, grip=(-0.25, -0.15, 1.05), blade=(-0.3, 0.5, 0.8), two=True, stance=0.4)
+MT.stand(w, shot, P, 180, grip=(-0.25, -0.15, 1.05), blade=(-0.3, 0.5, 0.8), two=True, stance=0.4,
+         crack=5.0)   # ignited blade (M407 -> M508)
 mb = MT.enemy("morbidious", "MB1_", seed=shot.seed)
-F_L = MT.imp(80.5) + 1
+F_L = shot.f1 - 1   # the leap peaks on the last frame, 2 f before beat 80.5 (imp + 1 was after the cut)
 MT.enemy_act(mb, shot, "lunge", F_L, 10, (0.0, 1.5, 0.0), 0)
 MT.enemy_path(mb, shot, lambda f: Vector((0.1, 3.4, 0)).lerp(Vector((0.0, 1.5, 0)), C.ease_in(C.clamp01((f - shot.f0 + 3) / 9.0))))
 cam = rb_cam.Rig(lens=24, fstop=5.6)

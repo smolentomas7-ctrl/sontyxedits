@@ -14,7 +14,7 @@ import rb_shot  # noqa: E402
 
 shot = rb_shot.Shot("M209", key_frame=963)
 D, w = MT.scene(shot, "struggle", look="mid")
-F_HIT = shot.f0 + 1
+F_HIT = MT.imp(63.5)   # 1-2 frames before the beat (f0 + 1 landed on it)
 import rb_actions as RA  # noqa: E402
 import rb_motion as MO  # noqa: E402
 

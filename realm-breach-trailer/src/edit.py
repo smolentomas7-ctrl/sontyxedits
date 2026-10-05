@@ -196,7 +196,9 @@ class Sources:
         for m in order:
             p = os.path.join(ROOT, "build", "shots", sid, m, "f_%04d.png" % f)
             if os.path.exists(p):
-                return self._read(p), "render"
+                im = self._read(p)
+                if im is not None:            # an unreadable (half-written) frame falls through to the next source
+                    return im, m
         # fall back to a key still, held with a slow push
         sd = os.path.join(ROOT, "build", "stills", sid)
         if os.path.isdir(sd):
@@ -225,7 +227,8 @@ def zoom_shift(img, scale, dx, dy):
 
 
 def shake_offset(f, impacts, W, seed):
-    dx = dy = 0.0
+    """(dx, dy, env): seeded offset decaying over 6 frames, and its envelope (sum of amp * fall) for the overscan."""
+    dx = dy = env = 0.0
     for fi, amp in impacts:
         k = f - fi
         if 0 <= k <= 6:
@@ -233,7 +236,13 @@ def shake_offset(f, impacts, W, seed):
             fall = (1 - k / 6.0) ** 2
             dx += r.uniform(-1, 1) * amp * W * fall
             dy += r.uniform(-1, 1) * amp * W * fall
-    return dx, dy
+            env += amp * fall
+    return dx, dy, env
+
+
+def smoothstep(x):
+    x = min(1.0, max(0.0, x))
+    return x * x * (3 - 2 * x)
 
 
 def ease_out(x):
@@ -254,6 +263,7 @@ def main():
     ap.add_argument("--frames", nargs=2, type=int)
     ap.add_argument("--out")
     ap.add_argument("--stills", help="write these comma-separated frames as PNGs instead of a video")
+    ap.add_argument("--allow-fallback", action="store_true", help="final mode: accept preview/still/slate frames")
     a = ap.parse_args()
 
     tl = json.load(open(os.path.join(ROOT, "edit", "timeline.json")))
@@ -276,16 +286,26 @@ def main():
     def bf(b):
         return int(round((tm["song_grid_t0"] + b * tm["beat_sec"] - tm["song_offset"]) * FPS)) - 1
 
-    # flashes: (frame, frames, strength)
+    def exact_bf(b):
+        return (tm["song_grid_t0"] + b * tm["beat_sec"] - tm["song_offset"]) * FPS
+
+    def imp(b, lead=1.5):         # = rb_montage.imp: the frame a scripted impact lands on (1-2 frames before beat b)
+        return int(round(exact_bf(b) - lead))
+
+    # flashes: (frame, frames, strength) — only the drop D, the starts of phases 1-5, the M406 god attack and U
     flashes = [(bf(48), 2, 1.0), (bf(128), 3, 1.0)]
-    for b in (50, 56, 64, 72, 80, 88):
+    for b in (50, 56, 64, 72, 80):
         flashes.append((bf(b), 1, 0.55))
-    flashes.append((byid["M406"]["start_frame"] + 4, 2, 0.9))
-    # impacts for shake: (frame, amplitude as fraction of width)
-    impacts = [(bf(48), 0.018), (bf(128), 0.02), (bf(8), 0.004), (bf(16), 0.006), (bf(88), 0.01), (bf(90.35), 0.01),
-               (bf(98), 0.012), (bf(99.6), 0.016), (bf(64.15), 0.008), (bf(78), 0.012)]
-    for b in (62, 62.5, 63, 63.5, 80, 80.5, 81, 81.5, 82, 82.5, 83, 83.5):
+    flashes.append((bf(78.5), 2, 0.9))                 # M406: on the god attack's release (1185)
+    # impacts for shake: (frame, amplitude as fraction of width) — on the frames the hits land on screen
+    impacts = [(bf(48), 0.018), (bf(128), 0.02), (bf(8), 0.004), (bf(16), 0.006), (int(exact_bf(88.5)) - 1, 0.01),
+               (bf(90.35), 0.01), (bf(98), 0.012), (bf(99.6), 0.016), (imp(65), 0.008), (bf(78.5), 0.012),
+               (imp(67.5), 0.006)]
+    for b in (62.25, 62.5, 63.25, 63.5, 80, 80.75, 81, 81.75, 82, 82.75, 83.25, 83.75):
         impacts.append((bf(b), 0.006))
+    # speed ramps 0.5x -> 1.5x into the Phase-4 impacts (src(f0) = f0 and src(F) = F: the hit keeps its frame)
+    ramps = {"M402": imp(74.75), "M404": imp(76.5), "M405": imp(77.5)}
+    O12_FREEZE = bf(48) + 2                            # O12: 2-frame hold after the 2 white frames of the impact
     strobe_src = ["M502", "M504", "M506", "M508", "M503", "M505", "M507", "M501"]
 
     out = a.out or os.path.join(ROOT, "output" if full else "build/preview",
@@ -305,6 +325,7 @@ def main():
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
 
     stats = {"render": 0, "still": 0, "slate": 0}
+    fallbacks = {}
     frames_iter = stills if stills else range(f_lo, f_hi)
     for f in frames_iter:
         shot = next(s for s in shots if s["start_frame"] <= f < s["end_frame"])
@@ -326,25 +347,51 @@ def main():
             if img is not None:
                 img = img.copy()
         else:
-            img, kind = src.frame(shot, f)
+            sf = float(f)
+            if sid in ramps and shot["start_frame"] <= f <= ramps[sid]:
+                f0r, F = shot["start_frame"], ramps[sid]
+                u = (f - f0r) / max(1, F - f0r)
+                sf = f0r + (F - f0r) * (0.5 * u + 0.5 * u * u)
+            elif sid == "O12" and f > O12_FREEZE:
+                sf = f - 1.0 if f > O12_FREEZE + 1 else float(O12_FREEZE)
+            i0 = int(math.floor(sf))
+            img, kind = src.frame(shot, i0)
+            if sf - i0 > 1e-3 and img is not None and kind != "still":
+                img2, k2 = src.frame(shot, i0 + 1)
+                if img2 is not None and k2 == kind:
+                    img = img * (1 - (sf - i0)) + img2 * (sf - i0)
             if img is not None and kind == "still":
                 u = (f - shot["start_frame"]) / max(1, shot["frames"])
                 img = zoom_shift(img, 1.0 + 0.04 * u, 0, 0)
         if img is None:
             img = slate(shot, W, H)
+            kind = "slate"
         stats[kind] = stats.get(kind, 0) + 1
+        if full and kind not in ("render", "final"):
+            fallbacks.setdefault((sid, kind), []).append(f)
 
         # punch-in zoom on flagged shots (ease-out over the first 70% of the shot)
         sc = 1.0
         if "punch_in" in shot.get("flags", []):
             u = (f - shot["start_frame"]) / max(1, shot["frames"])
             sc = 1.0 + 0.09 * ease_out(u / 0.7)
-        dx, dy = shake_offset(f, impacts, W, 11)
+        dx, dy, env = shake_offset(f, impacts, W, 11)
         if sc != 1.0 or dx or dy:
-            img = zoom_shift(img, sc * (1.03 if (dx or dy) else 1.0), dx, dy)
+            # overscan just enough to hide the border, decaying with the shake (a fixed 1.03 popped back at k=6)
+            img = zoom_shift(img, sc * ((1 + 2 * env + 0.002) if env > 0 else 1.0), dx, dy)
 
         if sid not in ("O1", "END", "E1"):
             img = grade(img, LOOKS[look_for(shot)], H, W, vig)
+        if sid == "E2":
+            # the image returns slowly from the white (E1): ~1.2 s fade, inside the music silence
+            e = smoothstep((f - shot["start_frame"]) / 36.0)
+            img = img * e + (1 - e)
+        cut = byid["E4"]["start_frame"]
+        if abs(f - cut) < 8:
+            # light bloom carrying the gate's light into heaven (E3 -> E4)
+            kb = 1 - abs(f - cut) / 8.0
+            glow = cv2.GaussianBlur(np.clip(img - 0.6, 0, None), (0, 0), max(1.0, 40 * k * kb))
+            img = np.clip(img + kb * 0.6 * (glow + 0.25), 0, 1)
 
         # ---------------- overlays
         if sid == "O1":
@@ -413,6 +460,12 @@ def main():
         proc.stdin.close()
         proc.wait()
         print("wrote", out, stats)
+    if fallbacks:
+        for (sid, kind), fs in sorted(fallbacks.items()):
+            print("FALLBACK %-6s %-7s %d frames (%d-%d)" % (sid, kind, len(fs), fs[0], fs[-1]))
+        if not a.allow_fallback:
+            print("final render incomplete: frames above are not final renders (pass --allow-fallback to accept)")
+            sys.exit(1)
     else:
         print("stills written", stats)
 

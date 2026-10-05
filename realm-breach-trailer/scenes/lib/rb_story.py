@@ -294,7 +294,7 @@ class Track:
              "back": lambda x: C.ease_out_back(x, 1.3), "hold": lambda x: 0.0}
 
     def __init__(self, keys):
-        self.keys = [(bf(b), s, e) for b, s, e in keys]
+        self.keys = [(kf(b), s, e) for b, s, e in keys]
 
     def at(self, f):
         ks = self.keys
@@ -355,6 +355,15 @@ CONTACT = {
     98.0: V3((-0.6, 9.4, 1.72)),
     99.62: V3((0.4, 9.45, 1.4)),
 }
+# blade contacts (and the F1b floor smash) are keyed on the frame the sparks, shake and SFX fire: 1-2 frames before
+# their beat, instead of exactly on it (the bursts used to fire while the blades were still swinging)
+IMPACT = set(CONTACT) | {90.3}
+
+
+def kf(b):
+    return (int(bf(b)) - 1) if b in IMPACT else bf(b)
+
+
 SLAM = V3((0.3, 9.4, 0.02))
 _A5 = (0.05, 8.9, 0.0)
 _KNOCK = (-0.35, 4.6, 0.17)
@@ -509,14 +518,14 @@ def god_battle(g, f):
         (128.4, V3((-0.3, 0.2, 4.6)), V3((0.3, 0.6, 0.7)), {"chest": (-22, 0, 0), "spine": (-10, 0, 0),
                                                              "head": (-20, 0, 0)}, "out"),     # blasted back
     ]
-    if f <= bf(K[0][0]):
+    if f <= kf(K[0][0]):
         piv, d, add, ease = K[0][1], K[0][2], K[0][3], "io"
-    elif f >= bf(K[-1][0]):
+    elif f >= kf(K[-1][0]):
         piv, d, add = K[-1][1], K[-1][2], K[-1][3]
     else:
         for (ba, pa, da, aa, _), (bb, pb, db, ab, eb) in zip(K, K[1:]):
-            if bf(ba) <= f <= bf(bb):
-                t = Track.EASES[eb](_seg(f, bf(ba), bf(bb)))
+            if kf(ba) <= f <= kf(bb):
+                t = Track.EASES[eb](_seg(f, kf(ba), kf(bb)))
                 piv = pa.lerp(pb, t)
                 d = da.lerp(db, t).normalized()
                 add = MO.blend(aa, ab, t)

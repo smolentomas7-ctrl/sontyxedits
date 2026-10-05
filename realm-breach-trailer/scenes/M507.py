@@ -17,7 +17,8 @@ shot = rb_shot.Shot("M507", key_frame=1257)
 D, w = MT.scene(shot, "legend", look="late")
 F_HIT = int(round(MT.ST.bf(83.25))) - 1
 P = Vector((0, -2.6, 0))
-MT.act(w, shot, "cast", F_HIT - 6, 12, P, 180)
+MT.act(w, shot, "cast", F_HIT - 6, 12, P, 180,
+       crack=lambda f: 5.0 + 3.0 * max(0.0, 1 - abs(f - (F_HIT - 6)) / 6.0))   # ignited blade (M407 -> M508), flares on the hit
 palm = MT.joint_world(w, MT.act_pose(w, "cast", F_HIT - 6, F_HIT - 6, 12, P, 180), "fingers_L")
 ev = MT.enemy("evil", "EV1_", seed=shot.seed)
 EVP = Vector((0.1, 1.2, 0))

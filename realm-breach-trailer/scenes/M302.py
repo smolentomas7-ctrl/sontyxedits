@@ -12,9 +12,9 @@ import rb_core as C  # noqa: E402
 import rb_montage as MT  # noqa: E402
 import rb_shot  # noqa: E402
 
-shot = rb_shot.Shot("M302", key_frame=1012)
+shot = rb_shot.Shot("M302", key_frame=1005)   # same mid-fall pose as the approved 1012 still
 D, w = MT.scene(shot, "deep", look="mid")
-F_LAND = MT.imp(68)
+F_LAND = MT.imp(67.5)   # lands on screen with ~8 frames of ash before the cut on beat 68 (imp(68) fell on M303)
 P = Vector((0, 0, 0))
 MT.act(w, shot, "fall", F_LAND, 16, P, 180, slowmo=0.5)
 cam = rb_cam.Rig(lens=85, fstop=2.0)

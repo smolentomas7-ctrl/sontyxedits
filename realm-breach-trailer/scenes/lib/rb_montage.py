@@ -25,7 +25,9 @@ CARRY["mid"] = CARRY["late"]          # mid look = late armour and greatsword
 def _ctrl(w, f, crack=None, eyes=None):
     if w.look == "early":
         return
-    rb_intro._key_blade(w, f, 0.0 if crack is None else crack(f) if callable(crack) else crack)
+    # default: dark for the mid look; the late blade keeps M407's faint pre-ignition glow (never fully dead)
+    dflt = 0.0 if w.look == "mid" else 0.3
+    rb_intro._key_blade(w, f, dflt if crack is None else crack(f) if callable(crack) else crack)
     M.key_ctrl(w.mats["eyes"], "eye_glow", f, 28.0 if eyes is None else eyes)
 
 

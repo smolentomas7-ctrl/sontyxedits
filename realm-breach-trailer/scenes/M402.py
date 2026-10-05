@@ -23,7 +23,7 @@ MT.enemy_act(kg, shot, "death", F_DIE + 8, 14, (0.0, 1.6, 0.0), 0)
 EN.dissolve(kg, F_DIE, frames=12, mode="ash")
 RING_AT = Vector((0.06, -0.45, 0.012))
 # hero-sized drop (a real 2.4 cm ring was a speck even at 1.2 m)
-ring = PR.ring(loc=tuple(RING_AT), rot=(0, 0, math.radians(30)), gem="#FFE9A8", scale=2.2)
+ring = PR.ring(loc=tuple(RING_AT), rot=(0, 0, math.radians(30)), gem="#6FA8FF", scale=2.2)   # the blue ring that slides onto the gauntlet in M403
 F_LAND = MT.imp(74.75)
 # the ring drops out of the ash and lands with a small bounce, its gem lighting up on landing
 for f in shot.frames_all:

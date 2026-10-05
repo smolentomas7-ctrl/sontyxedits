@@ -17,7 +17,8 @@ shot = rb_shot.Shot("M506", key_frame=1249)
 D, w = MT.scene(shot, "legend", look="late")
 F_HIT = int(round(MT.ST.bf(82.75))) - 1
 P = Vector((0, 0, 0))
-MT.act(w, shot, "slash", F_HIT, 12, P, 180)
+MT.act(w, shot, "slash", F_HIT, 12, P, 180,
+       crack=lambda f: 5.0 + 3.0 * max(0.0, 1 - abs(f - F_HIT) / 6.0))   # ignited blade (M407 -> M508), flares on the hit
 crowd = EN.crowd(["skeleton", "ghost"], 9, (0, 2.6, 0), 2.2, seed=shot.seed, face=(0, 0, 0), min_r=0.6)   # all in front of him (none between him and the lens)
 tip = MT.tip_empty(w)
 src = MT.world_at(tip, F_HIT)

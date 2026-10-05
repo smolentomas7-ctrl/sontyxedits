@@ -150,8 +150,11 @@ class Shot:
             sc.frame_set(f)
             if os.path.exists(path) and not self.args.get("force"):
                 continue
-            sc.render.filepath = path
+            # write to a temp file and rename, so a killed render never leaves a half-written frame behind
+            tmp = path[:-4] + ".tmp.png"
+            sc.render.filepath = tmp
             bpy.ops.render.render(write_still=True)
+            os.replace(tmp, path)
         print("DONE", self.id, len(frames), "frames ->", self.out)
 
 

@@ -18,7 +18,8 @@ shot = rb_shot.Shot("M504", key_frame=1234)
 D, w = MT.scene(shot, "legend", look="late")
 F_HIT = int(round(MT.ST.bf(81.75))) - 1
 P = Vector((0, 0, 0))
-MT.act(w, shot, "slash", F_HIT, 12, P, 180)
+MT.act(w, shot, "slash", F_HIT, 12, P, 180,
+       crack=lambda f: 5.0 + 3.0 * max(0.0, 1 - abs(f - F_HIT) / 6.0))   # ignited blade (M407 -> M508), flares on the hit
 an = MT.enemy("bad_angel", "BA1_", seed=shot.seed)
 MT.enemy_act(an, shot, "hit", F_HIT, 8, (0.1, 1.5, 1.4), 0)
 MT.enemy_path(an, shot, lambda f: Vector((0.6, 3.0, 3.2)).lerp(Vector((0.1, 1.5, 1.4)), C.ease_out(C.clamp01((f - shot.f0 + 6) / float(F_HIT - shot.f0 + 6)))))
