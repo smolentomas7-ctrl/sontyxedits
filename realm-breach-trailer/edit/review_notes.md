@@ -56,3 +56,4 @@
 - F2b: side-on still unreadable (sparks dominate, obsidian invisible) -> rim light + edge glow like F2a, sparks 0.5, key 1478.
 - F2c re-render: good (thrown toward the lens, god behind). F2b (test 0.3x): helm + greatsword + compact burst read as the clash; obsidian still faint - accepted for a 15-frame insert.
 - Batch 5: O6 (3/4 helm) good; M401 thin mythic-red beam over the greatsword - reads as loot; M407 blade crack reads; M505 warrior silhouetted against the column. All accepted.
+- M105: reads (early warrior vs skeleton, sparks); grade cools it to floor-1 grey. M201: ghost lunge reads; near-lens ember bokeh too busy -> near=2 (also M508). M202/M204/M205 failed: CARRY lacked 'mid' -> fixed, re-render.
