@@ -67,3 +67,4 @@
 - M302 test: holds him but helm hidden -> camera z 2.15. M402: ring still airborne at the key -> key 1131.
 - M405: lightning reads, frame washed white -> strength 0.6. M501: good OTS (morbidious lunging, green pustules).
 - M502: reads (cleave into the morbidious); both cut at the frame edges -> camera 3.1 m.
+- M503: good (king shatters behind a shockwave, warrior foreground, blade blazing).
