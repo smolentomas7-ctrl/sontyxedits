@@ -59,3 +59,4 @@
 - M105: reads (early warrior vs skeleton, sparks); grade cools it to floor-1 grey. M201: ghost lunge reads; near-lens ember bokeh too busy -> near=2 (also M508). M202/M204/M205 failed: CARRY lacked 'mid' -> fixed, re-render.
 - M203: evil too close (purple mass) -> camera pulled back to 4.7 m.
 - M205: king read same size as the warrior -> tight OTS looking steeply up (pauldron lower-left, king + axe fill the frame).
+- M206: reads (slash shatters the skeleton) but the spark flash washed the teal set beige -> sparks strength 0.5.
