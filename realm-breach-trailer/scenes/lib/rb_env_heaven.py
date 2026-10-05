@@ -42,7 +42,8 @@ API
      doors, beam, aura, bounce, light box and motes are all driven from them.
  lights_gate(gate, warrior=None, cam=None, follow=None) -> {name: light}
      beam (shadowed spot through the gap), aura (soft volume-only halo around the arch), bounce
-     (warm up-light off the lit floor onto the gate face), front (faint cool fill), gate_rim (warm white
+     (warm up-light off the lit floor onto the gate face), front (faint cool fill, gold glints), glint,
+     ray0-2 (shadowless god-ray shafts fanning from the gap), gate_rim (warm white
      rim on the warrior from the gate side) and ember (ember kicker on his side) — the last two parented
      to `follow` (warrior.root), call with the scene at a frame where he stands at `warrior`.
      1 shadow caster (the beam); a shot may add one more.
@@ -663,11 +664,11 @@ def tune_gate(sc=None):
     e.volumetric_start = 0.1
     e.volumetric_end = 110.0
     e.volumetric_tile_size = "8"
-    e.volumetric_samples = 64
+    e.volumetric_samples = 40
     e.volumetric_sample_distribution = 0.8
     e.use_volumetric_lights = True
     e.use_volumetric_shadows = True
-    e.volumetric_shadow_samples = 16
+    e.volumetric_shadow_samples = 8
     e.use_soft_shadows = True
     e.shadow_cube_size = "1024"
     e.shadow_cascade_size = "2048"
@@ -926,7 +927,8 @@ def build_gate(seed=0):
     occ = mat_occluder("heaven_occluder")
     rub = mat_stone("heaven_rubble", base=(0.07, 0.068, 0.066), dark=0.6, rough=0.7, ao=False)
     wall = mat_stone("heaven_wall", base=(0.47, 0.44, 0.39), dark=0.55)
-    mist = mat_fog("heaven_mist", 0.024, 1.5, (0.9, 0.88, 0.84), anisotropy=0.55, scale=0.11)
+    mist = mat_fog("heaven_mist", 0.016, 1.4, (0.9, 0.88, 0.84), anisotropy=0.55, scale=0.13,
+                   contrast=(0.4, 0.72, 0.0, 1.5))
     motes = mat_motes("heaven_motes")
     G.mats = dict(stone=stone, gold=gold, floor=floor, light=light, occluder=occ, rubble=rub, wall=wall, mist=mist,
                   motes=motes)
@@ -1005,7 +1007,13 @@ def lights_gate(gate, warrior=None, cam=None, follow=None):
                     volume=0.0, cutoff=1.15)
     L["ember2"] = _L("POINT", "ember2", W - sv * 0.58 + d * 0.15 + Vector((0, 0, 1.55)), EMBER, 4.0, size=0.1,
                      volume=0.0, cutoff=1.0)
-    for k in ("beam", "aura", "bounce", "front", "glint", "gate_rim"):
+    # god rays: narrow shadowless spots from the gap fanning down toward the viewer (volume only, faint floor)
+    for i, (src, dst, deg, e) in enumerate((((0.0, GATE_Y - 0.6, Z0 + 9.5), (-2.2, 2.0, 0.0), 4.0, 1.4e5),
+                                             ((0.1, GATE_Y - 0.6, Z0 + 6.0), (2.6, 6.0, 0.0), 3.5, 1.1e5),
+                                             ((-0.1, GATE_Y - 0.6, Z0 + 11.5), (0.8, -4.0, 4.5), 3.0, 1.2e5))):
+        L["ray%d" % i] = _L("SPOT", "ray%d" % i, src, HEAVEN, e, target=dst, size=0.4, spot=deg, blend=0.8,
+                            volume=1.0, diffuse=0.03, specular=0.0)
+    for k in ["beam", "aura", "bounce", "front", "glint", "gate_rim"] + ["ray%d" % i for i in range(3)]:
         _drive(L[k].data, "energy", lm, "light", "c*%.1f" % L[k].data.energy)
     if follow is not None:
         for k in ("gate_rim", "ember", "ember2"):
@@ -1079,7 +1087,7 @@ def tune_meadow(sc=None):
 
 
 # =================================================================== E4 — materials
-def _aerial(b, shader, k=1.0, scale=650.0, color=(0.95, 0.86, 0.72), strength=0.85):
+def _aerial(b, shader, k=1.0, scale=900.0, color=(0.82, 0.85, 0.87), strength=0.82):
     """Aerial perspective: blend toward a luminous warm haze with view distance."""
     cd = b.n("ShaderNodeCameraData")
     fac = b.math("SUBTRACT", 1.0, b.math("EXPONENT", b.math("MULTIPLY", (cd, "View Distance"), -k / scale)))
@@ -1160,7 +1168,7 @@ def mat_drift_petals(name="meadow_drift_petals"):
     m.shadow_method = "NONE"
     m.use_backface_culling = False
     r = b.attr("rnd")
-    col = b.ramp(r, [(0.0, (0.86, 0.84, 0.8)), (0.55, (0.88, 0.62, 0.66)), (0.85, (0.9, 0.76, 0.48))])
+    col = b.ramp(r, [(0.0, (0.74, 0.72, 0.68)), (0.55, (0.8, 0.55, 0.6)), (0.85, (0.8, 0.66, 0.4))])
     col.color_ramp.interpolation = "CONSTANT"
     bs = b.bsdf(**{"Base Color": (col, "Color"), "Roughness": 0.45, "Specular IOR Level": 0.3})
     tr = b.n("ShaderNodeBsdfTranslucent", Color=(col, "Color"))
@@ -1326,7 +1334,7 @@ def build_meadow(seed=0):
     pg = mat_petal("meadow_petal_gold", (0.86, 0.67, 0.26))
     pk = mat_petal("meadow_petal_pink", (0.83, 0.52, 0.58))
     drift = mat_drift_petals()
-    mist = mat_fog("meadow_mist", 0.0035, 9.0, (0.97, 0.94, 0.9), anisotropy=0.5, scale=0.02,
+    mist = mat_fog("meadow_mist", 0.0015, 9.0, (0.97, 0.94, 0.9), anisotropy=0.5, scale=0.02,
                    wind=(0.4, 0.2, 0.0), z0=W.z - 7.0, contrast=(0.3, 0.75, 0.35, 1.2))
     Mw.mats = dict(ground=ground, grass=grass, centre=centre, petal_white=pw, petal_gold=pg, petal_pink=pk,
                    drift=drift, mist=mist)
@@ -1355,7 +1363,7 @@ def build_meadow(seed=0):
     X, Y = X[keep], Y[keep]
     dc = np.hypot(X - camf.x, Y - camf.y)
     rw = np.hypot(X - W.x, Y - W.y)
-    rho = np.where(dc < 32.0, 13.0, np.interp(dc, [32.0, 75.0], [13.0, 2.5]))
+    rho = np.where(dc < 28.0, 13.0, np.interp(dc, [28.0, 75.0], [13.0, 1.6]))
     rho = np.maximum(rho, np.interp(rw, [3.0, 7.0], [28.0, 0.0]))
     acc_ = rng.random(len(X)) < rho / rho_max
     X, Y = X[acc_], Y[acc_]
@@ -1400,18 +1408,18 @@ def build_meadow(seed=0):
     fp.visible_shadow = False
     Mw.flowers = fp
     # floating petals (frame-driven)
-    npt = 420
+    npt = 560
     P, A = [], {k: [] for k in ("phase", "spd", "len", "sz", "sway", "sfq", "dir", "spin", "rnd")}
     wind = Vector((0.8, 0.52, 0.16)).normalized()
     for _ in range(npt):
         px = W.x + rnd.uniform(-12.0, 12.0)
-        py = W.y + (-17.0 + 34.0 * rnd.random() ** 1.6)
+        py = W.y + (-18.0 + 32.0 * rnd.random() ** 1.9)
         pz = Mw.ground_z(px, py) + rnd.uniform(0.25, 5.5) ** 1.0
         P.append((px, py, pz))
         A["phase"].append(rnd.random())
         A["spd"].append(rnd.uniform(0.45, 0.95))
         A["len"].append(rnd.uniform(16.0, 24.0))
-        A["sz"].append(rnd.uniform(1.3, 2.0))
+        A["sz"].append(rnd.uniform(1.1, 1.7))
         A["sway"].append(rnd.uniform(0.25, 0.55))
         A["sfq"].append(rnd.uniform(0.6, 1.1))
         d = (wind + Vector((rnd.uniform(-0.15, 0.15), rnd.uniform(-0.15, 0.15), rnd.uniform(-0.08, 0.08)))).normalized()
@@ -1419,8 +1427,10 @@ def build_meadow(seed=0):
         A["spin"].append((rnd.uniform(-4, 4), rnd.uniform(-4, 4), rnd.uniform(-2, 2)))
         A["rnd"].append(rnd.random())
     pp = _points("MEADOW_petals", P, A)
-    pv = [(0, -0.004, 0), (0.008, 0.002, 0.002), (0, 0.014, 0.003), (-0.008, 0.002, 0.002), (0, 0.006, -0.001)]
-    pshape = _shape("MEADOW_petal_shape", pv, [(0, 1, 4), (1, 2, 4), (2, 3, 4), (3, 0, 4)], [drift])
+    pv = [(0, -0.006, 0), (0.0055, 0.0, 0.0015), (0.0042, 0.009, 0.0025), (0, 0.013, 0.001),
+          (-0.0042, 0.009, 0.0025), (-0.0055, 0.0, 0.0015), (0, 0.004, -0.0012)]
+    pshape = _shape("MEADOW_petal_shape", pv, [(0, 1, 6), (1, 2, 6), (2, 3, 6), (3, 4, 6), (4, 5, 6), (5, 0, 6)],
+                    [drift])
     pp.modifiers.new("drift", "NODES").node_group = _drift_tree("MEADOW_petals_gn", pshape, drift)
     pp.visible_shadow = False
     Mw.petals = pp
