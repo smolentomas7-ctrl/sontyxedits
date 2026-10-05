@@ -24,7 +24,7 @@ cam.handheld(amp=0.0025, rot_deg=0.12, freq=0.35, seed=shot.seed)
 def cam_fn(f):
     br = 0.004 * math.sin(f / 30 * 2 * math.pi / 3.6)
     # head-and-shoulders at 1.15 m (0.62 m gave ~1 cm of focus and bloomed eyes); O9 is the tight helm shot
-    return dict(loc=head + Vector((0.03, 1.15, -0.05 + br)), target=head + Vector((0, 0, -0.08)),
+    return dict(loc=head + Vector((0.42, 1.08, -0.05 + br)), target=head + Vector((0, 0, -0.08)),   # slight 3/4 (O9 is frontal)
                 focus=head + Vector((0, 0.12, 0)))
 
 
