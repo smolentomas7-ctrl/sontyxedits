@@ -33,7 +33,7 @@ def lum(im):
     return 0.0722 * im[..., 0] + 0.7152 * im[..., 1] + 0.2126 * im[..., 2]
 
 
-def strip(frames, paths, out, sid, tile_w=216, title=None):
+def strip(frames, paths, out, sid, tile_w=270, title=None, cols=4):
     tiles = []
     for f, p in zip(frames, paths):
         im = cv2.imread(p)
@@ -43,7 +43,12 @@ def strip(frames, paths, out, sid, tile_w=216, title=None):
         cv2.putText(im, "%s f%d" % (sid, f), (5, 16), cv2.FONT_HERSHEY_SIMPLEX, 0.48, (120, 200, 255), 1, cv2.LINE_AA)
         tiles.append(im)
     gap = np.zeros((tiles[0].shape[0], 4, 3), np.uint8)
-    row = np.hstack([x for t in tiles for x in (t, gap)][:-1])
+    rows = []
+    for r in range(0, len(tiles), cols):
+        part = tiles[r:r + cols] + [np.zeros_like(tiles[0])] * (cols - len(tiles[r:r + cols]))
+        rows.append(np.hstack([x for t in part for x in (t, gap)][:-1]))
+    vgap = np.zeros((4, rows[0].shape[1], 3), np.uint8)
+    row = np.vstack([x for rr in rows for x in (rr, vgap)][:-1])
     if title:
         bar = np.zeros((30, row.shape[1], 3), np.uint8)
         cv2.putText(bar, title, (6, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (230, 230, 230), 1, cv2.LINE_AA)
@@ -55,7 +60,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", default="preview", choices=["preview", "final"])
     ap.add_argument("--shots")
-    ap.add_argument("--n", type=int, default=10)
+    ap.add_argument("--n", type=int, default=8)
     a = ap.parse_args()
     tl = json.load(open(os.path.join(ROOT, "edit", "timeline.json")))
     tm = json.load(open(os.path.join(ROOT, "config", "timing.json")))
