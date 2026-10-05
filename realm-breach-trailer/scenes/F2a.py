@@ -31,7 +31,7 @@ import bpy  # noqa: E402
 import rb_mat as M  # noqa: E402
 ob_m = bpy.data.materials.get("obsidian")
 if ob_m is not None:
-    M.key_ctrl(ob_m, "edge_glow", shot.sim_start, 4.0)
+    M.key_ctrl(ob_m, "edge_glow", shot.sim_start, 1.8)   # x4 + the rim read as a glowing white blade
 C.light("AREA", "F2a_blade_rim", ST.GOD_POS + Vector((-1.6, 3.2, 9.8)), color="#8FB8FF", energy=3500, size=4.0,
         target=ST.GOD_POS + Vector((0.0, -0.3, 7.0)), shadow=False, volume=0.2)
 rb_intro.clear_view(rb_intro.cam_samples(cam, shot), rb_intro.cam_target_sample(cam, shot))

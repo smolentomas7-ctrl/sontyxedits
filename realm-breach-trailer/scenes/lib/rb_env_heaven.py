@@ -412,7 +412,7 @@ def mat_motes(name, gap_half=0.75):
     tw = b.n("ShaderNodeMath", _operation="SINE")
     b._in(tw, 0, b.math("ADD", b.math("MULTIPLY", t, 2.1), b.math("MULTIPLY", ph, 61.0)))
     twk = _mr(b, tw, -1.0, 1.0, 0.45, 1.0)
-    s = b.math("MULTIPLY", b.math("MULTIPLY", b.math("ADD", b.math("MULTIPLY", inb, 5.0), 0.03), twk),
+    s = b.math("MULTIPLY", b.math("MULTIPLY", b.math("ADD", b.math("MULTIPLY", inb, 2.6), 0.0), twk),
                b.math("MULTIPLY", near_gate, k))
     em = b.n("ShaderNodeEmission", Color=_lin("#FFE9C4"), Strength=s)
     b.out(em)
@@ -734,6 +734,8 @@ def _jamb(acc, s, rnd):
 def _arch(acc, rnd):
     """Entablature, cornice, archivolt rings, tympanum with a gold sunburst, keystone."""
     zl = Z0 + DH + 0.8
+    acc.box((-HW - 0.05, GATE_Y - 1.25, Z0 + DH), (HW + 0.05, GATE_Y + 1.25, zl + 0.1))
+    acc.box((-HW + 0.3, GATE_Y - 1.29, Z0 + DH + 0.36), (HW - 0.3, GATE_Y - 1.25, Z0 + DH + 0.41), 1)
     acc.box((-HW - JW - 0.3, GATE_Y - 1.6, zl), (HW + JW + 0.3, GATE_Y + 1.5, ZE - 0.55))
     acc.box((-HW - JW - 0.2, GATE_Y - 1.72, zl), (HW + JW + 0.2, GATE_Y - 1.6, zl + 0.3))
     acc.box((-HW - JW, GATE_Y - 1.64, ZE - 0.97), (HW + JW, GATE_Y - 1.6, ZE - 0.92), 1)
@@ -880,14 +882,14 @@ def _lightbox(name, mat):
     return ob
 
 
-def _motes(name, seed, mat, n=900):
+def _motes(name, seed, mat, n=650):
     rnd = random.Random(seed)
     P, A = [], {k: [] for k in ("phase", "spd", "len", "sz", "sway", "sfq", "dir", "spin")}
     for _ in range(n):
-        y = -3.5 + (GATE_Y - 2.0 + 3.5) * rnd.random() ** 0.85
+        y = 0.8 + (GATE_Y - 2.0 - 0.8) * rnd.random() ** 0.85
         w = (GATE_Y + 14.0 - y) * 0.75 / 12.0 + 0.25
         x = rnd.gauss(0.0, w * 0.55)
-        z = 0.05 + min(7.0, 0.8 + (GATE_Y - y) * 0.18) * rnd.random() ** 1.6
+        z = 0.05 + min(5.0, 0.8 + (GATE_Y - y) * 0.12) * rnd.random() ** 2.2
         P.append((x, y, z))
         A["phase"].append(rnd.random())
         A["spd"].append(rnd.uniform(0.02, 0.07))
@@ -924,7 +926,7 @@ def build_gate(seed=0):
     occ = mat_occluder("heaven_occluder")
     rub = mat_stone("heaven_rubble", base=(0.07, 0.068, 0.066), dark=0.6, rough=0.7, ao=False)
     wall = mat_stone("heaven_wall", base=(0.47, 0.44, 0.39), dark=0.55)
-    mist = mat_fog("heaven_mist", 0.035, 1.6, (0.9, 0.88, 0.84), anisotropy=0.55, scale=0.11)
+    mist = mat_fog("heaven_mist", 0.024, 1.5, (0.9, 0.88, 0.84), anisotropy=0.55, scale=0.11)
     motes = mat_motes("heaven_motes")
     G.mats = dict(stone=stone, gold=gold, floor=floor, light=light, occluder=occ, rubble=rub, wall=wall, mist=mist,
                   motes=motes)
@@ -978,8 +980,8 @@ def lights_gate(gate, warrior=None, cam=None, follow=None):
     Cm = Vector(cam if cam is not None else mk["cam"])
     lm = gate.ctrls["light"]
     L = {}
-    L["beam"] = _L("SPOT", "beam", (0.0, GATE_Y + 14.0, Z0 + 8.0), HEAVEN, 7.0e4, target=(0.0, GATE_Y, Z0 + 4.0),
-                   size=0.5, shadow=True, spot=95.0, blend=0.2, volume=1.0, specular=1.0)
+    L["beam"] = _L("SPOT", "beam", (0.0, GATE_Y + 14.0, Z0 + 12.5), HEAVEN, 7.0e4, target=(0.0, GATE_Y, Z0 + 5.0),
+                   size=0.5, shadow=True, spot=82.0, blend=0.2, volume=1.0, specular=1.0)
     L["aura"] = _L("POINT", "aura", (0.0, GATE_Y - 1.0, Z0 + DH + 1.0), HEAVEN, 5000.0, size=3.0, shadow=False,
                    volume=1.0, diffuse=0.0, specular=0.0, cutoff=22.0)
     bo = _L("AREA", "bounce", (0.0, GATE_Y - 9.0, 0.03), "#FFE4BE", 900.0, size=8.0, volume=0.0, specular=0.35)
@@ -988,7 +990,9 @@ def lights_gate(gate, warrior=None, cam=None, follow=None):
     bo.rotation_euler = (math.pi, 0.0, 0.0)
     L["bounce"] = bo
     L["front"] = _L("AREA", "front", (0.0, GATE_Y - 30.0, 16.0), "#8C9BAD", 450.0, target=(0.0, GATE_Y, 8.0),
-                    size=16.0, volume=0.0, specular=0.5)
+                    size=16.0, volume=0.0, specular=1.6)
+    L["glint"] = _L("AREA", "glint", (-4.0, GATE_Y - 24.0, 5.0), "#FFE2B0", 380.0, target=(0.0, GATE_Y, 9.0),
+                    size=5.0, volume=0.0, diffuse=0.1, specular=2.0)
     # warrior: warm white rim from the gate side + ember kicker on his side (both follow him)
     t = W + Vector((0, 0, 1.3))
     d = t - Cm
@@ -997,11 +1001,11 @@ def lights_gate(gate, warrior=None, cam=None, follow=None):
     sv = Vector((-d.y, d.x, 0.0))
     L["gate_rim"] = _L("SPOT", "gate_rim", t + d * 3.2 + sv * 0.8 + Vector((0, 0, 1.4)), HEAVEN, 450.0, target=t,
                        size=0.5, spot=32.0, blend=0.5, volume=0.0, diffuse=0.25, specular=1.3, cutoff=6.0)
-    L["ember"] = _L("POINT", "ember", W + sv * 0.62 + d * 0.1 + Vector((0, 0, 1.35)), EMBER, 14.0, size=0.1,
+    L["ember"] = _L("POINT", "ember", W + sv * 0.62 + d * 0.1 + Vector((0, 0, 1.35)), EMBER, 7.0, size=0.1,
                     volume=0.0, cutoff=1.15)
-    L["ember2"] = _L("POINT", "ember2", W - sv * 0.58 + d * 0.15 + Vector((0, 0, 1.55)), EMBER, 6.0, size=0.1,
+    L["ember2"] = _L("POINT", "ember2", W - sv * 0.58 + d * 0.15 + Vector((0, 0, 1.55)), EMBER, 4.0, size=0.1,
                      volume=0.0, cutoff=1.0)
-    for k in ("beam", "aura", "bounce", "front", "gate_rim"):
+    for k in ("beam", "aura", "bounce", "front", "glint", "gate_rim"):
         _drive(L[k].data, "energy", lm, "light", "c*%.1f" % L[k].data.energy)
     if follow is not None:
         for k in ("gate_rim", "ember", "ember2"):
@@ -1023,8 +1027,8 @@ def sky_world(sun_dir=SUN_DIR, fog=0.0004):
     Dn = b.n("ShaderNodeVectorMath", _operation="NORMALIZE", Vector=D)
     e = (_sep(b, (Dn, 0)), "Z")
     hz = _lin(HEAVEN)
-    sky = b.ramp(_mr(b, e, -0.08, 0.75), [(0.0, (0.66, 0.6, 0.5)), (0.1, (hz[0], hz[1] * 0.96, hz[2] * 0.86)),
-                                         (0.26, (0.58, 0.66, 0.74)), (1.0, (0.24, 0.38, 0.62))])
+    sky = b.ramp(_mr(b, e, -0.08, 0.75), [(0.0, (0.6, 0.52, 0.4)), (0.1, (hz[0], hz[1] * 0.93, hz[2] * 0.8)),
+                                         (0.3, (0.42, 0.53, 0.7)), (1.0, (0.12, 0.25, 0.56))])
     dot = b.n("ShaderNodeVectorMath", _operation="DOT_PRODUCT", Vector=(Dn, 0))
     dot.inputs[1].default_value = tuple(sun_dir)
     g = b.math("MAXIMUM", (dot, "Value"), 0.0)
@@ -1039,7 +1043,7 @@ def sky_world(sun_dir=SUN_DIR, fog=0.0004):
     b._in(c2, "Factor", glow)
     b._in(c2, 6, c1)
     b._in(c2, 7, (1.0, 0.84, 0.6))
-    k = b.ctrl("sky", 1.05)
+    k = b.ctrl("sky", 0.85)
     bg = b.n("ShaderNodeBackground", Color=(c2, 2), Strength=k)
     b.link(bg, out.inputs["Surface"])
     f = b.ctrl("fog", fog)
@@ -1075,7 +1079,7 @@ def tune_meadow(sc=None):
 
 
 # =================================================================== E4 — materials
-def _aerial(b, shader, k=1.0, scale=420.0, color=(0.97, 0.9, 0.78), strength=0.98):
+def _aerial(b, shader, k=1.0, scale=650.0, color=(0.95, 0.86, 0.72), strength=0.85):
     """Aerial perspective: blend toward a luminous warm haze with view distance."""
     cd = b.n("ShaderNodeCameraData")
     fac = b.math("SUBTRACT", 1.0, b.math("EXPONENT", b.math("MULTIPLY", (cd, "View Distance"), -k / scale)))
@@ -1442,7 +1446,7 @@ def lights_meadow(meadow, warrior=None, cam=None, follow=None):
     Cm = Vector(cam if cam is not None else mk["cam"])
     L = {}
     sd = Vector(mk.get("sun_dir", SUN_DIR))
-    sun = _L("SUN", "sun", W + sd * 100.0, "#FFDDB0", 4.6, target=tuple(W), size=math.radians(2.2), shadow=True,
+    sun = _L("SUN", "sun", W + sd * 100.0, "#FFD9A6", 6.0, target=tuple(W), size=math.radians(2.2), shadow=True,
              volume=0.6, prefix="MEADOW_")
     s = sun.data
     s.shadow_cascade_count = 4
