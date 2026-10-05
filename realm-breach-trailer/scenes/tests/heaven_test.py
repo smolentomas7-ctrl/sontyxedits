@@ -114,12 +114,14 @@ for v in which:
     tb = time.time() - t0
     path = os.path.join(out, "%s_%s.png" % (v, tag))
     sc.render.filepath = path
-    t1 = time.time()
+    t1, c1 = time.time(), time.process_time()
     bpy.ops.render.render(write_still=True)
     tr = time.time() - t1
-    print("TIMING %s build %.1fs render %.1fs (scale %.2f, %d spp) -> %s" % (v, tb, tr, scale, samples, path))
+    print("TIMING %s build %.1fs render %.1fs cpu %.1fs (scale %.2f, %d spp) -> %s"
+          % (v, tb, tr, time.process_time() - c1, scale, samples, path))
     for k in range(repeat):
         sc.frame_set(frame + 1 + k)
-        t1 = time.time()
+        t1, c1 = time.time(), time.process_time()
         bpy.ops.render.render(write_still=False)
-        print("TIMING %s repeat frame %d render %.1fs" % (v, frame + 1 + k, time.time() - t1))
+        print("TIMING %s repeat frame %d render %.1fs cpu %.1fs" % (v, frame + 1 + k, time.time() - t1,
+                                                                    time.process_time() - c1))

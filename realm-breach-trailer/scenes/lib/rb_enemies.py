@@ -34,6 +34,7 @@ from mathutils import Euler, Matrix, Vector
 import rb_core as C
 import rb_mat as M
 import rb_mesh as G
+import rb_motion as MO
 from rb_core import hexcol, parent_keep
 
 KINDS = ("skeleton", "ghost", "bad_angel", "evil", "morbidious", "skeleton_king")
@@ -75,7 +76,7 @@ ORDER = ["root", "pelvis", "spine", "chest", "neck", "head", "jaw",
          "wing_L", "wing2_L", "wing_R", "wing2_R", "tail1", "tail2", "tail3"]
 LEGS = ("thigh_L", "shin_L", "foot_L", "thigh_R", "shin_R", "foot_R")
 # (uniform scale, width factor, arm length factor) per kind; morbidious has its own skeleton
-_SPEC = {"skeleton": (1.0, 0.94, 1.0), "skeleton_king": (1.78, 1.12, 1.0), "ghost": (1.08, 0.95, 1.22),
+_SPEC = {"skeleton": (1.0, 0.94, 1.0), "skeleton_king": (1.86, 1.12, 1.0), "ghost": (0.96, 0.95, 1.22),
          "bad_angel": (1.08, 0.9, 1.1), "evil": (1.25, 1.02, 1.3)}
 
 
@@ -204,10 +205,22 @@ def _sweep(name, pts, radius, N=8, cap=True, up=(0, 0, 1), per=3):
     return G.grid_mesh(name, R, closed_u=True, cap_start=cap, cap_end=cap)
 
 
+def _fixn(ob):
+    """Recalculate consistent outward normals (sphere-parameterised grids are wound inward)."""
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(ob.data)
+    bm.free()
+    ob.data.update()
+    return ob
+
+
 def _weld(ob, d=1e-6):
     bm = bmesh.new()
     bm.from_mesh(ob.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=d)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     bm.to_mesh(ob.data)
     bm.free()
     for p in ob.data.polygons:
@@ -316,18 +329,20 @@ def _skull_shape(U, depth=1.0, flesh=0.0):
 
 def _teeth(name, c, L, z, y0, n=10, upper=True):
     obs = []
+    if _LOD[0] > 0:
+        n = 7
     for i in range(n):
         x = -0.34 + 0.68 * i / (n - 1)
         zz = z - (0.035 if upper else -0.035)
         obs.append(_blob("%s%d" % (name, i), c + np.array((x, y0 + 1.6 * x * x, zz)) * L,
-                         (0.045 * L, 0.04 * L, 0.075 * L), N=8, M_=6))
+                         (0.045 * L, 0.04 * L, 0.075 * L), N=6 if _LOD[0] else 8, M_=4 if _LOD[0] else 6))
     return G.join(obs, name)
 
 
 def _skull(name, c, L, depth=1.0, flesh=0.0, teeth=True):
     """Returns (cranium+face object, mandible object). L = half skull length (~0.1 m for a human)."""
     c = np.asarray(c, float)
-    X = _skull_shape(_unit_sphere(26, 36), depth, flesh)
+    X = _skull_shape(_unit_sphere(18, 26) if _LOD[0] else _unit_sphere(26, 36), depth, flesh)
     sk = _weld(G.grid_mesh(name, X * L + c, closed_u=True))
     if teeth:
         sk = G.join([sk, _teeth(name + "_tu", c, L, -0.76, -0.80, upper=True)], name)
@@ -604,6 +619,7 @@ def _floor_rest_mud(ob, H):
 # ================================================================== build helpers
 def _add(e, ob, joint, mat=None, bake=True, wear=6.0):
     """Material + baked wear/cavity attributes, then rigid-parent the part to a joint (keeps rest transform)."""
+    _fixn(ob)
     if mat is not None:
         G.set_mat(ob, mat)
     if bake:
@@ -647,7 +663,7 @@ def _dome(name, c, radii, rot=(0, 0, 0), p0=0.0, p1=1.25, N=28, M_=9):
     U = np.stack([np.sin(th) * np.cos(ph), np.sin(th) * np.sin(ph), np.cos(th) * np.ones_like(ph)], -1)
     Rm = np.array(Euler([math.radians(a) for a in rot], "XYZ").to_matrix())
     P = (U * np.asarray(radii, float)) @ Rm.T + np.asarray(c, float)
-    return G.grid_mesh(name, P, closed_u=True, cap_start=(p0 <= 1e-3))
+    return _fixn(G.grid_mesh(name, P, closed_u=True, cap_start=(p0 <= 1e-3)))
 
 
 def _ring(name, c, axis, R, r, N=20, wob=0.0, seed=0):
@@ -661,7 +677,7 @@ def _ring(name, c, axis, R, r, N=20, wob=0.0, seed=0):
     return _sweep(name, pts, r, N=6, cap=False, per=1)
 
 
-def _rag(name, top, length, rnd, rows=10, out=(0.0, 0.0, 0.0), flare=0.0, tear=0.45, wave=0.012):
+def _rag(name, top, length, rnd, rows=10, out=(0.0, 0.0, 0.0), flare=0.0, tear=0.45, wave=0.012, gap=0.0):
     """Hanging tattered cloth: `top` (cols, 3) upper edge, drops `length`, drifts by `out` at the hem,
     widens by `flare`, seeded ragged per-column hem (strips) and a soft fold wave."""
     top = np.asarray(top, float)
@@ -680,8 +696,10 @@ def _rag(name, top, length, rnd, rows=10, out=(0.0, 0.0, 0.0), flare=0.0, tear=0
             p[2] -= length * v
             P[i, j] = p
 
+    cut = [j > 0 and rnd.random() < gap for j in range(nc)]
+
     def skip(i, j):
-        return (i + 0.5) / (rows - 1) * length > min(Ls[j], Ls[min(j + 1, nc - 1)])
+        return cut[j] or (i + 0.5) / (rows - 1) * length > min(Ls[j], Ls[min(j + 1, nc - 1)])
     return G.grid_mesh(name, P, closed_u=False, skip=skip)
 
 
@@ -729,13 +747,17 @@ def _hand(name, wrist, sx, k_, length=1.0, curl=(8, 22, 18), claw=0.0, r=0.0062,
     return G.join(obs, name), (G.join(cl, name + "_claws") if cl else None)
 
 
+_LOD = [0]   # 1 = crowd level of detail (lighter vertebrae / teeth / skull grids)
+
+
 def _vert(name, c, r, proc):
     """One vertebra: body, spinous process (back/down), two transverse processes."""
     c = np.asarray(c, float)
-    obs = [_blob(name, c, tuple(r), N=10, M_=7),
+    lo = _LOD[0] > 0
+    obs = [_blob(name, c, tuple(r), N=7 if lo else 10, M_=5 if lo else 7),
            _blob(name + "p", c + np.array((0, r[1] + proc * 0.55, -proc * 0.35)), (r[0] * 0.28, proc * 0.65, r[2] * 0.55),
-                 N=8, M_=6, rot=(28, 0, 0))]
-    for sx in (1, -1):
+                 N=6 if lo else 8, M_=4 if lo else 6, rot=(28, 0, 0))]
+    for sx in ((1, -1) if not lo else ()):
         obs.append(_blob(name + "t%d" % sx, c + np.array((sx * r[0] * 1.35, r[1] * 0.7, 0)),
                          (r[0] * 0.6, r[1] * 0.32, r[2] * 0.4), N=8, M_=6))
     return G.join(obs, name)
@@ -879,12 +901,12 @@ def _skeleton_body(e, bone, eyes, rmul=1.0, cloth=None, open_hand=True):
                 for a in np.linspace(0, 2 * math.pi, 25)]
         belt.append(belt[1])
         rags = [_sweep(P + "belt", belt, (0.011 * s, 0.006 * s), N=6, cap=False, per=1)]
-        xs = np.linspace(-0.1, 0.1, 9)
-        rags.append(_rag(P + "loinF", [T((x, -0.122 + 0.5 * x * x, 0.968)) for x in xs], 0.42 * s, rnd,
-                         out=(0, -0.03 * s, 0), flare=0.1))
+        xs = np.linspace(-0.075, 0.075, 7)
+        rags.append(_rag(P + "loinF", [T((x, -0.122 + 0.5 * x * x, 0.968)) for x in xs], 0.34 * s, rnd,
+                         out=(0, -0.03 * s, 0), flare=0.1, gap=0.3, tear=0.55))
         xs = np.linspace(-0.125, 0.125, 11)
         rags.append(_rag(P + "loinB", [T((x, 0.112 - 0.5 * x * x, 0.985)) for x in xs], 0.5 * s, rnd,
-                         out=(0, 0.05 * s, 0), flare=0.15))
+                         out=(0, 0.05 * s, 0), flare=0.15, gap=0.3, tear=0.55))
         for sx in (1, -1):
             rags.append(_rag(P + "loinS%d" % sx, [T((sx * 0.148, y, 0.978)) for y in np.linspace(-0.05, 0.05, 4)],
                              0.24 * s, rnd, out=(sx * 0.03 * s, 0, 0), tear=0.6))
@@ -897,13 +919,13 @@ def _build_skeleton(e):
                 sheen=0.08, grime=0.85, cav=1.8, nscale=7.0, bump=0.35, spec=0.35)
     iron = _pbr(P + "iron", H, GLOW["skeleton"], base=(0.045, 0.04, 0.036), metal=0.85, rust=1.0,
                 wear_col=(0.32, 0.3, 0.27), rough=(0.32, 0.65), nscale=9.0, bump=0.5, mud=False)
-    cloth = _cloth_mat(P + "cloth", H, top=(0.032, 0.026, 0.018), bottom=(0.011, 0.008, 0.006), length=0.5, holes=0.7)
-    eyes = _glow_mat(P + "eyes", GLOW["skeleton"], 40.0, H, hot=0.7)
+    cloth = _cloth_mat(P + "cloth", H, top=(0.075, 0.062, 0.042), bottom=(0.022, 0.017, 0.012), length=0.5, holes=0.7)
+    eyes = _glow_mat(P + "eyes", GLOW["skeleton"], 26.0, H, hot=0.7)
     e.mats.update(bone=bone, iron=iron, cloth=cloth, eyes=eyes)
     _skeleton_body(e, bone, eyes, cloth=cloth)
     _sword(e, iron)
     if e.want_lights:
-        _light(e, "eyelight", "head", e.skull_c + np.array((0, -0.16, -0.01)) * e.s, GLOW["skeleton"], 2.0, 0.03, 1.5)
+        _light(e, "eyelight", "head", e.skull_c + np.array((0, -0.16, -0.01)) * e.s, GLOW["skeleton"], 0.25, 0.03, 1.2)
 
 
 def _build_king(e):
@@ -920,7 +942,7 @@ def _build_king(e):
     wood = _pbr(P + "wood", H, GLOW["skeleton_king"], base=(0.035, 0.02, 0.011), base2=(0.012, 0.007, 0.004),
                 rough=(0.55, 0.85), nscale=3.0, bump=0.4, mud=False)
     cloth = _cloth_mat(P + "cloth", H, top=(0.06, 0.006, 0.007), bottom=(0.012, 0.0028, 0.0028), length=1.9, holes=0.8)
-    eyes = _glow_mat(P + "eyes", GLOW["skeleton_king"], 45.0, H, hot=0.7)
+    eyes = _glow_mat(P + "eyes", GLOW["skeleton_king"], 30.0, H, hot=0.7)
     e.mats.update(bone=bone, armour=iron, axe=axe, gold=gold, wood=wood, cloth=cloth, eyes=eyes)
     _skeleton_body(e, bone, eyes, rmul=1.28, cloth=None)
     # --- broken cuirass (hole over the left ribs)
@@ -947,12 +969,12 @@ def _build_king(e):
     # --- pauldrons + lames, bracers, greaves
     for sd, sx in (("L", 1), ("R", -1)):
         ua = J["upperarm_" + sd]
-        pa = [_dome(P + "paul" + sd, ua + np.array((sx * 0.02, 0.0, 0.035)) * s, np.array((0.115, 0.125, 0.095)) * s,
-                    rot=(0, sx * 38, 0), p1=1.35)]
+        pa = [_dome(P + "paul" + sd, ua + np.array((sx * 0.0, 0.0, 0.02)) * s, np.array((0.088, 0.1, 0.07)) * s,
+                    rot=(0, sx * 50, 0), p1=1.2)]
         for k in range(2):
-            pa.append(_dome(P + "lame%s%d" % (sd, k), ua + np.array((sx * (0.03 + 0.012 * k), 0.0, -0.005 - 0.03 * k)) * s,
-                            np.array((0.13, 0.135, 0.1)) * s * (1.06 + 0.07 * k), rot=(0, sx * (44 + 6 * k), 0),
-                            p0=1.0, p1=1.38))
+            pa.append(_dome(P + "lame%s%d" % (sd, k), ua + np.array((sx * (0.008 + 0.01 * k), 0.0, -0.012 - 0.022 * k)) * s,
+                            np.array((0.095, 0.105, 0.072)) * s * (1.05 + 0.06 * k), rot=(0, sx * (58 + 6 * k), 0),
+                            p0=0.95, p1=1.25))
         for ob in pa:
             G.finish_plate(ob, thick=0.006 * s, bevel=0.002 * s, subsurf=1)
         _add(e, G.join(pa, P + "pauldron" + sd), "upperarm_" + sd, iron, wear=8.0)
@@ -976,9 +998,9 @@ def _build_king(e):
         G.finish_plate(ob, thick=0.005 * s, bevel=0.0015 * s, subsurf=1)
     _add(e, G.join(fl, P + "faulds"), "pelvis", iron, wear=8.0)
     tb = [_rag(P + "tabF", [T((x, -0.2 + 0.4 * x * x, 0.88)) for x in np.linspace(-0.11, 0.11, 8)], 0.5 * s, rnd,
-               out=(0, -0.04 * s, 0), flare=0.15, tear=0.4),
+               out=(0, -0.04 * s, 0), flare=0.15, tear=0.5, gap=0.2),
           _rag(P + "tabB", [T((x, 0.2 - 0.4 * x * x, 0.9)) for x in np.linspace(-0.13, 0.13, 9)], 0.55 * s, rnd,
-               out=(0, 0.06 * s, 0), flare=0.2, tear=0.4)]
+               out=(0, 0.06 * s, 0), flare=0.2, tear=0.5, gap=0.2)]
     _add(e, G.join(tb, P + "tabard"), "pelvis", cloth, bake=False)
     cape = _rag(P + "cape", [T((x, 0.135 + 0.55 * x * x, 1.47 - 0.6 * x * x)) for x in np.linspace(-0.2, 0.2, 13)],
                 1.12 * s, rnd, rows=12, out=(0, 0.16 * s, 0), flare=0.55, tear=0.4)
@@ -1039,14 +1061,14 @@ def _build_king(e):
         G.set_mat(ob, axe)
     _add(e, G.join(hf + met, P + "axe"), "weapon", None, wear=9.0)
     if e.want_lights:
-        _light(e, "eyelight", "head", c + np.array((0, -0.2, 0.0)) * s, GLOW["skeleton_king"], 6.0, 0.05, 2.5)
-        _light(e, "axelight", "weapon", W + np.array((0, -1.2, -0.25)) * s, GLOW["skeleton_king"], 8.0, 0.2, 2.5)
+        _light(e, "eyelight", "head", c + np.array((0, -0.2, 0.0)) * s, GLOW["skeleton_king"], 1.2, 0.05, 2.0)
+        _light(e, "axelight", "weapon", W + np.array((0, -1.2, -0.25)) * s, GLOW["skeleton_king"], 3.0, 0.2, 2.0)
 
 
 # ------------------------------------------------------------------ ghost
 def _build_ghost(e):
     J, T, s, P, rnd, H = e.J, e.T, e.s, e.prefix, e.rnd, e.height
-    spirit = _ghost_mat(P + "spirit", H, GLOW["ghost"], opacity=0.3, glow=1.6)
+    spirit = _ghost_mat(P + "spirit", H, GLOW["ghost"], opacity=0.3, glow=1.25)
     core = _ghost_mat(P + "core", H, GLOW["ghost"], opacity=0.85, glow=3.0, rim_glow=1.2)
     eyes = _glow_mat(P + "eyes", GLOW["ghost"], 45.0, H, hot=0.9)
     void = _pbr(P + "void", H, GLOW["ghost"], base=(0.002, 0.0025, 0.004), rough=(0.9, 1.0), mud=False, grime=0.0, cav=0.0)
@@ -1071,7 +1093,6 @@ def _build_ghost(e):
         else:
             v = (0.98 - z) / 0.58
             rx, ry, yc = 0.225 + 0.11 * v, 0.17 + 0.09 * v, 0.02 + 0.12 * v ** 1.5
-        fold = 1 + (0.03 + 0.07 * max(0.0, (1.3 - z) / 0.9)) * math.sin(np.pi * 0 + 7 * 0 + 0) * 0
         for j, th in enumerate(ths):
             f = 1 + (0.025 + 0.08 * max(0.0, (1.25 - z) / 0.85)) * math.sin(7 * th + ph[0] + z * 2.0)
             Pm[i, j] = T((rx * f * math.cos(th), yc + ry * f * math.sin(th), z))
@@ -1084,7 +1105,7 @@ def _build_ghost(e):
         return False
     up = G.grid_mesh(P + "robeU", Pm[:20], closed_u=True, skip=skip_hood, cap_start=True)
     lo = G.grid_mesh(P + "robeL", Pm[17:], closed_u=True,
-                     skip=lambda i, j: zs[17 + i + 1] < max(hem[j], hem[(j + 1) % N]) * s)
+                     skip=lambda i, j: zs[17 + i + 1] < max(hem[j], hem[(j + 1) % N]))
     _add(e, up, "chest", spirit, bake=False)
     _add(e, lo, "tail1", spirit, bake=False)
     c = T((0, -0.035, 1.735))
@@ -1205,12 +1226,11 @@ def _feather(name, root, d, L, W, rnd, twist=0.0, curve=0.06):
 def _wing(e, sd, sx, feath, skin):
     J, s, P, rnd = e.J, e.s, e.prefix, e.rnd
     r0, r1 = J["wing_" + sd], J["wing2_" + sd]
-    tip = r1 + np.array((sx * 1.02, 0.14, -0.4)) * s
+    tip = r1 + np.array((sx * 0.56, 0.14, -0.3)) * s
     b1 = _sweep(P + "wb1" + sd, [r0, (r0 + r1) / 2 + np.array((0, 0.02, 0.03)) * s, r1], lambda t: 0.03 * s * (1 - 0.35 * t), N=8)
     b2 = _sweep(P + "wb2" + sd, [r1, r1 + (tip - r1) * 0.5 + np.array((0, 0, 0.07)) * s, tip],
                 lambda t: 0.022 * s * (1 - 0.75 * t), N=8)
     inner, outer = [], []
-    torn = set(range(rnd.randrange(3, 8), 0) if False else [])
     gap0 = rnd.randrange(3, 8)
     torn = {gap0, gap0 + 1, gap0 + 2} if sd == "L" else {gap0 + 3}
 
@@ -1232,9 +1252,9 @@ def _wing(e, sd, sx, feath, skin):
                 dd = dd + np.array((sx * rnd.uniform(-0.3, 0.3), 0.1, 0))
             group.append(_feather("%sfe%s%s%d" % (P, sd, tag, k), root, dd, Lk, WW * s * rnd.uniform(0.85, 1.1), rnd,
                                   twist=rnd.uniform(-0.25, 0.25)))
-    flight(outer, 13, r1, tip, (sx * 0.3, 0.1, -1.0), (sx * 1.0, 0.12, -0.15), 0.78, 1.05, 0.055, "p")
-    flight(inner, 12, r0 + (r1 - r0) * 0.2, r1, (sx * 0.05, 0.16, -1.0), (sx * 0.2, 0.14, -1.0), 0.48, 0.7, 0.05, "s")
-    flight(outer, 9, r1, tip, (sx * 0.25, 0.04, -1.0), (sx * 0.9, 0.06, -0.3), 0.3, 0.4, 0.04, "c", offy=-0.018)
+    flight(outer, 16, r1, tip, (sx * 0.3, 0.1, -1.0), (sx * 0.75, 0.12, -0.6), 0.8, 1.0, 0.075, "p")
+    flight(inner, 15, r0 + (r1 - r0) * 0.2, r1, (sx * 0.05, 0.16, -1.0), (sx * 0.2, 0.14, -1.0), 0.5, 0.72, 0.07, "s")
+    flight(outer, 9, r1, tip, (sx * 0.25, 0.04, -1.0), (sx * 0.75, 0.06, -0.6), 0.3, 0.4, 0.04, "c", offy=-0.018)
     flight(inner, 9, r0 + (r1 - r0) * 0.15, r1, (sx * 0.05, 0.06, -1.0), (sx * 0.2, 0.06, -1.0), 0.22, 0.3, 0.04, "d",
            offy=-0.02)
     for ob in inner + outer:
@@ -1276,9 +1296,9 @@ def _build_angel(e):
                            lambda t: 0.0045 * s * (1 - 0.8 * t), N=5, per=2))
     _add(e, G.join(hair, P + "hair"), "head", nail, bake=False)
     rag = [_rag(P + "skirtF", [T((x, -0.11 + 0.5 * x * x, 0.98)) for x in np.linspace(-0.13, 0.13, 10)], 0.62 * s, rnd,
-                out=(0, -0.04 * s, 0), flare=0.25, tear=0.55),
+                out=(0, -0.04 * s, 0), flare=0.25, tear=0.6, gap=0.25),
            _rag(P + "skirtB", [T((x, 0.1 - 0.5 * x * x, 0.99)) for x in np.linspace(-0.14, 0.14, 10)], 0.7 * s, rnd,
-                out=(0, 0.06 * s, 0), flare=0.3, tear=0.55)]
+                out=(0, 0.06 * s, 0), flare=0.3, tear=0.6, gap=0.25)]
     _add(e, G.join(rag, P + "skirt"), "pelvis", cloth, bake=False)
     for sd, sx in (("L", 1), ("R", -1)):
         _wing(e, sd, sx, feath, skin)
@@ -1296,14 +1316,14 @@ def _build_angel(e):
                           rot=(rnd.uniform(0, 90), rnd.uniform(0, 90), 0)))
     _add(e, G.join(arcs, P + "halo"), "head", halo, bake=False)
     if e.want_lights:
-        _light(e, "halolight", "head", hc + np.array((0, -0.12, 0)), GLOW["bad_angel"], 22.0, 0.25, 3.5)
+        _light(e, "halolight", "head", hc + np.array((0, 0.12, 0.05)), GLOW["bad_angel"], 5.0, 0.25, 3.0)
 
 
 def _build_evil(e):
     J, T, s, P, rnd, H = e.J, e.T, e.s, e.prefix, e.rnd, e.height
     chest_c = T((0, -0.1, 1.33))
     hide = _pbr(P + "hide", H, GLOW["evil"], base=(0.016, 0.014, 0.018), base2=(0.005, 0.004, 0.006), rough=(0.32, 0.72),
-                coat=0.25, sheen=0.2, sheen_tint=(0.6, 0.4, 1.0), veins=(GLOW["evil"], 7.0, 2.6),
+                coat=0.25, sheen=0.1, sheen_tint=(0.6, 0.4, 1.0), veins=(GLOW["evil"], 2.0, 5.5),
                 vein_center=(tuple(chest_c), 0.6 * s), bump=0.5, nscale=4.0, mud=False, cav=1.0)
     horn = _pbr(P + "horn", H, GLOW["evil"], base=(0.04, 0.034, 0.03), base2=(0.006, 0.005, 0.005), rough=(0.3, 0.6),
                 coat=0.2, nscale=9.0, bump=0.6, mud=False)
@@ -1324,8 +1344,9 @@ def _build_evil(e):
     hn = []
     for sx in (1, -1):
         b = c + np.array((sx * 0.48, -0.25, 0.55)) * L
-        pts = [b] + [b + np.array(v) * s for v in ((sx * 0.06, 0.03, 0.09), (sx * 0.15, 0.12, 0.17), (sx * 0.21, 0.24, 0.22),
-                                                  (sx * 0.24, 0.34, 0.33), (sx * 0.21, 0.36, 0.47), (sx * 0.16, 0.3, 0.56))]
+        pts = [b] + [b + np.array(v) * s * (1, 1, 0.72) for v in ((sx * 0.06, 0.03, 0.09), (sx * 0.15, 0.12, 0.17),
+                                                                 (sx * 0.21, 0.24, 0.22), (sx * 0.24, 0.34, 0.33),
+                                                                 (sx * 0.21, 0.36, 0.47), (sx * 0.16, 0.3, 0.56))]
         hn.append(_sweep(P + "horn%d" % sx, pts, lambda t: (0.034 * s * (1 - t) ** 0.85 + 0.0015) *
                          (1 + 0.09 * math.sin(t * 70)), N=10, per=3))
         b2 = c + np.array((sx * 0.32, -0.78, 0.32)) * L
@@ -1352,7 +1373,6 @@ def _build_evil(e):
         sm.matrix_world = src.matrix_world.copy()
         sm.parent = None
         sm.matrix_world = Matrix.Identity(4)
-        _jitter(sm, 0.0, 0)
         for v in sm.data.vertices:
             v.co += v.normal * 0.028 * s * (1 + 0.6 * math.sin(v.co.z * 23 + v.co.x * 17))
         sm.data.update()
@@ -1368,12 +1388,12 @@ def _build_evil(e):
                          lambda t: 0.07 * s * (1 - t) ** 0.9 + 0.003, N=8))
     _add(e, G.join(ws, P + "smokewisps"), "chest", smoke, bake=False)
     ck = _rag(P + "cloak", [T((x, 0.125 + 0.55 * x * x, 1.5 - 0.5 * x * x)) for x in np.linspace(-0.25, 0.25, 15)],
-              1.3 * s, rnd, rows=12, out=(0, 0.1 * s, 0), flare=0.7, tear=0.55)
+              1.3 * s, rnd, rows=12, out=(0, 0.1 * s, 0), flare=0.7, tear=0.6, gap=0.15)
     _xform(ck, J["chest"], (-30, 0, 0))
     _add(e, ck, "chest", cloak, bake=False)
     if e.want_lights:
-        _light(e, "corelight", "chest", chest_c + np.array((0, -0.25, 0)) * s, GLOW["evil"], 35.0, 0.12, 4.0)
-        _light(e, "eyelight", "head", c + np.array((0, -0.25, 0)) * L / 0.1, GLOW["evil"], 4.0, 0.05, 2.0)
+        _light(e, "corelight", "chest", chest_c + np.array((0, -0.25, 0)) * s, GLOW["evil"], 10.0, 0.12, 3.5)
+        _light(e, "eyelight", "head", c + np.array((0, -0.25, 0)) * L / 0.1, GLOW["evil"], 0.8, 0.05, 1.5)
 
 
 # ------------------------------------------------------------------ morbidious
@@ -1394,8 +1414,8 @@ def _pustules(e, name, joint, host, c, radii, bump, n, bias, rmin, rmax, glow_ma
         p = c + radii * d * f
         r = rnd.uniform(rmin, rmax) * s
         k = len(glows) + len(dead)
-        pu = _blob("%s%s%d" % (P, name, k), p + nrm * r * 0.2, (r, r, r * 0.9), N=10, M_=8)
-        ring = _blob("%s%sr%d" % (P, name, k), p - nrm * r * 0.25, (r * 1.5, r * 1.5, r * 1.5), N=10, M_=7)
+        pu = _blob("%s%s%d" % (P, name, k), p + nrm * r * 0.4, (r, r, r * 0.9), N=10, M_=8)
+        ring = _blob("%s%sr%d" % (P, name, k), p - nrm * r * 0.55, (r * 1.3, r * 1.3, r * 1.3), N=10, M_=7)
         if rnd.random() < 0.82:
             glows.append(pu)
             dead.append(ring)
@@ -1409,10 +1429,10 @@ def _pustules(e, name, joint, host, c, radii, bump, n, bias, rmin, rmax, glow_ma
 
 def _build_morbidious(e):
     J, s, P, rnd, H = e.J, e.s, e.prefix, e.rnd, e.height
-    flesh = _pbr(P + "flesh", H, GLOW["morbidious"], base=(0.13, 0.12, 0.075), base2=(0.055, 0.03, 0.045),
-                 rough=(0.2, 0.55), coat=0.45, sheen=0.15, veins=(GLOW["morbidious"], 2.4, 2.6), bump=0.55, nscale=3.2,
+    flesh = _pbr(P + "flesh", H, GLOW["morbidious"], base=(0.17, 0.145, 0.115), base2=(0.07, 0.04, 0.055),
+                 rough=(0.2, 0.55), coat=0.45, sheen=0.15, veins=(GLOW["morbidious"], 0.07, 8.0), bump=0.55, nscale=3.2,
                  cav=1.6, grime=0.9)
-    pus = _glow_mat(P + "pus", GLOW["morbidious"], 18.0, H, hot=0.8)
+    pus = _glow_mat(P + "pus", GLOW["morbidious"], 22.0, H, hot=0.8)
     iron = _pbr(P + "iron", H, GLOW["morbidious"], base=(0.04, 0.036, 0.033), metal=0.85, rust=1.0,
                 wear_col=(0.3, 0.28, 0.25), rough=(0.32, 0.65), nscale=9.0, bump=0.5)
     cloth = _cloth_mat(P + "cloth", H, top=(0.03, 0.027, 0.016), bottom=(0.01, 0.01, 0.005), length=0.5, holes=0.6)
@@ -1430,8 +1450,8 @@ def _build_morbidious(e):
     _jitter(belly, 0.01, e.seed + 1, 9)
     _add(e, belly, "spine", flesh)
     hb = lumpy(e.seed + 2)
-    hump = _blob(P + "hump", (0, 0.07, 1.56), (0.5, 0.42, 0.4), N=40, M_=28, bump=hb)
-    _bulge(hump, (0, 0.34, 1.84), 0.22, 0.16)
+    hump = _blob(P + "hump", (0, 0.07, 1.6), (0.5, 0.42, 0.4), N=40, M_=28, bump=hb)
+    _bulge(hump, (0, 0.34, 1.9), 0.22, 0.2)
     _bulge(hump, (0.22, 0.26, 1.76), 0.15, 0.08)
     _bulge(hump, (-0.25, 0.2, 1.72), 0.14, 0.07)
     _jitter(hump, 0.01, e.seed + 2, 8)
@@ -1446,34 +1466,34 @@ def _build_morbidious(e):
     ey = G.join([_blob(P + "eye%d" % i, c + np.array((sx * 0.3, -0.6, -0.07)) * L, 0.12 * L, N=8, M_=6)
                  for i, sx in enumerate((1, -1))], P + "eyes")
     _add(e, ey, "head", pus, bake=False)
-    _pustules(e, "pusB", "spine", belly, (0, -0.1, 1.04), (0.46, 0.44, 0.42), bb, 16, (0.2, -0.6, 0.2), 0.018, 0.05, pus, flesh)
-    _pustules(e, "pusH", "chest", hump, (0, 0.07, 1.56), (0.5, 0.42, 0.4), hb, 26, (0.0, 0.6, 0.6), 0.02, 0.065, pus, flesh)
+    _pustules(e, "pusB", "spine", belly, (0, -0.1, 1.04), (0.46, 0.44, 0.42), bb, 30, (0.0, -0.8, 0.1), 0.022, 0.065, pus, flesh)
+    _pustules(e, "pusH", "chest", hump, (0, 0.07, 1.6), (0.5, 0.42, 0.4), hb, 30, (0.0, 0.3, 0.7), 0.022, 0.075, pus, flesh)
     for sd, sx in (("L", 1), ("R", -1)):
         ua, fa, hn = J["upperarm_" + sd], J["forearm_" + sd], J["hand_" + sd]
         _add(e, _chain(P + "uarm" + sd, [ua + np.array((-sx * 0.06, 0, 0.06)), (ua + fa) / 2, fa],
                        [(0.19, 0.18), (0.15, 0.14), (0.115, 0.105)]), "upperarm_" + sd, flesh)
         _pustules(e, "pusA" + sd, "upperarm_" + sd, None, (ua + fa) / 2 + np.array((sx * 0.02, 0.02, 0)), (0.15, 0.14, 0.22),
-                  None, 6, (sx * 0.6, 0.5, 0.4), 0.015, 0.04, pus, flesh)
+                  None, 8, (sx * 0.6, -0.2, 0.4), 0.018, 0.045, pus, flesh)
         _add(e, _chain(P + "farm" + sd, [fa, fa + (hn - fa) * 0.4, hn + np.array((0, 0, 0.03))],
                        [(0.115, 0.105), (0.13, 0.12), (0.085, 0.075)]), "forearm_" + sd, flesh)
         _add(e, _ring(P + "shackle" + sd, fa + (hn - fa) * 0.82, hn - fa, 0.1, 0.018, seed=e.seed), "forearm_" + sd, iron)
         hnd, _ = _hand(P + "hand" + sd, hn, sx, 2.3, length=0.85, curl=(22, 40, 30), r=0.0085, spread=1.1)
         _add(e, hnd, "hand_" + sd, flesh)
         hip, kn, an = J["thigh_" + sd], J["shin_" + sd], J["foot_" + sd]
-        _add(e, _chain(P + "thigh" + sd, [hip + np.array((0, 0, 0.08)), kn], [(0.21, 0.2), (0.14, 0.13)]), "thigh_" + sd, flesh)
-        _add(e, _chain(P + "shin" + sd, [kn, kn + (an - kn) * 0.4, an + np.array((0, 0, 0.03))],
-                       [(0.14, 0.13), (0.145, 0.14), (0.1, 0.09)]), "shin_" + sd, flesh)
-        ft = _blob(P + "foot" + sd, an + np.array((0, -0.06, -0.045)), (0.1, 0.16, 0.065), N=14, M_=9,
-                   bump=lambda U: 1 + 0.25 * np.clip(-U[..., 2], 0, 1) * 0)
+        _add(e, _chain(P + "thigh" + sd, [hip + np.array((0, 0, 0.1)), hip + (kn - hip) * 0.5, kn + np.array((0, 0, -0.03))],
+                       [(0.22, 0.21), (0.19, 0.18), (0.16, 0.155)]), "thigh_" + sd, flesh)
+        _add(e, _chain(P + "shin" + sd, [kn + np.array((0, 0, 0.03)), kn + (an - kn) * 0.5, an + np.array((0, 0.0, -0.01))],
+                       [(0.155, 0.15), (0.14, 0.135), (0.125, 0.12)]), "shin_" + sd, flesh)
+        ft = _blob(P + "foot" + sd, an + np.array((0, -0.07, -0.06)), (0.13, 0.19, 0.06), N=14, M_=9)
         _add(e, ft, "foot_" + sd, flesh)
     rg = _rag(P + "rag", [(x, -0.47 + 0.6 * x * x, 0.8) for x in np.linspace(-0.25, 0.25, 11)], 0.42, rnd,
-              out=(0, -0.05, 0), flare=0.1, tear=0.5)
+              out=(0, -0.05, 0), flare=0.1, tear=0.55, gap=0.3)
     belt = [(0.4 * math.cos(a), -0.08 + 0.4 * math.sin(a), 0.82 + 0.03 * math.sin(a)) for a in np.linspace(0, 2 * math.pi, 25)]
     belt.append(belt[1])
     _add(e, G.join([rg, _sweep(P + "rope", belt, (0.016, 0.01), N=6, cap=False, per=1)], P + "loin"), "pelvis", cloth, bake=False)
     if e.want_lights:
-        _light(e, "pusfront", "chest", (0.0, -0.8, 1.3), GLOW["morbidious"], 30.0, 0.35, 3.5)
-        _light(e, "pusback", "chest", (0.0, 0.75, 1.95), GLOW["morbidious"], 25.0, 0.35, 3.5)
+        _light(e, "pusfront", "chest", (0.0, -1.0, 1.3), GLOW["morbidious"], 5.0, 0.35, 3.0)
+        _light(e, "pusback", "chest", (0.0, 0.95, 2.05), GLOW["morbidious"], 2.5, 0.35, 3.0)
 
 
 BUILDERS = {"skeleton": _build_skeleton, "skeleton_king": _build_king, "ghost": _build_ghost, "bad_angel": _build_angel,
@@ -1481,7 +1501,7 @@ BUILDERS = {"skeleton": _build_skeleton, "skeleton_king": _build_king, "ghost": 
 STRIDE = {"skeleton": 0.55, "skeleton_king": 0.6, "ghost": 0.5, "bad_angel": 0.55, "evil": 0.6, "morbidious": 0.42}
 
 
-def build_enemy(kind, prefix=None, seed=0, lights=True):
+def build_enemy(kind, prefix=None, seed=0, lights=True, lod=0):
     """Build one enemy at the origin (rest pose, facing -Y). Returns an Enemy with .kind, .rig, .root, .parts, .mats,
     .glow_mats (materials with CTRL_glow), .fade_mats (CTRL_fade), .lights [(light, base energy)], .height, .J, .s."""
     if kind not in KINDS:
@@ -1499,7 +1519,11 @@ def build_enemy(kind, prefix=None, seed=0, lights=True):
     e.rnd = random.Random(e.seed * 7919 + KINDS.index(kind) * 104729 + 17)
     e.scale = 1.0
     e._wprev = None
-    BUILDERS[kind](e)
+    _LOD[0] = int(lod)
+    try:
+        BUILDERS[kind](e)
+    finally:
+        _LOD[0] = 0
     e.mats = {k: m for k, m in e.mats.items() if m is not None}
     e.glow_mats = [m for m in e.mats.values() if M.ctrl_node(m, "glow") is not None]
     e.fade_mats = [m for m in e.mats.values() if M.ctrl_node(m, "fade") is not None]
@@ -1508,3 +1532,672 @@ def build_enemy(kind, prefix=None, seed=0, lights=True):
         ob["rb_enemy"] = e.prefix
     bpy.context.view_layer.update()
     return e
+
+
+# ================================================================== poses
+# Stance per kind (absolute degrees); action tracks are deltas added on top. "_off" is in canonical metres (scaled by
+# the kind's size), "_wp" the weapon orientation in the root frame (pitch, roll, yaw).
+STANCE = {
+    "skeleton": {"spine": (8, 0, 0), "chest": (6, 0, -4), "neck": (6, 0, 0), "head": (-10, 4, 6), "jaw": (6, 0, 0),
+                 "upperarm_L": (-10, -10, 0), "forearm_L": (-25, 0, 0), "hand_L": (10, 0, 0),
+                 "upperarm_R": (-22, 8, 0), "forearm_R": (-45, 0, 0), "_wp": (30, 0, -6),
+                 "thigh_L": (-14, 0, -4), "shin_L": (22, 0, 0), "thigh_R": (2, 0, 6), "shin_R": (14, 0, 0)},
+    "skeleton_king": {"spine": (4, 0, 0), "chest": (4, 0, -6), "neck": (4, 0, 0), "head": (-4, 0, 4), "jaw": (4, 0, 0),
+                      "upperarm_L": (-12, -14, 0), "forearm_L": (-30, 0, 0), "upperarm_R": (-12, 12, 0),
+                      "forearm_R": (-34, 0, 0), "_wp": (40, 0, -10),
+                      "thigh_L": (-8, 0, -4), "shin_L": (12, 0, 0), "thigh_R": (4, 0, 6), "shin_R": (8, 0, 0)},
+    "ghost": {"spine": (12, 0, 0), "chest": (8, 0, 0), "neck": (4, 0, 0), "head": (-8, 0, 0), "jaw": (10, 0, 0),
+              "upperarm_L": (-38, -14, 0), "forearm_L": (-30, 0, 0), "hand_L": (20, 0, 0),
+              "upperarm_R": (-34, 14, 0), "forearm_R": (-36, 0, 0), "hand_R": (20, 0, 0),
+              "tail1": (14, 0, 0), "tail2": (12, 0, 0), "tail3": (10, 0, 0), "_off": (0, 0, 0.3)},
+    "bad_angel": {"spine": (4, 0, 0), "chest": (-2, 0, 0), "neck": (6, 0, 0), "head": (12, 0, 0),
+                  "upperarm_L": (-6, -12, 0), "forearm_L": (-22, 0, 0), "hand_L": (10, 0, 0),
+                  "upperarm_R": (-6, 12, 0), "forearm_R": (-22, 0, 0), "hand_R": (10, 0, 0),
+                  "thigh_L": (-6, 0, -3), "shin_L": (10, 0, 0), "thigh_R": (2, 0, 4), "shin_R": (6, 0, 0),
+                  "wing_L": (0, -8, 10), "wing_R": (0, 8, -10), "wing2_L": (0, 10, 0), "wing2_R": (0, -10, 0)},
+    "evil": {"spine": (20, 0, 0), "chest": (16, 0, 0), "neck": (-10, 0, 0), "head": (-22, 0, 0), "jaw": (8, 0, 0),
+             "upperarm_L": (-18, -16, 0), "forearm_L": (-28, 0, 0), "hand_L": (15, 0, 0),
+             "upperarm_R": (-18, 16, 0), "forearm_R": (-28, 0, 0), "hand_R": (15, 0, 0),
+             "thigh_L": (-22, 0, -6), "shin_L": (34, 0, 0), "thigh_R": (-6, 0, 6), "shin_R": (28, 0, 0)},
+    "morbidious": {"spine": (8, 0, 0), "chest": (6, 0, 0), "neck": (-6, 0, 0), "head": (-10, 0, 0), "jaw": (10, 0, 0),
+                   "upperarm_L": (-6, -6, 0), "forearm_L": (-20, 0, 0), "upperarm_R": (-6, 6, 0), "forearm_R": (-20, 0, 0),
+                   "thigh_L": (-8, 0, -8), "shin_L": (14, 0, 0), "thigh_R": (-4, 0, 8), "shin_R": (12, 0, 0)},
+}
+
+_ATTACK_W = [(0.0, {}, "l"),
+             (0.38, {"spine": (-10, 0, -14), "chest": (-14, 0, -16), "head": (-6, 0, 10), "upperarm_R": (-150, 20, 0),
+                     "forearm_R": (-30, 0, 0), "_wp": (-175, 0, 6), "upperarm_L": (-40, -14, 0), "forearm_L": (-30, 0, 0),
+                     "thigh_L": (-14, 0, 0), "shin_L": (10, 0, 0), "jaw": (14, 0, 0), "_off": (0, 0.08, 0)}, "io"),
+             (0.6, {"spine": (22, 0, 12), "chest": (16, 0, 14), "head": (12, 0, -6), "upperarm_R": (-58, -6, 0),
+                    "forearm_R": (35, 0, 0), "_wp": (35, 0, 6), "upperarm_L": (10, -24, 0), "forearm_L": (-20, 0, 0),
+                    "thigh_L": (-30, 0, 0), "shin_L": (20, 0, 0), "thigh_R": (18, 0, 0), "shin_R": (8, 0, 0),
+                    "jaw": (24, 0, 0), "_off": (0, -0.3, 0)}, "i"),
+             (1.0, {"spine": (18, 0, 6), "chest": (10, 0, 8), "upperarm_R": (-30, 0, 0), "forearm_R": (10, 0, 0),
+                    "_wp": (45, 0, 6), "thigh_L": (-26, 0, 0), "shin_L": (18, 0, 0), "thigh_R": (14, 0, 0),
+                    "jaw": (10, 0, 0), "_off": (0, -0.32, 0)}, "o")]
+_ATTACK_C = [(0.0, {}, "l"),
+             (0.38, {"spine": (-8, 0, -18), "chest": (-10, 0, -20), "head": (-6, 0, 12), "upperarm_R": (-120, 40, 0),
+                     "forearm_R": (-50, 0, 0), "hand_R": (-20, 0, 0), "upperarm_L": (-30, -20, 0), "forearm_L": (-30, 0, 0),
+                     "jaw": (20, 0, 0), "thigh_L": (-10, 0, 0), "_off": (0, 0.06, 0),
+                     "wing_L": (0, -35, -10), "wing_R": (0, 35, 10), "tail1": (-10, 0, 0)}, "io"),
+             (0.6, {"spine": (24, 0, 16), "chest": (16, 0, 20), "head": (8, 0, -10), "upperarm_R": (-70, -20, 0),
+                    "forearm_R": (-5, 0, 0), "hand_R": (20, 0, 0), "upperarm_L": (10, -30, 0), "forearm_L": (-20, 0, 0),
+                    "jaw": (30, 0, 0), "thigh_L": (-30, 0, 0), "shin_L": (20, 0, 0), "thigh_R": (16, 0, 0),
+                    "_off": (0, -0.32, 0), "wing_L": (0, -20, -40), "wing_R": (0, 20, 40), "tail1": (30, 0, 0),
+                    "tail2": (15, 0, 0)}, "i"),
+             (1.0, {"spine": (18, 0, 10), "chest": (10, 0, 14), "upperarm_R": (-40, -24, 0), "forearm_R": (-15, 0, 0),
+                    "jaw": (10, 0, 0), "thigh_L": (-26, 0, 0), "shin_L": (18, 0, 0), "_off": (0, -0.32, 0),
+                    "wing_L": (0, -10, -20), "wing_R": (0, 10, 20), "tail1": (20, 0, 0)}, "o")]
+_ATTACK_M = [(0.0, {}, "l"),
+             (0.4, {"spine": (-14, 0, 0), "chest": (-14, 0, 0), "head": (-10, 0, 0), "upperarm_L": (-160, -10, 0),
+                    "forearm_L": (-40, 0, 0), "upperarm_R": (-160, 10, 0), "forearm_R": (-40, 0, 0), "jaw": (22, 0, 0),
+                    "_off": (0, 0.05, 0)}, "io"),
+             (0.6, {"spine": (30, 0, 0), "chest": (20, 0, 0), "head": (6, 0, 0), "upperarm_L": (-60, -6, 0),
+                    "forearm_L": (-10, 0, 0), "upperarm_R": (-60, 6, 0), "forearm_R": (-10, 0, 0), "jaw": (28, 0, 0),
+                    "thigh_L": (-24, 0, 0), "shin_L": (24, 0, 0), "thigh_R": (-10, 0, 0), "shin_R": (20, 0, 0),
+                    "_off": (0, -0.25, 0)}, "i"),
+             (1.0, {"spine": (24, 0, 0), "chest": (16, 0, 0), "upperarm_L": (-50, -6, 0), "forearm_L": (-14, 0, 0),
+                    "upperarm_R": (-50, 6, 0), "forearm_R": (-14, 0, 0), "jaw": (14, 0, 0), "thigh_L": (-20, 0, 0),
+                    "shin_L": (20, 0, 0), "_off": (0, -0.25, 0)}, "o")]
+_LUNGE = [(0.0, {}, "l"),
+          (0.35, {"spine": (-6, 0, 0), "chest": (-8, 0, 0), "head": (-8, 0, 0), "upperarm_L": (30, -20, 0),
+                  "forearm_L": (-50, 0, 0), "upperarm_R": (30, 20, 0), "forearm_R": (-50, 0, 0), "thigh_L": (-16, 0, 0),
+                  "shin_L": (40, 0, 0), "thigh_R": (-8, 0, 0), "shin_R": (36, 0, 0), "jaw": (10, 0, 0),
+                  "_off": (0, 0.12, 0), "wing_L": (0, -30, 10), "wing_R": (0, 30, -10), "tail1": (-10, 0, 0),
+                  "_wp": (-20, 0, 0)}, "io"),
+          (0.55, {"spine": (26, 0, 0), "chest": (14, 0, 0), "neck": (-10, 0, 0), "head": (-18, 0, 0),
+                  "upperarm_L": (-90, -10, 0), "forearm_L": (10, 0, 0), "hand_L": (-20, 0, 0),
+                  "upperarm_R": (-90, 10, 0), "forearm_R": (10, 0, 0), "hand_R": (-20, 0, 0), "thigh_L": (-50, 0, 0),
+                  "shin_L": (34, 0, 0), "thigh_R": (28, 0, 0), "shin_R": (6, 0, 0), "jaw": (32, 0, 0),
+                  "_off": (0, -0.85, 0), "wing_L": (0, -50, -10), "wing_R": (0, 50, 10), "tail1": (40, 0, 0),
+                  "tail2": (25, 0, 0), "tail3": (20, 0, 0), "_wp": (-28, 0, 6)}, "i"),
+          (1.0, {"spine": (20, 0, 0), "chest": (10, 0, 0), "head": (-10, 0, 0), "upperarm_L": (-60, -14, 0),
+                 "forearm_L": (-10, 0, 0), "upperarm_R": (-60, 14, 0), "forearm_R": (-10, 0, 0), "thigh_L": (-40, 0, 0),
+                 "shin_L": (40, 0, 0), "thigh_R": (20, 0, 0), "shin_R": (14, 0, 0), "jaw": (12, 0, 0),
+                 "_off": (0, -0.9, 0), "tail1": (20, 0, 0), "tail2": (10, 0, 0), "_wp": (-20, 0, 6)}, "o")]
+_RAISE = [(0.0, {}, "l"),
+          (0.7, {"spine": (-12, 0, 0), "chest": (-14, 0, 0), "neck": (-8, 0, 0), "head": (-18, 0, 0), "jaw": (34, 0, 0),
+                 "upperarm_L": (-150, -20, 0), "forearm_L": (-30, 0, 0), "upperarm_R": (-150, 20, 0),
+                 "forearm_R": (-30, 0, 0), "_wp": (-150, 0, 10), "wing_L": (0, -45, -10), "wing_R": (0, 45, 10),
+                 "wing2_L": (0, -20, 0), "wing2_R": (0, 20, 0), "_off": (0, 0.05, 0), "thigh_L": (-6, 0, 0),
+                 "shin_L": (8, 0, 0)}, "io"),
+          (1.0, {"spine": (-10, 0, 0), "chest": (-12, 0, 0), "neck": (-7, 0, 0), "head": (-15, 0, 0), "jaw": (28, 0, 0),
+                 "upperarm_L": (-142, -20, 0), "forearm_L": (-34, 0, 0), "upperarm_R": (-142, 20, 0),
+                 "forearm_R": (-34, 0, 0), "_wp": (-146, 0, 10), "wing_L": (0, -40, -10), "wing_R": (0, 40, 10),
+                 "wing2_L": (0, -18, 0), "wing2_R": (0, 18, 0), "_off": (0, 0.05, 0), "thigh_L": (-6, 0, 0),
+                 "shin_L": (8, 0, 0)}, "io")]
+_RAISE_K = [(0.0, {}, "l"),
+            (0.7, {"spine": (-10, 0, 0), "chest": (-12, 0, 4), "neck": (6, 0, 0), "head": (16, 0, 0), "jaw": (26, 0, 0),
+                   "upperarm_R": (-158, 4, 0), "forearm_R": (-26, 0, 0), "upperarm_L": (-150, 6, 0),
+                   "forearm_L": (-50, 0, 0), "_wp": (-150, 0, 12), "thigh_L": (-14, 0, 0), "shin_L": (10, 0, 0),
+                   "_off": (0, 0.08, 0)}, "io"),
+            (1.0, {"spine": (-9, 0, 0), "chest": (-11, 0, 4), "neck": (6, 0, 0), "head": (16, 0, 0), "jaw": (22, 0, 0),
+                   "upperarm_R": (-154, 4, 0), "forearm_R": (-28, 0, 0), "upperarm_L": (-146, 6, 0),
+                   "forearm_L": (-52, 0, 0), "_wp": (-146, 0, 12), "thigh_L": (-14, 0, 0), "shin_L": (10, 0, 0),
+                   "_off": (0, 0.08, 0)}, "io")]
+_DIVE = [(0.0, {"wing_L": (0, -50, 0), "wing_R": (0, 50, 0), "wing2_L": (0, -25, 0), "wing2_R": (0, 25, 0),
+                "upperarm_L": (-40, -40, 0), "upperarm_R": (-40, 40, 0), "thigh_L": (-20, 0, 0), "shin_L": (40, 0, 0),
+                "thigh_R": (-10, 0, 0), "shin_R": (50, 0, 0), "head": (10, 0, 0)}, "l"),
+         (0.4, {"pelvis": (40, 0, 0), "spine": (10, 0, 0), "head": (-30, 0, 0), "wing_L": (0, -60, 20),
+                "wing_R": (0, 60, -20), "wing2_L": (0, -10, 10), "wing2_R": (0, 10, -10), "upperarm_L": (-120, -20, 0),
+                "forearm_L": (-20, 0, 0), "upperarm_R": (-120, 20, 0), "forearm_R": (-20, 0, 0), "thigh_L": (20, 0, 0),
+                "shin_L": (20, 0, 0), "thigh_R": (25, 0, 0), "shin_R": (25, 0, 0), "jaw": (30, 0, 0)}, "io"),
+         (0.65, {"pelvis": (60, 0, 0), "spine": (6, 0, 0), "head": (-40, 0, 0), "wing_L": (0, -20, 70),
+                 "wing_R": (0, 20, -70), "wing2_L": (0, 10, 60), "wing2_R": (0, -10, -60), "upperarm_L": (-150, -10, 0),
+                 "forearm_L": (-10, 0, 0), "hand_L": (-30, 0, 0), "upperarm_R": (-150, 10, 0), "forearm_R": (-10, 0, 0),
+                 "hand_R": (-30, 0, 0), "thigh_L": (20, 0, 0), "shin_L": (10, 0, 0), "thigh_R": (24, 0, 0),
+                 "shin_R": (12, 0, 0), "jaw": (36, 0, 0), "_wp": (-60, 0, 0)}, "i"),
+         (1.0, {"pelvis": (10, 0, 0), "spine": (20, 0, 0), "chest": (10, 0, 0), "head": (-20, 0, 0),
+                "wing_L": (0, -60, -10), "wing_R": (0, 60, 10), "wing2_L": (0, -20, 0), "wing2_R": (0, 20, 0),
+                "upperarm_L": (-60, -30, 0), "upperarm_R": (-60, 30, 0), "thigh_L": (-60, 0, 0), "shin_L": (90, 0, 0),
+                "thigh_R": (-30, 0, 0), "shin_R": (100, 0, 0), "jaw": (20, 0, 0), "_off": (0, -0.3, 0)}, "o")]
+_BLOCK_W = [(0.0, {}, "l"),
+            (0.5, {"spine": (-6, 0, 0), "chest": (-6, 0, 0), "head": (6, 0, 0), "upperarm_R": (-70, 30, 0),
+                   "forearm_R": (-60, 0, 0), "_wp": (-30, 0, 96), "upperarm_L": (-60, -20, 0), "forearm_L": (-70, 0, 0),
+                   "thigh_L": (-10, 0, 0), "shin_L": (20, 0, 0), "thigh_R": (8, 0, 0), "shin_R": (24, 0, 0),
+                   "_off": (0, 0.12, 0)}, "o"),
+            (1.0, {"spine": (-4, 0, 0), "chest": (-4, 0, 0), "head": (4, 0, 0), "upperarm_R": (-62, 26, 0),
+                   "forearm_R": (-54, 0, 0), "_wp": (-26, 0, 90), "upperarm_L": (-54, -18, 0), "forearm_L": (-62, 0, 0),
+                   "thigh_L": (-10, 0, 0), "shin_L": (18, 0, 0), "thigh_R": (6, 0, 0), "shin_R": (20, 0, 0),
+                   "_off": (0, 0.14, 0)}, "io")]
+_BLOCK_C = [(0.0, {}, "l"),
+            (0.5, {"spine": (-4, 0, 0), "chest": (-4, 0, 0), "head": (14, 0, 0), "upperarm_L": (-85, 20, 0),
+                   "forearm_L": (-80, 0, 0), "upperarm_R": (-85, -20, 0), "forearm_R": (-80, 0, 0),
+                   "wing_L": (0, -10, -60), "wing_R": (0, 10, 60), "wing2_L": (0, 0, -30), "wing2_R": (0, 0, 30),
+                   "thigh_L": (-10, 0, 0), "shin_L": (20, 0, 0), "thigh_R": (8, 0, 0), "shin_R": (24, 0, 0),
+                   "tail1": (-15, 0, 0), "_off": (0, 0.12, 0)}, "o"),
+            (1.0, {"spine": (-3, 0, 0), "chest": (-3, 0, 0), "head": (12, 0, 0), "upperarm_L": (-78, 18, 0),
+                   "forearm_L": (-74, 0, 0), "upperarm_R": (-78, -18, 0), "forearm_R": (-74, 0, 0),
+                   "wing_L": (0, -8, -52), "wing_R": (0, 8, 52), "thigh_L": (-10, 0, 0), "shin_L": (18, 0, 0),
+                   "tail1": (-10, 0, 0), "_off": (0, 0.14, 0)}, "io")]
+_HIT_P = {"spine": (-24, 0, 10), "chest": (-16, 0, 8), "neck": (-10, 0, 0), "head": (-26, 10, 0), "jaw": (28, 0, 0),
+          "upperarm_L": (25, -45, 0), "forearm_L": (-30, 0, 0), "upperarm_R": (25, 45, 0), "forearm_R": (-20, 0, 0),
+          "_wp": (-60, 0, 20), "thigh_L": (-30, 0, 0), "shin_L": (40, 0, 0), "thigh_R": (10, 0, 0), "shin_R": (10, 0, 0),
+          "_off": (0, 0.3, 0), "wing_L": (0, -40, 30), "wing_R": (0, 40, -30), "tail1": (-30, 0, 0), "tail2": (-10, 0, 0)}
+_HIT = [(0.0, {}, "l"), (0.3, _HIT_P, "o"),
+        (1.0, {"spine": (-6, 0, 4), "chest": (-4, 0, 4), "head": (-6, 0, 0), "upperarm_L": (0, -20, 0),
+               "upperarm_R": (0, 20, 0), "thigh_L": (-10, 0, 0), "shin_L": (20, 0, 0), "thigh_R": (8, 0, 0),
+               "shin_R": (16, 0, 0), "_off": (0, 0.55, 0), "jaw": (10, 0, 0)}, "io")]
+_DEATH = [(0.0, {}, "l"), (0.25, _HIT_P, "o"),
+          (0.6, {"spine": (30, 0, 10), "chest": (20, 0, 0), "neck": (20, 0, 0), "head": (30, 0, 0), "jaw": (30, 0, 0),
+                 "upperarm_L": (-10, -10, 0), "forearm_L": (-10, 0, 0), "upperarm_R": (-10, 10, 0),
+                 "forearm_R": (-10, 0, 0), "_wp": (60, 0, 30), "thigh_L": (-80, 0, 0), "shin_L": (110, 0, 0),
+                 "thigh_R": (-60, 0, 0), "shin_R": (120, 0, 0), "_off": (0, 0.25, 0), "wing_L": (0, 30, 20),
+                 "wing_R": (0, -30, -20), "wing2_L": (0, 30, 0), "wing2_R": (0, -30, 0)}, "io"),
+          (1.0, {"pelvis": (70, 0, 10), "spine": (14, 0, 0), "chest": (6, 0, 0), "head": (-20, 0, 30), "jaw": (35, 0, 0),
+                 "upperarm_L": (-150, -30, 0), "upperarm_R": (-120, 40, 0), "_wp": (90, 0, 40),
+                 "thigh_L": (-50, 0, 0), "shin_L": (60, 0, 0), "thigh_R": (-40, 0, 0), "shin_R": (70, 0, 0),
+                 "_off": (0, -0.2, 0), "wing_L": (0, 45, 30), "wing_R": (0, -45, -30), "wing2_L": (0, 40, 0),
+                 "wing2_R": (0, -40, 0)}, "i")]
+_DEATH_G = [(0.0, {}, "l"), (0.25, _HIT_P, "o"),
+            (0.6, {"spine": (-20, 0, 0), "chest": (-20, 0, 0), "head": (-35, 0, 0), "jaw": (45, 0, 0),
+                   "upperarm_L": (-130, -40, 0), "upperarm_R": (-130, 40, 0), "forearm_L": (-20, 0, 0),
+                   "forearm_R": (-20, 0, 0), "tail1": (-20, 0, 0), "_off": (0, 0.2, 0.35)}, "io"),
+            (1.0, {"spine": (-25, 0, 0), "chest": (-25, 0, 0), "head": (-40, 0, 0), "jaw": (50, 0, 0),
+                   "upperarm_L": (-160, -50, 0), "upperarm_R": (-160, 50, 0), "tail1": (-30, 0, 0),
+                   "_off": (0, 0.3, 0.8)}, "o")]
+_EASE = {"l": lambda x: x, "io": C.ease_in_out, "i": C.ease_in, "o": C.ease_out}
+WEAPON_KINDS = ("skeleton", "skeleton_king")
+
+
+def _tracks(kind, action):
+    w = kind in WEAPON_KINDS
+    if action == "attack":
+        return _ATTACK_W if w else (_ATTACK_M if kind == "morbidious" else _ATTACK_C)
+    if action == "lunge":
+        if not w:
+            return _LUNGE
+        return [(u, dict(d, **({"upperarm_L": (10, -30, 0), "forearm_L": (-30, 0, 0)} if u >= 0.5 else {})), ez)
+                for u, d, ez in _LUNGE]
+    if action == "raise":
+        return _RAISE_K if kind == "skeleton_king" else _RAISE
+    if action == "dive":
+        if kind in ("bad_angel", "ghost"):
+            return _DIVE
+        leap = {0.4: (0, -0.5, 0.65), 0.65: (0, -1.2, 0.15)}
+        return [(u, dict(d, _off=leap.get(u, d.get("_off", (0, 0, 0)))), ez) for u, d, ez in _DIVE]
+    if action == "block":
+        return _BLOCK_W if w else _BLOCK_C
+    if action == "hit":
+        return _HIT
+    if action == "death":
+        return _DEATH_G if kind == "ghost" else _DEATH
+    raise ValueError("unknown enemy action %r (ACTIONS = %r)" % (action, ACTIONS))
+
+
+def _addp(a, b, w=1.0):
+    out = dict(a)
+    for k, r in b.items():
+        ra = out.get(k, (0.0, 0.0, 0.0))
+        out[k] = tuple(x + y * w for x, y in zip(ra, r))
+    return out
+
+
+def _track_at(keys, u):
+    if u <= keys[0][0]:
+        return dict(keys[0][1])
+    for (ua, da, _), (ub, db, ez) in zip(keys, keys[1:]):
+        if u <= ub:
+            t = _EASE[ez]((u - ua) / max(1e-6, ub - ua))
+            out = {}
+            for k in set(da) | set(db):
+                ra, rb = da.get(k, (0.0, 0.0, 0.0)), db.get(k, (0.0, 0.0, 0.0))
+                out[k] = tuple(x + (y - x) * t for x, y in zip(ra, rb))
+            return out
+    return dict(keys[-1][1])
+
+
+def _idle(e, u):
+    b = math.sin(2 * math.pi * u)
+    c2 = math.cos(2 * math.pi * u)
+    d = {"chest": (1.6 * b, 0, 0), "spine": (0.8 * b, 0, 0), "head": (-1.4 * b, 0, 2.5 * math.sin(2 * math.pi * u + 1)),
+         "upperarm_L": (2.0 * b, 0, 0), "upperarm_R": (-2.0 * b, 0, 0), "jaw": (2 + 2 * b, 0, 0),
+         "wing_L": (0, -4 * b, 2 * c2), "wing_R": (0, 4 * b, -2 * c2), "wing2_L": (0, -3 * b, 0), "wing2_R": (0, 3 * b, 0),
+         "tail1": (6 * b, 0, 4 * c2), "tail2": (8 * math.sin(2 * math.pi * u - 1), 0, 5 * math.cos(2 * math.pi * u - 1)),
+         "tail3": (10 * math.sin(2 * math.pi * u - 2), 0, 6 * math.cos(2 * math.pi * u - 2))}
+    if e.kind == "ghost":
+        d["_off"] = (0, 0, 0.035 * b)
+    return d
+
+
+def _walk(e, u):
+    k = e.kind
+    p = 2 * math.pi * u
+    b, c = math.sin(p), math.cos(p)
+    if k == "ghost":
+        return {"spine": (4, 0, 3 * b), "chest": (2, 0, -4 * b), "head": (0, 0, 3 * b), "upperarm_L": (-10 + 6 * b, 0, 0),
+                "upperarm_R": (-10 - 6 * b, 0, 0), "tail1": (18 + 6 * math.sin(p - 0.8), 0, 5 * b),
+                "tail2": (10 + 8 * math.sin(p - 1.6), 0, 6 * math.sin(p - 0.8)),
+                "tail3": (10 + 10 * math.sin(p - 2.4), 0, 8 * math.sin(p - 1.6)), "_off": (0, 0, 0.05 * b)}
+    amp = {"skeleton": 1.0, "skeleton_king": 0.8, "evil": 0.9, "morbidious": 0.7, "bad_angel": 0.9}[k]
+    w = MO.walk_pose(u, heavy=1.0 + (k in ("skeleton_king", "morbidious")))
+    d = {}
+    for j in ("thigh_L", "shin_L", "foot_L", "thigh_R", "shin_R", "foot_R"):
+        x, y, z = w[j]
+        d[j] = (x * amp, y, z)
+    d["pelvis"] = (0, 6 * b * (k == "morbidious"), w["pelvis"][2] * amp)
+    d["spine"] = (1.5 * abs(b), -4 * b * (k == "morbidious"), w["spine"][2] * amp)
+    d["chest"] = (0, 0, w["chest"][2] * amp)
+    d["head"] = (-1.5 * abs(b), 0, -w["chest"][2] * amp * 0.8)
+    d["upperarm_L"] = (16 * c * amp, 0, 0)
+    d["forearm_L"] = (-8 * max(0.0, -c), 0, 0)
+    d["upperarm_R"] = (-16 * c * amp * (0.4 if k in WEAPON_KINDS else 1.0), 0, 0)
+    d["wing_L"], d["wing_R"] = (0, -3 * c, 0), (0, 3 * c, 0)
+    d["_footabs"] = (1, 0, 0)
+    return d
+
+
+def pose_enemy(enemy, action, u):
+    """Pose dict {joint: (x, y, z) deg} (+ "_off" pelvis offset metres, "_wp" weapon orientation, flags) for `action`
+    at normalised time u (0..1; cyclic for idle / walk). Impact / apex lands on u = ENEMY_PEAK[action]."""
+    e, k = enemy, enemy.kind
+    u = float(u)
+    base = STANCE[k]
+    if action == "idle":
+        d = _idle(e, u % 1.0)
+    elif action == "walk":
+        d = _walk(e, u % 1.0)
+        base = {j: (v if not j.startswith(("thigh", "shin", "foot")) else tuple(x * 0.4 for x in v)) for j, v in base.items()}
+    else:
+        d = _track_at(_tracks(k, action), C.clamp01(u))
+    pose = _addp(base, d)
+    if k == "ghost" or (k == "bad_angel" and action == "dive" and u < 0.85) or (action == "dive" and 0.2 < u < 0.62):
+        pose["_free"] = (1, 0, 0)
+    if "_off" in pose:
+        pose["_off"] = tuple(v * e.s for v in pose["_off"])
+    return pose
+
+
+def _rm(r):
+    return Euler((math.radians(r[0]), math.radians(r[1]), math.radians(r[2])), "XYZ").to_matrix()
+
+
+def _fk(e, rots):
+    """Root-frame joint rotations / positions (no pelvis offset) for resolved joint rotations."""
+    J = e.J
+    R, X = {}, {}
+    for n in e.names:
+        if n == "root":
+            R[n], X[n] = Matrix.Identity(3), Vector(tuple(J["root"]))
+            continue
+        p = PARENT[n]
+        R[n] = R[p] @ _rm(rots.get(n, (0.0, 0.0, 0.0)))
+        X[n] = X[p] + R[p] @ Vector(tuple(J[n] - J[p]))
+    return R, X
+
+
+def _ground(e, R, X):
+    """Vertical pelvis correction so the lowest contact (ankle / toe / knee / head / chest) sits on the floor."""
+    s = e.s
+    lows = []
+    for sd in "LR":
+        f = "foot_" + sd
+        lows.append(X[f].z - e.J[f][2])
+        toe = X[f] + R[f] @ Vector((0.0, -0.14 * s, -0.07 * s))
+        lows.append(toe.z - 0.012 * s)
+        lows.append(X["shin_" + sd].z - 0.055 * s)
+    for j, cl in (("head", 0.12), ("chest", 0.15), ("pelvis", 0.1)):
+        lows.append(X[j].z - cl * s)
+    return -min(lows)
+
+
+def _resolve(e, pose):
+    rots = {n: tuple(pose.get(n, (0.0, 0.0, 0.0))) for n in e.names if n != "root"}
+    legged = "thigh_L" in e.rig
+    if legged and not pose.get("_footabs"):
+        for sd in "LR":
+            px = rots["pelvis"][0] + rots["thigh_" + sd][0] + rots["shin_" + sd][0]
+            fx = rots["foot_" + sd]
+            rots["foot_" + sd] = (fx[0] - px, fx[1], fx[2])
+    R, X = _fk(e, rots)
+    off = Vector(tuple(pose.get("_off", (0.0, 0.0, 0.0))))
+    if legged and not pose.get("_free"):
+        off.z = _ground(e, R, X)
+    if "weapon" in e.rig and pose.get("_wp") is not None:
+        loc = R["hand_R"].inverted() @ _rm(pose["_wp"])
+        prev = getattr(e, "_wprev", None)
+        eul = loc.to_euler("XYZ", prev) if prev is not None else loc.to_euler("XYZ")
+        e._wprev = eul
+        rots["weapon"] = tuple(math.degrees(a) for a in eul)
+    return rots, off
+
+
+def _apply(e, pose, loc, heading_deg, frame=None):
+    rots, off = _resolve(e, pose)
+    for n, ob in e.rig.items():
+        if n == "root":
+            continue
+        r = rots.get(n, (0.0, 0.0, 0.0))
+        ob.rotation_euler = (math.radians(r[0]), math.radians(r[1]), math.radians(r[2]))
+        if frame is not None:
+            ob.keyframe_insert("rotation_euler", frame=frame)
+    pel = e.rig["pelvis"]
+    pel.location = Vector(tuple(e.J["pelvis"])) + off
+    e.root.location = tuple(loc)
+    e.root.rotation_euler = (0.0, 0.0, math.radians(heading_deg))
+    if frame is not None:
+        pel.keyframe_insert("location", frame=frame)
+        e.root.keyframe_insert("location", frame=frame)
+        e.root.keyframe_insert("rotation_euler", frame=frame)
+
+
+def key_enemy(enemy, frame, pose, loc, heading_deg):
+    """Key every rig joint (missing -> 0), the pelvis offset and the root (location + heading) at `frame`."""
+    _apply(enemy, pose, loc, heading_deg, frame)
+
+
+def _linear(e):
+    for ob in e.rig.values():
+        C.set_interp(ob, "LINEAR")
+
+
+def _life(e, pose, f):
+    """Small frame-driven secondary motion (breathing noise, skeletal twitches, ghost drift) on top of a pose."""
+    sd = e.seed * 13 + KINDS.index(e.kind) * 101 + getattr(e, "idx", 0) * 7
+
+    def nz(k, a, fr=0.06):
+        return a * C.noise1(f * fr, sd + k)
+    add = {"chest": (nz(1, 1.2), 0, nz(2, 1.0)), "head": (nz(3, 2.0), nz(4, 1.5), nz(5, 2.5)),
+           "upperarm_L": (nz(6, 1.5), 0, 0), "upperarm_R": (nz(7, 1.5), 0, 0)}
+    if e.kind in WEAPON_KINDS:
+        add["jaw"] = (max(0.0, nz(8, 14, 0.4)), 0, 0)
+        tw = round(C.noise1(f * 0.09, sd + 9) * 2.0) / 2.0
+        add["head"] = (add["head"][0] + 4 * tw, add["head"][1], add["head"][2] + 7 * tw)
+    if e.kind == "ghost":
+        add.update({"tail1": (6 * math.sin(f * 0.13 + sd), 0, 4 * math.sin(f * 0.09 + sd)),
+                    "tail2": (8 * math.sin(f * 0.13 + sd - 0.9), 0, 5 * math.sin(f * 0.09 + sd - 0.9)),
+                    "tail3": (10 * math.sin(f * 0.13 + sd - 1.8), 0, 6 * math.sin(f * 0.09 + sd - 1.8)),
+                    "hand_L": (6 * math.sin(f * 0.21 + sd), 0, 0), "hand_R": (6 * math.sin(f * 0.19 + sd + 1), 0, 0)})
+        add["_off"] = (0, 0, 0.04 * e.s * math.sin(f * 0.1 + sd))
+    if e.kind == "bad_angel":
+        add.update({"wing2_L": (0, nz(10, 4, 0.12), 0), "wing2_R": (0, nz(11, 4, 0.12), 0)})
+    if e.kind == "evil":
+        add["chest"] = (add["chest"][0] + 2.0 * math.sin(f * 0.11 + sd), 0, add["chest"][2])
+    return _addp(pose, add)
+
+
+def perform_enemy(enemy, frames, action, f_peak, dur, loc, heading, slowmo=1.0):
+    """Key every frame in `frames` so the action's impact lands on f_peak (before = start pose, after = end pose).
+    dur = action length in frames; slowmo < 1 stretches time (0.5 = 50 %). idle / walk are cyclic (dur = one cycle);
+    walk also advances the root along the heading (loc = position at f_peak)."""
+    e = enemy
+    pk = ENEMY_PEAK[action]
+    D = max(1e-3, float(dur) / max(1e-3, slowmo))
+    h = math.radians(heading)
+    fwd = Vector((math.sin(h), -math.cos(h), 0.0))
+    stride = STRIDE[e.kind] * e.s * getattr(e, "scale", 1.0)
+    for f in frames:
+        if action == "walk":
+            ph = (f - f_peak) / D
+            u = ph % 1.0
+            L = Vector(tuple(loc)) + fwd * (ph * 2 * stride)
+        elif action == "idle":
+            u = ((f - f_peak) / D + pk) % 1.0
+            L = Vector(tuple(loc))
+        else:
+            u = C.clamp01(pk + (f - f_peak) / D)
+            L = Vector(tuple(loc))
+        key_enemy(e, f, _life(e, pose_enemy(e, action, u), f), L, heading)
+    _linear(e)
+
+
+# ================================================================== glow / dissolve
+def set_glow(enemy, frame, value):
+    """Key CTRL_glow (1 = nominal) on every glow material, and the glow spill lights, at `frame`."""
+    for m in enemy.glow_mats:
+        M.key_ctrl(m, "glow", frame, value)
+    for ob, E in getattr(enemy, "lights", []):
+        ob.data.energy = E * value
+        ob.data.keyframe_insert("energy", frame=frame)
+
+
+def _cut_keys(ob, f0):
+    ad = ob.animation_data
+    if ad is None or ad.action is None:
+        return
+    for fc in ad.action.fcurves:
+        idx = [i for i, kp in enumerate(fc.keyframe_points) if kp.co.x > f0 + 1e-3]
+        for i in reversed(idx):
+            fc.keyframe_points.remove(fc.keyframe_points[i])
+        fc.update()
+
+
+def _shatter(e, f0, f1, power=1.0):
+    """Break the body into its rigid parts: the rig freezes at f0, each part flies out from the body centre with
+    gravity, spin and a floor stop, shrinking as it burns out."""
+    sc = bpy.context.scene
+    for ob in e.rig.values():
+        _cut_keys(ob, f0)
+    sc.frame_set(f0)
+    bpy.context.view_layer.update()
+    sc_ = e.root.matrix_world.to_scale()[0]
+    cen = e.root.matrix_world.translation + Vector((0, 0, e.height * 0.5 * sc_))
+    rnd = random.Random(e.seed * 31 + 7 + getattr(e, "idx", 0))
+    n = max(1, f1 - f0)
+    for p in e.parts:
+        if p.parent is None:
+            continue
+        A = p.parent.matrix_world @ p.matrix_parent_inverse
+        Ainv = A.to_3x3().inverted()
+        c_loc = sum((Vector(b) for b in p.bound_box), Vector()) / 8.0
+        cw = A @ c_loc
+        dv = cw - cen
+        dv.z *= 0.5
+        if dv.length < 1e-4:
+            dv = Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), 0.3))
+        v = dv.normalized() * rnd.uniform(1.5, 3.8) * power + Vector((rnd.uniform(-0.6, 0.6), rnd.uniform(-0.6, 0.6),
+                                                                      rnd.uniform(1.0, 2.6) * power))
+        w = Vector([rnd.uniform(-1, 1) * 0.5 for _ in range(3)]) * power
+        base = p.location.copy()
+        p.rotation_mode = "XYZ"
+        p.keyframe_insert("location", frame=f0)
+        p.keyframe_insert("rotation_euler", frame=f0)
+        p.keyframe_insert("scale", frame=f0)
+        floor = cw.z - 0.03
+        for f in range(f0 + 1, f1 + 4):
+            t = (f - f0) / float(C.FPS)
+            d = v * t + Vector((0, 0, -9.8 * 0.5 * t * t))
+            if cw.z + d.z < 0.04:
+                d.z = 0.04 - cw.z
+                d.x *= 0.7
+                d.y *= 0.7
+            Rm = Euler(tuple(w * (f - f0)), "XYZ").to_matrix()
+            k = max(0.0, 1.0 - C.clamp01((f - f0) / float(n) - 0.35) * 1.4) if f <= f1 + 2 else 0.0
+            S = Matrix.Diagonal((k, k, k))
+            p.location = base + Ainv @ d + c_loc - (Rm @ S) @ c_loc
+            p.rotation_euler = Rm.to_euler("XYZ")
+            p.scale = (k, k, k)
+            p.keyframe_insert("location", frame=f)
+            p.keyframe_insert("rotation_euler", frame=f)
+            p.keyframe_insert("scale", frame=f)
+        C.set_interp(p, "LINEAR")
+        del floor
+
+
+def dissolve(enemy, f0, frames=8, mode="ash"):
+    """Destroy the enemy from frame f0 over `frames` frames. mode: "ash" (chars, burns away top-down with glowing
+    edges), "smoke" (swells and evaporates), "shatter" (rigid parts fly apart and burn out). The glow flares then dies."""
+    e = enemy
+    f1 = f0 + max(1, int(frames))
+    shared = getattr(e, "shared_mats", False)
+    n = f1 - f0
+    if not shared:
+        for m in e.fade_mats:
+            M.key_ctrl(m, "fade", f0 - 1, 0.0)
+            if M.ctrl_node(m, "char") is not None:
+                M.key_ctrl(m, "char", f0 - 1, 0.0)
+            for f in range(f0, f1 + 1):
+                u = (f - f0) / float(n)
+                if mode == "shatter":
+                    fv = C.clamp01((u - 0.3) / 0.7) ** 1.2
+                elif mode == "smoke":
+                    fv = C.ease_in_out(u)
+                else:
+                    fv = C.clamp01(u * 1.05) ** 1.15
+                M.key_ctrl(m, "fade", f, min(1.0, fv) if f < f1 else 1.0)
+                if M.ctrl_node(m, "char") is not None:
+                    M.key_ctrl(m, "char", f, C.clamp01(u * (2.2 if mode == "ash" else 1.0)) * (1.0 if mode == "ash" else 0.6))
+    set_glow(e, f0 - 1, 1.0)
+    set_glow(e, f0, 2.6)
+    set_glow(e, f0 + 1, 3.5)
+    set_glow(e, f0 + max(2, int(n * 0.65)), 0.0)
+    if mode == "smoke":
+        s0 = e.root.scale.copy()
+        for f in range(f0, f1 + 1):
+            u = (f - f0) / float(n)
+            k = 1.0 + 0.16 * C.ease_out(u)
+            e.root.scale = (s0[0] * k, s0[1] * k, s0[2] * k)
+            e.root.keyframe_insert("scale", frame=f)
+        e.root.scale = s0
+        e.root.keyframe_insert("scale", frame=f0 - 1)
+    elif mode == "shatter":
+        _shatter(e, f0, f1)
+    if shared and mode != "shatter":       # crowd member (materials shared): collapse its parts instead
+        for p in e.parts:
+            p.keyframe_insert("scale", frame=f0)
+            p.scale = (0.0, 0.0, 0.0)
+            p.keyframe_insert("scale", frame=f1)
+            p.scale = (1.0, 1.0, 1.0)
+
+
+# ================================================================== crowds
+class CrowdMember:
+    """A cheap crowd body: its own FK rig (copied empties) driving linked duplicates of a built enemy's parts.
+    Same attribute names as Enemy (.kind, .rig, .root, .parts, .mats, .glow_mats, .height, .J, .s), materials shared."""
+    shared_mats = True
+
+
+def _dup(src, tag, idx):
+    m = CrowdMember()
+    for a in ("kind", "J", "T", "s", "height", "names", "mats", "glow_mats", "fade_mats", "glow_color", "seed"):
+        setattr(m, a, getattr(src, a))
+    m.prefix = "%s%s%02d_" % (src.prefix, tag, idx)
+    mp = {}
+    for n in src.names:
+        o = src.rig[n]
+        c = o.copy()
+        c.name = m.prefix + n
+        C.link(c)
+        mp[o] = c
+    for o, c in mp.items():
+        if o.parent in mp:
+            c.parent = mp[o.parent]
+            c.matrix_parent_inverse = o.matrix_parent_inverse.copy()
+    m.rig = {n: mp[src.rig[n]] for n in src.names}
+    m.root = m.rig["root"]
+    m.parts = []
+    for p in src.parts:
+        c = p.copy()
+        c.name = m.prefix + p.name[len(src.prefix):]
+        C.link(c)
+        c.parent = mp[p.parent]
+        c.matrix_parent_inverse = p.matrix_parent_inverse.copy()
+        m.parts.append(c)
+    m.lights = []
+    return m
+
+
+def _as_member(e):
+    e.shared_mats = True
+    e.lights_off = True
+    return e
+
+
+def lite_materials(enemy, detail=2.0):
+    """Cheaper shading (crowds / distant enemies): clamp the procedural noise octaves of the enemy's materials."""
+    mats = enemy.mats.values() if hasattr(enemy, "mats") else enemy
+    for m in mats:
+        for n in m.node_tree.nodes:
+            if n.type in ("TEX_NOISE", "TEX_WAVE") and "Detail" in n.inputs:
+                n.inputs["Detail"].default_value = min(n.inputs["Detail"].default_value, detail)
+    return enemy
+
+
+def crowd(kinds, count, center, radius, seed=0, face=None, min_r=1.5, spacing=0.95, frames=None, lights=False,
+          lite=True):
+    """Scatter `count` enemies (kinds chosen from the list; repeat a kind to weight it) in the ring min_r..radius around
+    `center`, each facing `face` (or a random heading). One enemy is built per kind; every other member is a linked
+    duplicate with its own rig, varied scale / heading / upper-body pose. Members are posed (not keyed) unless `frames`
+    is given (then they idle-breathe, keyed per frame). Returns the members (each with .root, .rig, .loc, .heading)."""
+    rnd = random.Random(int(seed) * 7907 + count * 31 + 5)
+    cen = Vector(tuple(center))
+    src = {}
+    for k in dict.fromkeys(kinds):
+        src[k] = build_enemy(k, prefix="CR" + SHORT[k] + "_", seed=seed + len(src), lights=lights, lod=1 if lite else 0)
+        if lite:
+            lite_materials(src[k])
+    pts = []
+    sp = spacing
+    tries = 0
+    while len(pts) < count and tries < 20000:
+        tries += 1
+        if tries % 2500 == 0:
+            sp *= 0.9
+        r = math.sqrt(rnd.uniform(min_r ** 2, radius ** 2))
+        a = rnd.uniform(0, 2 * math.pi)
+        p = cen + Vector((r * math.cos(a), r * math.sin(a), 0.0))
+        if all((p - q).length >= sp for q in pts):
+            pts.append(p)
+    used = {k: 0 for k in src}
+    out = []
+    for i, p in enumerate(pts):
+        k = kinds[rnd.randrange(len(kinds))]
+        e = src[k]
+        m = _as_member(e) if used[k] == 0 else _dup(e, "m", i)
+        used[k] += 1
+        m.idx = i
+        m.seed = seed * 100 + i
+        sc = rnd.uniform(0.92, 1.07)
+        m.scale = sc
+        m.root.scale = (sc, sc, sc)
+        if face is not None:
+            d = Vector(tuple(face)) - p
+            hd = math.degrees(math.atan2(d.x, -d.y)) + rnd.uniform(-12, 12)
+        else:
+            hd = rnd.uniform(-180, 180)
+        m.loc, m.heading, m.face = p.copy(), hd, (Vector(tuple(face)) if face is not None else None)
+        m.phase = rnd.random()
+        m.speed = rnd.uniform(0.85, 1.15)
+        var = {j: (rnd.uniform(-6, 6), rnd.uniform(-4, 4), rnd.uniform(-8, 8)) for j in ("head", "chest", "upperarm_L")}
+        r2 = rnd.random()
+        if k in WEAPON_KINDS and r2 < 0.45:
+            var.update({"upperarm_R": (-70 + rnd.uniform(-25, 15), 10, 0), "forearm_R": (-25, 0, 0),
+                        "_wp": (-70 + rnd.uniform(-30, 20), 0, 0)})
+        elif k == "ghost" or r2 > 0.75:
+            var.update({"upperarm_L": (-35 + rnd.uniform(-15, 10), -6, 0), "upperarm_R": (-35 + rnd.uniform(-15, 10), 6, 0),
+                        "jaw": (rnd.uniform(5, 25), 0, 0)})
+        m.var = var
+        _apply(m, _addp(pose_enemy(m, "idle", m.phase), var), m.loc, hd)
+        out.append(m)
+    bpy.context.view_layer.update()
+    if frames is not None:
+        for m in out:
+            for f in frames:
+                pose = _addp(pose_enemy(m, "idle", (m.phase + f / 75.0) % 1.0), m.var)
+                key_enemy(m, f, _life(m, pose, f), m.loc, m.heading)
+            _linear(m)
+    return out
+
+
+def crowd_advance(members, f0, f1, dist):
+    """Key every member stepping `dist` metres (x its own speed) toward its face point from f0 to f1 (a walk cycle
+    locked to the distance travelled; members stop short of the face point). Holds the start pose before f0."""
+    for m in members:
+        start = m.loc
+        if m.face is not None:
+            dv = Vector((m.face.x - start.x, m.face.y - start.y, 0.0))
+            room = max(0.0, dv.length - 1.0)
+            dv = dv.normalized() if dv.length > 1e-6 else Vector((0, -1, 0))
+        else:
+            h = math.radians(m.heading)
+            dv, room = Vector((math.sin(h), -math.cos(h), 0.0)), 1e9
+        stride = STRIDE[m.kind] * m.s * m.scale
+        for f in range(int(f0), int(f1) + 1):
+            u = (f - f0) / float(max(1, f1 - f0))
+            d = min(room, dist * m.speed * (0.8 * u + 0.2 * C.ease_in_out(u)))
+            ph = m.phase + d / (2 * stride)
+            pose = _addp(pose_enemy(m, "walk", ph % 1.0), {j: v for j, v in m.var.items()
+                                                           if not j.startswith(("thigh", "shin", "foot"))})
+            key_enemy(m, f, _life(m, pose, f), start + dv * d, m.heading)
+        _linear(m)
+    return members

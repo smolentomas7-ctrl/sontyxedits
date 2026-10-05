@@ -34,7 +34,7 @@ LOCKED LAYOUT (metres, Z up, characters face -Y; heading 180 = facing +Y)
 
 API
 ---
- build_gate(seed=0) -> Gate        (also sets the void world + EEVEE settings)
+ build_gate(seed=0, ssr=True) -> Gate   (also sets the void world + EEVEE settings; ssr=False saves ~3 s/frame)
      .objects .doors [left, right] .mats {stone, gold, floor, light, mist, motes, rubble, occluder}
      .ctrls {'open': mat, 'light': mat}  -> rb_mat.key_ctrl(gate.ctrls['open'], 'open', frame, v)
      .key_ctrl(name, frame, value)      (same thing)   .marks (see above)   .lights (after lights_gate)
@@ -121,6 +121,17 @@ def _mapv(b, vec, scale=(1, 1, 1), loc=(0, 0, 0)):
 
 def _sep(b, v):
     return b.n("ShaderNodeSeparateXYZ", Vector=v)
+
+
+def _flat2d(mat):
+    """Evaluate every Voronoi / Noise texture of a ground-like material in 2D (XY): same look on (near-)flat
+    ground, ~3x cheaper per texture in EEVEE on software GL (the floor / meadow fill the frame)."""
+    for nd in mat.node_tree.nodes:
+        if nd.type == "TEX_VORONOI":
+            nd.voronoi_dimensions = "2D"
+        elif nd.type == "TEX_NOISE":
+            nd.noise_dimensions = "2D"
+    return mat
 
 
 def _key_time(mat, node):
@@ -346,9 +357,11 @@ def mat_floor(name="heaven_floor"):
     r = b.math("MAXIMUM", r, b.math("MULTIPLY", cut, 0.55))
     h = b.math("ADD", b.math("MULTIPLY", cut, -1.0), b.math("MULTIPLY", (grain, "Fac"), b.math("SUBTRACT", 1.0, wet)))
     bump = b.n("ShaderNodeBump", Strength=0.3, Distance=0.012, Height=h)
-    bs = b.bsdf(**{"Base Color": col, "Roughness": r, "Specular IOR Level": 0.55, "Normal": bump})
+    # grooves / cracks are cavities: no grazing sheen from the backlight in them (they read dark)
+    spec = b.math("SUBTRACT", 0.55, b.math("MULTIPLY", cut, 0.52))
+    bs = b.bsdf(**{"Base Color": col, "Roughness": r, "Specular IOR Level": spec, "Normal": bump})
     b.out(bs)
-    return m
+    return _flat2d(m)
 
 
 def mat_light(name="heaven_light"):
@@ -650,8 +663,9 @@ def world_void(density=0.005, color=(0.93, 0.89, 0.82), anisotropy=0.62):
     return w
 
 
-def tune_gate(sc=None):
-    """EEVEE settings the gate set relies on (bloom on the light, SSR on the wet floor, volumetric shafts)."""
+def tune_gate(sc=None, ssr=True):
+    """EEVEE settings the gate set relies on (bloom on the light, SSR on the wet floor, volumetric shafts).
+    ssr=False drops the wet-floor screen-space reflections (~-3 s/frame at full res, loses the gap's streak)."""
     sc = sc or bpy.context.scene
     e = sc.eevee
     e.use_bloom = True
@@ -660,8 +674,8 @@ def tune_gate(sc=None):
     e.bloom_radius = 6.5
     e.bloom_knee = 0.55
     e.bloom_color = (1.0, 0.93, 0.82)
-    e.use_ssr = True
-    e.ssr_max_roughness = 0.45
+    e.use_ssr = ssr
+    e.ssr_max_roughness = 0.3     # traces only the wet puddles (the rest uses probes): -15% render time
     e.ssr_thickness = 0.4
     e.ssr_border_fade = 0.06
     e.ssr_firefly_fac = 5.0
@@ -670,12 +684,12 @@ def tune_gate(sc=None):
     e.gtao_distance = 0.8
     e.volumetric_start = 0.1
     e.volumetric_end = 110.0
-    e.volumetric_tile_size = "8"
-    e.volumetric_samples = 40
+    e.volumetric_tile_size = "16"   # "8" = crisper shafts for a hero close-up (~+40% render time at full res)
+    e.volumetric_samples = 32
     e.volumetric_sample_distribution = 0.8
     e.use_volumetric_lights = True
     e.use_volumetric_shadows = True
-    e.volumetric_shadow_samples = 8
+    e.volumetric_shadow_samples = 6
     e.use_soft_shadows = True
     e.shadow_cube_size = "1024"
     e.shadow_cascade_size = "2048"
@@ -921,12 +935,13 @@ def _motes(name, seed, mat, n=650):
     return ob
 
 
-def build_gate(seed=0):
-    """Build the Gate of Heaven set in the void (see module docstring). Also sets the world + EEVEE."""
+def build_gate(seed=0, ssr=True):
+    """Build the Gate of Heaven set in the void (see module docstring). Also sets the world + EEVEE
+    (ssr=False: cheaper, no wet-floor reflection of the gap)."""
     G = Gate(seed)
     rnd = random.Random(seed * 7919 + 31)
     G.world = world_void()
-    tune_gate()
+    tune_gate(ssr=ssr)
     stone = mat_stone("heaven_stone", base=(0.5, 0.47, 0.415), dark=0.5)
     gold = mat_gold("heaven_gold")
     floor = mat_floor("heaven_floor")
@@ -934,7 +949,7 @@ def build_gate(seed=0):
     occ = mat_occluder("heaven_occluder")
     rub = mat_stone("heaven_rubble", base=(0.07, 0.068, 0.066), dark=0.6, rough=0.7, ao=False)
     wall = mat_stone("heaven_wall", base=(0.47, 0.44, 0.39), dark=0.55)
-    mist = mat_fog("heaven_mist", 0.016, 1.4, (0.9, 0.88, 0.84), anisotropy=0.55, scale=0.13,
+    mist = mat_fog("heaven_mist", 0.012, 1.4, (0.9, 0.88, 0.84), anisotropy=0.55, scale=0.13,
                    contrast=(0.4, 0.72, 0.0, 1.5))
     motes = mat_motes("heaven_motes")
     G.mats = dict(stone=stone, gold=gold, floor=floor, light=light, occluder=occ, rubble=rub, wall=wall, mist=mist,
@@ -1154,7 +1169,7 @@ def mat_meadow_ground(name="meadow_ground"):
     bump = b.n("ShaderNodeBump", Strength=0.4, Distance=0.02, Height=(fine, "Fac"))
     bs = b.bsdf(**{"Base Color": c, "Roughness": 0.9, "Specular IOR Level": 0.18, "Normal": bump})
     b.out(_aerial(b, bs))
-    return _key_time(m, t)
+    return _key_time(_flat2d(m), t)
 
 
 def mat_grass(name="meadow_grass"):
@@ -1179,7 +1194,7 @@ def mat_grass(name="meadow_grass"):
     b.link(bs, mx.inputs[1])
     b.link(tr, mx.inputs[2])
     b.out(_aerial(b, mx))
-    return _key_time(m, t)
+    return _key_time(_flat2d(m), t)
 
 
 def mat_foliage(name="meadow_foliage"):
@@ -1536,7 +1551,7 @@ def build_meadow(seed=0):
     for _ in range(n_far):
         px = W.x + rnd.uniform(-14.0, 12.0)
         py = W.y + (-6.0 + 30.0 * rnd.random() ** 1.6)
-        pz = Mw.ground_z(px, py) + rnd.uniform(0.3, 5.0)
+        pz = Mw.ground_z(px, py) + rnd.uniform(0.3, 3.4)
         petal(px, py, pz, rnd.uniform(1.5, 2.3), rnd.uniform(14.0, 22.0), rnd.uniform(0.45, 0.95))
     npt = n_near + n_far
     pp = _points("MEADOW_petals", P, A)
