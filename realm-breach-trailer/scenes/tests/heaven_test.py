@@ -58,6 +58,8 @@ def stand(w, pos, hd, f_render):
 
 
 for v in which:
+    import rb_mat
+    rb_mat._cache.clear()
     t0 = time.time()
     C.reset_scene()
     sc = C.setup_render(scale=scale, samples=samples)

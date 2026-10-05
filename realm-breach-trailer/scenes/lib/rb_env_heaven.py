@@ -5,8 +5,7 @@ E3  In the dark void of the arena a colossal free-standing gate of pale carved s
     pours through the gap: a shadowed beam behind the gate shines ONLY through the door gap (an invisible
     shadow-caster wall surrounds the aperture), so the light lands as a long wedge across the dark, wet,
     cracked floor, cuts visible shafts through the haze and low ground mist, and throws the warrior's
-    shadow back toward the camera. A second shadowed light behind the gate makes the haze glow around the
-    gate silhouette (heaven beyond). Dust motes drift in the beam (frame-driven Geometry Nodes).
+    shadow back toward the camera. A soft volume-only halo glows around the arch (heaven beyond). Dust motes drift in the beam (frame-driven Geometry Nodes).
 E4  Beyond the gate: a soft flower meadow on gentle rolling hills under a warm sky (#FFF4DC at the horizon
     to pale blue). Real instanced grass blades (tufts) that sway with a frame-driven breeze, instanced small
     flowers (white daisies, pale gold buttercups, a little soft pink), floating petals (frame-driven),
@@ -42,11 +41,11 @@ API
      CTRL_open (0..1 door opening, default 0.45), CTRL_light (light intensity multiplier, default 1):
      doors, beam, aura, bounce, light box and motes are all driven from them.
  lights_gate(gate, warrior=None, cam=None, follow=None) -> {name: light}
-     beam (shadowed spot through the gap), aura (shadowed, volume-only glow behind the gate), bounce
+     beam (shadowed spot through the gap), aura (soft volume-only halo around the arch), bounce
      (warm up-light off the lit floor onto the gate face), front (faint cool fill), gate_rim (warm white
      rim on the warrior from the gate side) and ember (ember kicker on his side) — the last two parented
      to `follow` (warrior.root), call with the scene at a frame where he stands at `warrior`.
-     2 shadow casters.
+     1 shadow caster (the beam); a shot may add one more.
  build_meadow(seed=0) -> Meadow    (also sets the sky world + EEVEE settings)
      .objects .mats .marks .ground_z(x, y) .grass .flowers .petals .terrain .world
  lights_meadow(meadow, warrior=None, cam=None, follow=None) -> {name: light}
@@ -341,9 +340,9 @@ def mat_floor(name="heaven_floor"):
     col = b.mix(cut, base, (0.006, 0.006, 0.007))
     wet = _mr(b, (_noise(b, p, 0.09, 3.0, 0.55), "Fac"), 0.47, 0.56)
     r = b.math("ADD", b.math("MULTIPLY", wet, -0.5), 0.6)
-    r = b.math("MINIMUM", r, b.math("ADD", b.math("MULTIPLY", cut, -0.35), 0.62))
+    r = b.math("MAXIMUM", r, b.math("MULTIPLY", cut, 0.55))
     h = b.math("ADD", b.math("MULTIPLY", cut, -1.0), b.math("MULTIPLY", (grain, "Fac"), b.math("SUBTRACT", 1.0, wet)))
-    bump = b.n("ShaderNodeBump", Strength=0.45, Distance=0.015, Height=h)
+    bump = b.n("ShaderNodeBump", Strength=0.3, Distance=0.012, Height=h)
     bs = b.bsdf(**{"Base Color": col, "Roughness": r, "Specular IOR Level": 0.55, "Normal": bump})
     b.out(bs)
     return m
@@ -413,7 +412,7 @@ def mat_motes(name, gap_half=0.75):
     tw = b.n("ShaderNodeMath", _operation="SINE")
     b._in(tw, 0, b.math("ADD", b.math("MULTIPLY", t, 2.1), b.math("MULTIPLY", ph, 61.0)))
     twk = _mr(b, tw, -1.0, 1.0, 0.45, 1.0)
-    s = b.math("MULTIPLY", b.math("MULTIPLY", b.math("ADD", b.math("MULTIPLY", inb, 9.0), 0.25), twk),
+    s = b.math("MULTIPLY", b.math("MULTIPLY", b.math("ADD", b.math("MULTIPLY", inb, 5.0), 0.03), twk),
                b.math("MULTIPLY", near_gate, k))
     em = b.n("ShaderNodeEmission", Color=_lin("#FFE9C4"), Strength=s)
     b.out(em)
@@ -619,7 +618,7 @@ class Meadow:
 
 
 # =================================================================== E3 — world / eevee
-def world_void(density=0.011, color=(0.93, 0.89, 0.82), anisotropy=0.62):
+def world_void(density=0.005, color=(0.93, 0.89, 0.82), anisotropy=0.62):
     """Teal-black void with a thin warm haze (forward-scattering, so shafts read toward the light).
     CTRL_fog = uniform volume density."""
     w = bpy.data.worlds.new("HEAVEN_void")
@@ -786,7 +785,7 @@ def _walls(rnd):
     """Ruined ashlar wall stubs either side of the gate, stepping down and breaking off into the dark."""
     acc = _Acc()
     for s in (-1, 1):
-        x_in, x_out = HW + JW + 0.3, 15.5
+        x_in, x_out = HW + JW, 15.5
         for c in range(16):
             z0, z1 = c * 0.9, (c + 1) * 0.9
             x = x_in
@@ -853,11 +852,15 @@ def _door(name, side, rnd, mats):
 
 
 def _occluder(name, mat):
-    """Big invisible wall (shadow caster) with a hole the size of the door aperture."""
+    """Invisible shadow-casting 'light room' around the lights behind the gate: its only opening is the door
+    aperture, so the beam lights the haze only through the gap (the void around the gate stays dark)."""
     acc = _Acc()
     y = GATE_Y + JD + 0.05
-    for lo, hi in (((-80, y, -2), (-HW, y + 0.02, 70)), ((HW, y, -2), (80, y + 0.02, 70)),
-                   ((-HW, y, -2), (HW, y + 0.02, Z0)), ((-HW, y, Z0 + DH), (HW, y + 0.02, 70))):
+    yb, xr, zr = GATE_Y + 18.0, 7.5, Z0 + DH + 2.0
+    for lo, hi in (((-xr, y, -2), (-HW, y + 0.02, zr)), ((HW, y, -2), (xr, y + 0.02, zr)),
+                   ((-HW, y, -2), (HW, y + 0.02, Z0)), ((-HW, y, Z0 + DH), (HW, y + 0.02, zr)),
+                   ((-xr - 0.02, y, -2), (-xr, yb, zr)), ((xr, y, -2), (xr + 0.02, yb, zr)),
+                   ((-xr, yb, -2), (xr, yb + 0.02, zr)), ((-xr, y, zr), (xr, yb, zr + 0.02))):
         acc.box(lo, hi)
     ob = acc.build(name, [mat], smooth=False, auto=None)
     ob.visible_diffuse = False
@@ -889,7 +892,7 @@ def _motes(name, seed, mat, n=900):
         A["phase"].append(rnd.random())
         A["spd"].append(rnd.uniform(0.02, 0.07))
         A["len"].append(rnd.uniform(0.6, 1.6))
-        A["sz"].append(rnd.uniform(0.006, 0.014) * (1.8 if rnd.random() < 0.05 else 1.0))
+        A["sz"].append(rnd.uniform(0.004, 0.009) * (1.8 if rnd.random() < 0.05 else 1.0))
         A["sway"].append(rnd.uniform(0.05, 0.2))
         A["sfq"].append(rnd.uniform(0.15, 0.35))
         d = Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 0.6), rnd.uniform(-0.3, 0.8))).normalized()
@@ -914,14 +917,14 @@ def build_gate(seed=0):
     rnd = random.Random(seed * 7919 + 31)
     G.world = world_void()
     tune_gate()
-    stone = mat_stone("heaven_stone")
+    stone = mat_stone("heaven_stone", base=(0.5, 0.47, 0.415), dark=0.5)
     gold = mat_gold("heaven_gold")
     floor = mat_floor("heaven_floor")
     light = mat_light("heaven_light")
     occ = mat_occluder("heaven_occluder")
     rub = mat_stone("heaven_rubble", base=(0.07, 0.068, 0.066), dark=0.6, rough=0.7, ao=False)
     wall = mat_stone("heaven_wall", base=(0.47, 0.44, 0.39), dark=0.55)
-    mist = mat_fog("heaven_mist", 0.07, 1.8, (0.9, 0.88, 0.84), anisotropy=0.55, scale=0.11)
+    mist = mat_fog("heaven_mist", 0.035, 1.6, (0.9, 0.88, 0.84), anisotropy=0.55, scale=0.11)
     motes = mat_motes("heaven_motes")
     G.mats = dict(stone=stone, gold=gold, floor=floor, light=light, occluder=occ, rubble=rub, wall=wall, mist=mist,
                   motes=motes)
@@ -975,16 +978,16 @@ def lights_gate(gate, warrior=None, cam=None, follow=None):
     Cm = Vector(cam if cam is not None else mk["cam"])
     lm = gate.ctrls["light"]
     L = {}
-    L["beam"] = _L("SPOT", "beam", (0.0, GATE_Y + 14.0, Z0 + 8.0), HEAVEN, 2.6e5, target=(0.0, GATE_Y, Z0 + 4.0),
+    L["beam"] = _L("SPOT", "beam", (0.0, GATE_Y + 14.0, Z0 + 8.0), HEAVEN, 7.0e4, target=(0.0, GATE_Y, Z0 + 4.0),
                    size=0.5, shadow=True, spot=95.0, blend=0.2, volume=1.0, specular=1.0)
-    L["aura"] = _L("POINT", "aura", (0.0, GATE_Y + 9.0, 15.0), HEAVEN, 1.2e5, size=2.5, shadow=True, volume=1.6,
-                   diffuse=0.0, specular=0.0)
-    bo = _L("AREA", "bounce", (0.0, GATE_Y - 9.0, 0.03), "#FFE4BE", 2600.0, size=8.0, volume=0.0, specular=0.35)
+    L["aura"] = _L("POINT", "aura", (0.0, GATE_Y - 1.0, Z0 + DH + 1.0), HEAVEN, 5000.0, size=3.0, shadow=False,
+                   volume=1.0, diffuse=0.0, specular=0.0, cutoff=22.0)
+    bo = _L("AREA", "bounce", (0.0, GATE_Y - 9.0, 0.03), "#FFE4BE", 900.0, size=8.0, volume=0.0, specular=0.35)
     bo.data.shape = "RECTANGLE"
     bo.data.size, bo.data.size_y = 8.0, 14.0
     bo.rotation_euler = (math.pi, 0.0, 0.0)
     L["bounce"] = bo
-    L["front"] = _L("AREA", "front", (0.0, GATE_Y - 30.0, 16.0), "#A7B6C6", 2200.0, target=(0.0, GATE_Y, 8.0),
+    L["front"] = _L("AREA", "front", (0.0, GATE_Y - 30.0, 16.0), "#8C9BAD", 450.0, target=(0.0, GATE_Y, 8.0),
                     size=16.0, volume=0.0, specular=0.5)
     # warrior: warm white rim from the gate side + ember kicker on his side (both follow him)
     t = W + Vector((0, 0, 1.3))

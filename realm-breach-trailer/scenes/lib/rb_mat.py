@@ -428,7 +428,16 @@ def robe(name="god_robe", top=(0.016, 0.018, 0.026), bottom=(0.006, 0.007, 0.01)
     alpha = b.math("SUBTRACT", 1.0, b.math("MULTIPLY", b.math("GREATER_THAN", hem, 0.01),
                                           b.math("LESS_THAN", (nz, "Fac"), b.math("ADD", 0.25, hem))))
     weave = b.n("ShaderNodeTexWave", Vector=(tc, "Object"), Scale=160.0, _wave_type="BANDS")
-    bump = b.n("ShaderNodeBump", Strength=0.1, Height=(weave, "Fac"))
+    # large hanging folds (vertical bands with distortion, two directions around the body) + crumpled wrinkles,
+    # so the heavy cloth reads as cloth under the god's hard underlight instead of a smooth sheet
+    fx = b.n("ShaderNodeTexWave", Vector=(tc, "Object"), Scale=2.6, Distortion=7.0, **{"Detail": 3.0},
+             _wave_type="BANDS", _bands_direction="X")
+    fy = b.n("ShaderNodeTexWave", Vector=(tc, "Object"), Scale=2.2, Distortion=6.0, **{"Detail": 3.0},
+             _wave_type="BANDS", _bands_direction="Y")
+    wr = b.n("ShaderNodeTexNoise", Vector=(tc, "Object"), Scale=9.0, Detail=6.0, Roughness=0.6)
+    h = b.math("ADD", b.math("MULTIPLY", b.math("ADD", (fx, "Fac"), (fy, "Fac")), 0.5),
+               b.math("ADD", b.math("MULTIPLY", (wr, "Fac"), 0.35), b.math("MULTIPLY", (weave, "Fac"), 0.06)))
+    bump = b.n("ShaderNodeBump", Strength=0.45, Distance=0.06, Height=h)
     bs = b.bsdf(**{"Base Color": col, "Roughness": 0.92, "Normal": bump, "Alpha": alpha})
     bs.inputs["Sheen Weight"].default_value = 0.5
     bs.inputs["Specular IOR Level"].default_value = 0.2
