@@ -30,6 +30,7 @@ cam.shake(F_HIT, amp=0.05, seed=shot.seed)
 LOC = Vector((1.5, -2.4, 2.2))      # over his shoulder, a little high: him lower right, the crowd beyond
 cam.key_range(shot.frames_all, lambda f: dict(loc=LOC, target=Vector((-0.1, 2.0, 1.0)), focus=3.4))
 MT.light(shot, "legend", D, P, LOC, follow=w.root)
-MT.fx("lightning", F_HIT - 1, tuple(src), targets, seed=shot.seed, duration=7, strength=0.5)
-MT.fx("sparks", F_HIT, (0.0, 1.0, 1.3), seed=shot.seed + 1, color="#CFE6FF")
+# lights kept low: at 0.5 + full sparks the gold fog and the floor went white-grey
+MT.fx("lightning", F_HIT - 1, tuple(src), targets, seed=shot.seed, duration=7, strength=0.35)
+MT.fx("sparks", F_HIT, (0.0, 1.0, 1.3), seed=shot.seed + 1, color="#CFE6FF", strength=0.4)
 shot.render()

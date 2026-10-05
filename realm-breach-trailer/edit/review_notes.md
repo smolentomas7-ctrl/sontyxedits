@@ -81,3 +81,4 @@
 - M402 re-render: frame all gold fog, the real-size ring a speck in the bottom safe zone -> floor-level macro 0.5 m from a 2.2x ring, king's ash soft behind.
 - M302 re-render: tight 85 mm chest from 3 m at 14 deg down = headless dark torso, fall unreadable -> camera high in front (z 4, ~43 deg down) tracking the chest: his front and helm turn up to us as he falls.
 - M405 re-render: reads (lightning past his shoulder into the skeletons). M502 re-render: reads (cleave into the morbidious, both in frame). Raw haze to judge on the graded sheet.
+- Graded check: M405, M502, M508 good. M506 washed white-grey (lightning 0.5 + full sparks 260 W in gold fog) -> lightning 0.35, sparks 0.4. M507 still flooded orange, evil lost -> fireball 0.4.

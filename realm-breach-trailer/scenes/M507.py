@@ -28,5 +28,6 @@ cam.shake(F_HIT, amp=0.07, seed=shot.seed)
 LOC = Vector((1.7, -0.9, 0.45))
 cam.key_range(shot.frames_all, lambda f: dict(loc=LOC, target=Vector((0.0, 1.0, 1.5)), focus=2.6))
 MT.light(shot, "legend", D, EVP, LOC)
-MT.fx("fireball", F_HIT - 6, tuple(palm), (0.1, 1.15, 1.5), seed=shot.seed, travel=6, strength=0.7)
+MT.fx("fireball", F_HIT - 6, tuple(palm), (0.1, 1.15, 1.5), seed=shot.seed, travel=6,
+      strength=0.4)   # 0.7 still flooded the gold fog orange and swallowed the evil
 shot.render()
