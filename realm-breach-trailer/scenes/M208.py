@@ -11,7 +11,7 @@ import rb_core as C  # noqa: E402
 import rb_montage as MT  # noqa: E402
 import rb_shot  # noqa: E402
 
-shot = rb_shot.Shot("M208", key_frame=955)
+shot = rb_shot.Shot("M208", key_frame=957)   # just after the glancing hit (956): sparks in frame
 D, w = MT.scene(shot, "struggle", look="mid")
 F_HIT = int(round(MT.ST.bf(63.25))) - 1
 P = Vector((0, 0, 0))
