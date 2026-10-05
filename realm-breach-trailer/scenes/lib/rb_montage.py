@@ -19,6 +19,7 @@ import rb_story as ST
 # short-sword / greatsword low carry (char-local, facing -Y): grip beside the right thigh, tip forward-down
 CARRY = {"early": (Vector((-0.27, -0.07, 0.86)), Vector((-0.08, -0.55, -0.83))),
          "late": (Vector((-0.26, -0.10, 0.92)), Vector((-0.10, -0.62, -0.78)))}
+CARRY["mid"] = CARRY["late"]          # mid look = late armour and greatsword
 
 
 def _ctrl(w, f, crack=None, eyes=None):
