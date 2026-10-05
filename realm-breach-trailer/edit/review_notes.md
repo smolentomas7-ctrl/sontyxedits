@@ -51,3 +51,4 @@
 - M505: column hid the warrior -> column behind him, silhouette against the light.
 - AUDIO: verify_output.py found the AAC-decoded true peak at -0.08 dBTP (wav -1.21) -> limiter ceiling -2.4 dBFS; decoded AAC now -14.05 LUFS / -1.28 dBTP.
 - God robe: fold + wrinkle bump (large distorted bands + noise) so it reads as heavy cloth, not a sheet.
+- F1d re-render: strong (bolt from his hand to the god's chest, both in frame).
