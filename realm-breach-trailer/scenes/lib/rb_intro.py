@@ -16,6 +16,7 @@ import rb_story as ST
 def build(shot, variant="approach", warrior=True, god=True, cape=True, arena_kw=None, act="intro", cloth_goal=None):
     import rb_env_arena as AR
     out = {}
+    ST.CHARGE_PREROLL = act == "intro" and shot.f0 >= ST.CHARGE_F0      # O11b / O12: cloth pre-roll inside the charge
     out["arena"] = AR.build_arena(variant=variant, **(arena_kw or {}))
     if hasattr(AR, "tune_eevee"):
         AR.tune_eevee()
@@ -82,13 +83,11 @@ def _key_blade(w, f, v):
 def warrior_pos(f):
     """World position of the warrior's root at video frame f (for cameras)."""
     # the root only depends on the timeline, not on the rig objects
-    if f < 700:
+    if not ST.charging(f):
         root, _ = ST._walk_at(min(f, ST.bf(8) + 12))
         return Vector(root)
     if f < ST.bf(48) - 1:
-        u = ST._seg(f, 700, ST.bf(48) - 1)
-        uw = 0.5 * u + 0.5 * u * u
-        return Vector((0.15, 2.0 + uw * (ST.CLASH.y - 0.55 - 2.0), 0.0))
+        return Vector((0.15, ST.charge_y(f), 0.0))
     return Vector((0.15, ST.CLASH.y - 0.55, 0.0))
 
 

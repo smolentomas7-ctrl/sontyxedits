@@ -17,7 +17,7 @@ S = rb_intro.build(shot, variant="duel")
 import rb_env_arena as AR  # noqa: E402
 
 cam = rb_cam.Rig(lens=24, fstop=4.0)
-cam.whip(shot.f1 - 3, shot.f1 + 4, -35)
+cam.whip(shot.f1 - 6, shot.f1, -35)   # fast part inside the cut (723-730 fell in unused frames)
 
 
 def cam_fn(f):

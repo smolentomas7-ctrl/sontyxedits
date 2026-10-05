@@ -42,6 +42,27 @@ def wd(local_dir, heading=HEAD_W):
     return Matrix.Rotation(math.radians(heading), 3, "Z") @ Vector(local_dir)
 
 
+# the charge starts on O11b's first frame (the roar close-up O11a holds him at the stop through its last frame).
+# Shots that start inside the charge (O11b, O12) set CHARGE_PREROLL so their cloth pre-roll before CHARGE_F0 sees the
+# charge extrapolated backwards at its initial speed instead of a 4 m teleport.
+CHARGE_F0 = next(s["start_frame"] for s in json.load(open(os.path.join(C.ROOT, "edit", "timeline.json")))["shots"]
+                 if s["id"] == "O11b")
+CHARGE_PREROLL = False
+
+
+def charging(f):
+    return f >= CHARGE_F0 or CHARGE_PREROLL
+
+
+def charge_y(f):
+    f1 = bf(48) - 1
+    d = CLASH.y - 0.55 - 2.0
+    if f < CHARGE_F0:
+        return 2.0 + 0.5 * d / (f1 - CHARGE_F0) * (f - CHARGE_F0)
+    u = _seg(f, CHARGE_F0, f1)
+    return 2.0 + (0.5 * u + 0.5 * u * u) * d
+
+
 def _seg(f, a, b):
     return C.clamp01((f - a) / max(1e-6, b - a))
 
@@ -110,14 +131,12 @@ def point_cfg(root):
 def warrior_intro(w, f):
     """Pose / root for the warrior across Acts I-III (video frames)."""
     # ---- position
-    if f < 700:
+    if not charging(f):
         root, feet = _walk_at(min(f, bf(8) + 12))
         heading = HEAD_W
     else:
         # the charge: from y=2 to the clash at D, speed-ramped 0.5x -> 1.5x
-        u = _seg(f, 700, bf(48) - 1)
-        uw = 0.5 * u + 0.5 * u * u
-        root = Vector((0.15, 2.0 + uw * (CLASH.y - 0.55 - 2.0), 0.0))
+        root = Vector((0.15, charge_y(f), 0.0))
         feet = None
         heading = HEAD_W
     rot = (0, 0, heading)
@@ -131,7 +150,7 @@ def warrior_intro(w, f):
         return p, loc, rot
     base = MO.add(MO.POSES_W["stand"], _breath(f))
     base = {k: v for k, v in base.items() if not k.startswith(("thigh", "shin", "foot", "toe"))}
-    if f < 700:
+    if not charging(f):
         # standing at the stop: idle -> raise (O8) -> salute hold (O9) -> point (O10) -> roar (O11a)
         a0, a1 = bf(27.0), bf(34.0)                    # raise
         p0, p1 = bf(39.2), bf(40.6)                    # point
@@ -172,8 +191,7 @@ def warrior_intro(w, f):
         return MO.solve_walk(w, p, root, heading, feet)
     # ---- the charge (O11b) and the clash (O12)
     if f < bf(48) - 1:
-        u = _seg(f, 700, bf(48) - 1)
-        run_phase = (f - 700) / 15.0
+        run_phase = (f - CHARGE_F0) / 15.0
         up = _upper_walk(f, run_phase)
         lean = {"spine": (14, 0, 0), "chest": (8, 0, 0), "head": (-10, 0, 0)}
         up = MO.add(up, lean)
