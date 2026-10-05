@@ -72,3 +72,4 @@
 - M506: washed white, crowd hid the warrior -> crowd centred in front of him, camera high OTS, lightning 0.5.
 - M507: reads (fireball detonates on the evil); frame flooded orange -> fireball strength 0.7.
 - E3: excellent (warrior from behind walking into the light pouring through the gate).
+- E4: excellent (warrior small lower-middle, calm sky for the title, hills, flowers).
