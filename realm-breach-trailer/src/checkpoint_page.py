@@ -16,6 +16,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--sheets", default=os.path.join(ROOT, "assets", "checkpoint2"))
 ap.add_argument("--animatic", default=os.path.join(ROOT, "build", "preview", "realm_breach_animatic.mp4"))
 ap.add_argument("--out", default=os.path.join(ROOT, "build", "checkpoint2_page"))
+ap.add_argument("--preview", action="store_true", help="the video is the 50%% animated preview, not the animatic")
 a = ap.parse_args()
 os.makedirs(a.out, exist_ok=True)
 
@@ -92,9 +93,8 @@ video_html = ("""
 <section class="film">
   <div class="phone"><video src="animatic.mp4" controls playsinline preload="metadata"></video></div>
   <div class="film-notes">
-    <h2>Animatic</h2>
-    <p>Every key still placed at its exact length on the song, with the real mix, voice, subtitles, titles,
-    flashes and grade. It shows pacing, text placement and sound; motion comes after your OK.</p>
+    <h2>{{FILM_H}}</h2>
+    <p>{{FILM_P}}</p>
     <dl>
       <div><dt>Length</dt><dd>%s · %d frames · 30 fps</dd></div>
       <div><dt>Tempo</dt><dd>%.2f BPM</dd></div>
@@ -173,6 +173,18 @@ a:focus-visible, video:focus-visible { outline: 2px solid var(--ember); outline-
   </section>
 </main>
 """
+if a.preview:
+    film_h, film_p = "Preview cut", ("The full trailer animated at 50% resolution (540x960) with the real mix, voice, subtitles, titles, "
+                                     "flashes and grade. The final renders at 0.75 scale and is upscaled to 1080x1920.")
+    eyebrow, ask = "Preview · animation", "The final render is running now. Name any shot you want changed."
+else:
+    film_h, film_p = "Animatic", ("Every key still placed at its exact length on the song, with the real mix, voice, subtitles, "
+                                  "titles, flashes and grade. It shows pacing, text placement and sound; motion comes after your OK.")
+    eyebrow, ask = "Checkpoint 2 · key stills", "Reply OK to start the animation renders, or name the shots you want changed."
+video_html = video_html.replace("{{FILM_H}}", film_h).replace("{{FILM_P}}", film_p)
+page = page.replace('<p class="eyebrow">Checkpoint 2 · key stills</p>', '<p class="eyebrow">%s</p>' % eyebrow)
+page = page.replace('<p class="ask">Reply OK to start the animation renders, or name the shots you want changed.</p>',
+                    '<p class="ask">%s</p>' % ask)
 page = (page.replace("{{VIDEO}}", video_html).replace("{{ACTS}}", "".join(acts_html))
         .replace("{{N}}", str(len(shots))).replace("{{ROWS}}", "".join(rows)))
 open(os.path.join(a.out, "index.html"), "w").write(page)
