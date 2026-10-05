@@ -28,10 +28,13 @@ import video  # noqa: E402
 BLENDER = ["xvfb-run", "-a", "-s", "-screen 0 1920x1080x24", "blender", "-b", "--factory-startup", "-P"]
 
 
+# preview is for motion/staging review: 4 spp, hard 512 px shadows and lighter volumetrics render ~1.8x faster than
+# 6 spp soft shadows at a near-identical image (benchmarked on O5: 6.5 s vs 11.5 s per frame on one worker).
 PROFILES = {
-    "preview": dict(scale="0.5", samples="6", vol_tile="16", vol_samples="24"),
+    "preview": dict(scale="0.5", samples="4", vol_tile="16", vol_samples="16", soft_shadows="0", shadow_cube="512"),
     "final": dict(scale="0.75", samples="8", vol_tile="16", vol_samples="32"),
 }
+QUALITY_KEYS = ("vol_tile", "vol_samples", "soft_shadows", "shadow_cube", "shadow_cascade", "gtao", "ssr")
 
 
 def jobs_for(shot, mode, chunk, handles=1):
@@ -53,7 +56,7 @@ def frames_done(sid, mode, lo, hi):
     return all(os.path.exists(os.path.join(d, "f_%04d.png" % f)) for f in range(lo, hi))
 
 
-def run(job, mode, extra, force):
+def run(job, mode, extra, force, threads=None):
     sid, lo, hi = job
     script = os.path.join(ROOT, "scenes", "%s.py" % sid)
     if mode != "still" and not force and frames_done(sid, mode, lo, hi):
@@ -67,8 +70,13 @@ def run(job, mode, extra, force):
     os.makedirs(log_dir, exist_ok=True)
     log = os.path.join(log_dir, "%s_%s_%s.log" % (sid, mode, lo if lo is not None else "still"))
     t = time.time()
+    env = dict(os.environ)
+    if threads:
+        # llvmpipe rasterises on every core by default: two full-width workers contend and are slower than one;
+        # two workers at half width overlap one's scene build / cloth pre-roll with the other's rendering
+        env["LP_NUM_THREADS"] = str(threads)
     with open(log, "w") as fh:
-        p = subprocess.run(BLENDER + [script, "--"] + args, stdout=fh, stderr=subprocess.STDOUT, cwd=ROOT)
+        p = subprocess.run(BLENDER + [script, "--"] + args, stdout=fh, stderr=subprocess.STDOUT, cwd=ROOT, env=env)
     dt = time.time() - t
     ok = p.returncode == 0 and "Traceback" not in open(log).read()
     return sid, lo, hi, "ok" if ok else "FAIL (%s)" % log, dt
@@ -85,6 +93,7 @@ def main():
     ap.add_argument("--frame")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--handles", type=int, default=1, help="extra frames rendered each side (max %d)" % video.HANDLE_FRAMES)
+    ap.add_argument("--threads", type=int, help="llvmpipe threads per worker (default: CPUs // workers)")
     a = ap.parse_args()
     tl = json.load(open(os.path.join(ROOT, "edit", "timeline.json")))
     want = set(a.shots.split(",")) if a.shots else None
@@ -96,17 +105,19 @@ def main():
     extra = []
     extra += ["--scale", a.scale or prof.get("scale")] if (a.scale or prof.get("scale")) else []
     extra += ["--samples", a.samples or prof.get("samples")] if (a.samples or prof.get("samples")) else []
-    for k in ("vol_tile", "vol_samples"):
+    for k in QUALITY_KEYS:
         if k in prof:
             extra += ["--" + k, prof[k]]
+    threads = a.threads or max(1, (os.cpu_count() or 4) // max(1, a.workers))
     if a.frame:
         extra += ["--frame", a.frame]
     jobs = [j for s in shots for j in jobs_for(s, a.mode, a.chunk, min(a.handles, video.HANDLE_FRAMES))]
-    print("%d shots, %d jobs, %d workers, mode %s" % (len(shots), len(jobs), a.workers, a.mode), flush=True)
+    print("%d shots, %d jobs, %d workers x %d threads, mode %s %s" % (len(shots), len(jobs), a.workers, threads, a.mode,
+                                                                     " ".join(extra)), flush=True)
     t0 = time.time()
     fails = []
     with cf.ThreadPoolExecutor(a.workers) as ex:
-        futs = [ex.submit(run, j, a.mode, extra, a.force) for j in jobs]
+        futs = [ex.submit(run, j, a.mode, extra, a.force, threads) for j in jobs]
         for i, fu in enumerate(cf.as_completed(futs)):
             sid, lo, hi, st, dt = fu.result()
             if st.startswith("FAIL"):
