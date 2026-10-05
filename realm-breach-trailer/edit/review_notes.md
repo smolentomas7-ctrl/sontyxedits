@@ -43,3 +43,4 @@
   M407 only bokeh -> side-on push along the blade. M303/E6 props too small -> tighter fit.
 - O11a re-render: good (low front angle, roar, blade blazing, centred).
 - O11b re-render: cape streams horizontally behind the charge (foreshortened to a band from the low rear camera) - physically right, accepted; judge in the preview motion.
+- O12 re-render: strong (blades meet, spark burst, shockwave + dust). Air ring edge-on reads as a line in a still; fine in motion.
