@@ -29,13 +29,13 @@ def chest(f):
 
 def cam_fn(f):
     c = chest(f)
-    loc = Vector((0.3, 2.95 - 0.35 * C.ease_in_out(shot.u(f)), 1.25))
+    loc = Vector((0.3, 2.95 - 0.35 * C.ease_in_out(shot.u(f)), 2.15))   # high enough to see the helm go back
     return dict(loc=loc, target=c, focus=(c - loc).length)
 
 
 cam.key_range(shot.frames_all, cam_fn)
-MT.light(shot, "deep", D, (0, -0.4, 0), (0.3, 2.95, 1.25), follow=w.root)
-C.parent_keep(MT.cold_key(P + Vector((0, 0, 0.9)), (0.3, 2.95, 1.25), side=1.0, energy=200.0, dist=2.2), w.root)
+MT.light(shot, "deep", D, (0, -0.4, 0), (0.3, 2.95, 2.15), follow=w.root)
+C.parent_keep(MT.cold_key(P + Vector((0, 0, 0.9)), (0.3, 2.95, 2.15), side=1.0, energy=200.0, dist=2.2), w.root)
 MT.fx("ash", shot.sim_start, shot.render_end, (0, -0.5, 0.6), radius=2.0, height=2.5, seed=shot.seed, rise=0.6)
 MT.fx("dust_puff", F_LAND, (0.0, -0.9, 0.0), seed=shot.seed + 1, scale=1.6)
 shot.render()

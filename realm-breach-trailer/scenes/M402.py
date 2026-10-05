@@ -15,7 +15,7 @@ import rb_shot  # noqa: E402
 import rb_enemies as EN  # noqa: E402
 import rb_props as PR  # noqa: E402
 
-shot = rb_shot.Shot("M402", key_frame=1126)
+shot = rb_shot.Shot("M402", key_frame=1131)   # the ring has landed (1128) and its gem glows
 D, _ = MT.scene(shot, "legend", warrior=False)
 kg = MT.enemy("skeleton_king", "KG1_", seed=shot.seed)
 F_DIE = shot.f0 + 1
