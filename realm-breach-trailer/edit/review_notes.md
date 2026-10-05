@@ -69,3 +69,4 @@
 - M502: reads (cleave into the morbidious); both cut at the frame edges -> camera 3.1 m.
 - M503: good (king shatters behind a shockwave, warrior foreground, blade blazing).
 - M504: good (bad angel cut out of the air, red halo, burst at the cut).
+- M506: washed white, crowd hid the warrior -> crowd centred in front of him, camera high OTS, lightning 0.5.
