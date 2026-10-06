@@ -5,3 +5,4 @@ input/reference/*.mp4
 assets/audio/*.wav
 __pycache__/
 *.blend1
+output/*.mp4

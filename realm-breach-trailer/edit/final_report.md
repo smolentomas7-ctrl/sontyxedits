@@ -4,7 +4,7 @@
 2. **Resolution / aspect:** 1080 × 1920, 9:16 vertical, no letterboxing
 3. **Frame rate:** 30 fps constant
 4. **Duration:** 74.733 s (2242 frames); the last frame cuts cleanly into the first (loop)
-5. **Encode:** H.264 High, yuv420p, CRF 16, AAC 320 kb/s 48 kHz stereo; integrated loudness {{LUFS}} LUFS, true peak {{TP}} dBTP after AAC decode (`output/verify_report.json`)
+5. **Encode:** (ffprobe: h264 High, yuv420p, 30/1, 42.6 Mb/s video, AAC LC 320 kb/s, 400.9 MB) H.264 High, yuv420p, CRF 16, AAC 320 kb/s 48 kHz stereo; integrated loudness −14.08 LUFS, true peak −2.13 dBTP after AAC decode (`output/verify_report.json`)
 
 ## Method
 Everything on screen is generated in code; nothing is filmed, traced or taken from Roblox.

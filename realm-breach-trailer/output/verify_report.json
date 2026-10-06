@@ -1,0 +1,44 @@
+{
+  "file": "/home/user/sontyxedits/realm-breach-trailer/output/realm_breach_trailer.mp4",
+  "checks": {
+    "video_codec": {
+      "pass": true,
+      "detail": "h264 High yuv420p"
+    },
+    "resolution_9x16": {
+      "pass": true,
+      "detail": "1080x1920"
+    },
+    "fps_30": {
+      "pass": true,
+      "detail": "30.000 fps, 2242 frames"
+    },
+    "duration": {
+      "pass": true,
+      "detail": "74.733 s (timeline 74.733 s)"
+    },
+    "audio_codec": {
+      "pass": true,
+      "detail": "aac 48000 Hz 320 kb/s 2 ch"
+    },
+    "loudness_-14": {
+      "pass": true,
+      "detail": "-14.08 LUFS integrated"
+    },
+    "true_peak": {
+      "pass": true,
+      "detail": "-2.13 dBTP (4x oversampled, after AAC decode)"
+    },
+    "no_letterbox": {
+      "pass": true,
+      "detail": "black edge bands (px @270x480): {'top': 0, 'bottom': 0, 'left': 0, 'right': 0}"
+    },
+    "loop_seam": {
+      "pass": true,
+      "detail": "mean |last - first| = 0.0027"
+    }
+  },
+  "loudness_lufs": -14.078106785722648,
+  "true_peak_dbtp": -2.134799429686973,
+  "pass": true
+}
