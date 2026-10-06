@@ -16,6 +16,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--sheets", default=os.path.join(ROOT, "assets", "checkpoint2"))
 ap.add_argument("--animatic", default=os.path.join(ROOT, "build", "preview", "realm_breach_animatic.mp4"))
 ap.add_argument("--out", default=os.path.join(ROOT, "build", "checkpoint2_page"))
+ap.add_argument("--copy", action="store_true", help="use --animatic as is (already web-encoded)")
 ap.add_argument("--preview", action="store_true", help="the video is the 50%% animated preview, not the animatic")
 a = ap.parse_args()
 os.makedirs(a.out, exist_ok=True)
@@ -40,8 +41,11 @@ for act, name, _ in ACTS:
         sheets.append(act)
 # compressed animatic (keeps the page under the per-file limit)
 has_video = False
-if os.path.exists(a.animatic):
-    dst = os.path.join(a.out, "animatic.mp4")
+dst = os.path.join(a.out, "animatic.mp4")
+if os.path.exists(a.animatic) and a.copy:
+    shutil.copy(a.animatic, dst)
+    has_video = os.path.getsize(dst) < 15e6
+elif os.path.exists(a.animatic):
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", a.animatic, "-c:v", "libx264", "-profile:v", "high",
                     "-crf", "30", "-preset", "slow", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "128k",
                     "-movflags", "+faststart", dst], check=True)
