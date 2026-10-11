@@ -7,6 +7,13 @@ import { sortedPosts } from "@/content/blog/posts";
  * Marketing routes in both locales. /demo/* is deliberately excluded — the
  * demos are noindex and should not compete with the real pages.
  */
+/**
+ * Pre-rendered at build time. `force-static` is required by
+ * `output: "export"` and is correct for the server build too — this file's
+ * contents only change when the route list or post list changes.
+ */
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPaths = ["", "services", "portfolio", "pricing", "blog", "about", "contact"];
   const postPaths = sortedPosts().map((post) => `blog/${post.slug}`);

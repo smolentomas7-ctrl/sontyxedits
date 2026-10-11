@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { getDictionary, isLocale } from "@/content/i18n";
+import { getDictionary, isLocale, LOCALES } from "@/content/i18n";
 import { siteConfig } from "@/config/site";
 
 /**
@@ -9,6 +9,16 @@ import { siteConfig } from "@/config/site";
  * group combined with a dynamic [locale] segment, which is why this is an
  * explicit route handler instead.
  */
+
+/**
+ * Required for `output: "export"`: a route handler under a dynamic segment
+ * must declare which params to pre-render.
+ */
+export const dynamic = "force-static";
+
+export function generateStaticParams() {
+  return LOCALES.map((locale) => ({ locale }));
+}
 
 export async function GET(
   _request: Request,

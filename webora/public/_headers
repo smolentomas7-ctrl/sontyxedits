@@ -1,0 +1,15 @@
+# The OG route exports as an extensionless file (out/sk/og), so a static
+# host would guess the wrong Content-Type. Social scrapers need image/png.
+/sk/og
+  Content-Type: image/png
+  Cache-Control: public, max-age=3600
+/en/og
+  Content-Type: image/png
+  Cache-Control: public, max-age=3600
+
+# Hashed build assets are immutable.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*
+  Cache-Control: public, max-age=2592000

@@ -1,0 +1,6 @@
+# Netlify redirect rules for the static export.
+#
+# The app has no page at "/" — next.config.ts redirects it to the default
+# locale via redirects(), which needs a server. A static host needs the
+# rule declared here instead.
+/   /sk/   302
