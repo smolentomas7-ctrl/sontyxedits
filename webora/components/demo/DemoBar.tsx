@@ -22,7 +22,7 @@ export function DemoBar({ pkg }: { pkg: "starter" | "business" | "eshop" }) {
     >
       <div className="mx-auto flex h-full max-w-[1400px] items-center justify-between gap-4 px-4">
         <div className="flex min-w-0 items-center gap-3">
-          <Wordmark markColor="#6EE7B7" textColor="#F4F4F5" />
+          <Wordmark markColor="#5B8DFF" textColor="#F4F4F5" />
           <span className="hidden truncate text-[12px] text-[#9A9AA5] sm:inline">
             Demo website by Webora
           </span>
@@ -39,7 +39,7 @@ export function DemoBar({ pkg }: { pkg: "starter" | "business" | "eshop" }) {
           </Link>
           <Link
             href={`/sk/contact?package=${pkg}`}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#6EE7B7] px-2.5 py-1.5 text-[12px] font-medium text-[#06120D] transition-colors duration-150 hover:bg-[#34D399]"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#5B8DFF] px-2.5 py-1.5 text-[12px] font-medium text-[#06112E] transition-colors duration-150 hover:bg-[#3B74FF]"
           >
             <span className="hidden sm:inline">Chcem takýto web</span>
             <span className="sm:hidden">Mám záujem</span>

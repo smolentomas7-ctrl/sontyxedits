@@ -88,7 +88,7 @@ export default async function PricingPage({
                   )}
                 >
                   {popular ? (
-                    <span className="absolute -top-3 left-7 rounded-full bg-accent px-3 py-1 text-[12px] font-medium text-[#06120D]">
+                    <span className="absolute -top-3 left-7 rounded-full bg-accent px-3 py-1 text-[12px] font-medium text-[#06112E]">
                       {dict.pricing.popular}
                     </span>
                   ) : null}

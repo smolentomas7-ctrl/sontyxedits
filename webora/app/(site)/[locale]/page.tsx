@@ -97,7 +97,7 @@ export default async function HomePage({
             className="hero-glow mt-[-12rem] size-[46rem] rounded-full opacity-70 blur-[120px]"
             style={{
               background:
-                "radial-gradient(circle, rgba(110,231,183,0.20) 0%, rgba(110,231,183,0.06) 42%, transparent 70%)",
+                "radial-gradient(circle, rgba(91,141,255,0.22) 0%, rgba(91,141,255,0.07) 42%, transparent 70%)",
             }}
           />
         </div>

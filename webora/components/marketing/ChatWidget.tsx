@@ -97,7 +97,7 @@ export function ChatWidget({ locale, dict }: { locale: Locale; dict: Dictionary 
         aria-expanded={open}
         className={cn(
           "fixed bottom-5 right-5 z-[80] inline-flex size-14 items-center justify-center",
-          "rounded-full bg-accent text-[#06120D] shadow-lg shadow-black/40",
+          "rounded-full bg-accent text-[#06112E] shadow-lg shadow-black/40",
           "transition-[transform,background-color] duration-150 hover:bg-accent-hover hover:scale-105",
         )}
       >
@@ -208,7 +208,7 @@ export function ChatWidget({ locale, dict }: { locale: Locale; dict: Dictionary 
               type="submit"
               aria-label={dict.chat.send}
               disabled={input.trim().length === 0}
-              className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-[#06120D] transition-colors duration-150 hover:bg-accent-hover disabled:opacity-40"
+              className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-[#06112E] transition-colors duration-150 hover:bg-accent-hover disabled:opacity-40"
             >
               <Send aria-hidden="true" strokeWidth={1.5} className="size-4" />
             </button>

@@ -150,7 +150,7 @@ export function PriceCalculator({ locale, dict }: { locale: Locale; dict: Dictio
                       value={type.id}
                       checked={checked}
                       onChange={() => setSiteType(type.id as SiteType)}
-                      className="size-4 accent-[#6EE7B7]"
+                      className="size-4 accent-[#5B8DFF]"
                     />
                     <span className="text-[15px] font-medium text-text">{type.label}</span>
                   </span>
@@ -180,7 +180,7 @@ export function PriceCalculator({ locale, dict }: { locale: Locale; dict: Dictio
             value={pages}
             onChange={(event) => setPages(Number(event.target.value))}
             aria-describedby="calc-pages-hint"
-            className="w-full accent-[#6EE7B7]"
+            className="w-full accent-[#5B8DFF]"
           />
           <p id="calc-pages-hint" className="mt-2 text-[13px] text-text-muted">
             {calc.pagesHint}
@@ -241,7 +241,7 @@ export function PriceCalculator({ locale, dict }: { locale: Locale; dict: Dictio
                     type="checkbox"
                     checked={checked}
                     onChange={() => toggleAddon(id)}
-                    className="size-[18px] rounded accent-[#6EE7B7]"
+                    className="size-[18px] rounded accent-[#5B8DFF]"
                   />
                   <span className="text-[15px] text-text">{calc.addonLabels[id]}</span>
                 </label>

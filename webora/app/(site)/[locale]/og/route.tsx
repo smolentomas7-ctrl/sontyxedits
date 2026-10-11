@@ -37,7 +37,7 @@ export async function GET(
               width: 38,
               height: 38,
               display: "flex",
-              background: "#6EE7B7",
+              background: "#5B8DFF",
               clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
             }}
           />
@@ -61,7 +61,7 @@ export async function GET(
           </div>
         </div>
 
-        <div style={{ display: "flex", height: 8, width: 170, background: "#6EE7B7" }} />
+        <div style={{ display: "flex", height: 8, width: 170, background: "#5B8DFF" }} />
       </div>
     ),
     { width: 1200, height: 630 },

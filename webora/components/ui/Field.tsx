@@ -232,7 +232,7 @@ export function CheckboxField({
           aria-describedby={error ? errorId : undefined}
           className={cn(
             "mt-1 size-[18px] shrink-0 cursor-pointer rounded-[5px] border bg-surface",
-            "accent-[#6EE7B7] focus:outline-none focus:ring-2 focus:ring-accent/35",
+            "accent-[#5B8DFF] focus:outline-none focus:ring-2 focus:ring-accent/35",
             error ? "border-danger" : "border-border",
             className,
           )}

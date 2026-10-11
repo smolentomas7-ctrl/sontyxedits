@@ -12,10 +12,10 @@
   --border: #26262c;
   --text: #f4f4f5;
   --text-muted: #9a9aa5;
-  --accent: #6ee7b7;
-  --accent-hover: #34d399;
-  --accent-soft: rgba(110, 231, 183, 0.12);
-  --focus: #6ee7b7;
+  --accent: #5b8dff;
+  --accent-hover: #3b74ff;
+  --accent-soft: rgba(91, 141, 255, 0.14);
+  --focus: #5b8dff;
   --danger: #f87171;
 }
 
