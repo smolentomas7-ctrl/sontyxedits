@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+.env
+.env.local
+*.tsbuildinfo
+next-env.d.ts
+.netlify
+
+# Unprocessed source photographs. These still carry whatever metadata the camera
+# wrote (GPS, device, capture time) and are never published; scripts/process-images.py
+# strips and resizes them into public/assets/miauto/.
+assets-originals/

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <title>M.I.Auto — form registration</title>
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body>
+    <!--
+      This file exists so Netlify can detect the form at deploy time: Netlify
+      Forms parses the DEPLOYED HTML, and the real form is a React component
+      that Netlify's build-time parser never sees.
+
+      The React form POSTs here as application/x-www-form-urlencoded with a
+      hidden form-name field. Every input below must match a key sent by
+      lib/forms.ts, or that field is silently dropped from the submission.
+
+      Nobody is meant to look at this page.
+    -->
+    <form name="dopyt" netlify netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="dopyt" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="meno" />
+      <input type="tel" name="telefon" />
+      <input type="email" name="email" />
+      <input type="text" name="vozidlo" />
+      <input type="text" name="sluzba" />
+      <textarea name="sprava"></textarea>
+      <input type="text" name="suhlas" />
+      <input type="text" name="locale" />
+    </form>
+  </body>
+</html>

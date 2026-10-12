@@ -1,0 +1,189 @@
+/* ============================================================================
+   "Od kontrolky k oprave" — single source of truth is one registered custom
+   property, --p, in 0..1. JavaScript writes --p and nothing else; every layer
+   below derives its own state from it in CSS.
+
+   Only opacity, transform, clip-path and --p itself are ever animated.
+   ========================================================================== */
+@property --p {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.scene {
+  --p: 0;
+  position: relative;
+  width: 100%;
+  /* Box reserved before anything renders, so the scene never shifts layout. */
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+/* Reduced motion opens on the FINAL state — a clear cluster, stage 5 — rather
+   than stranding the visitor on stage 1 with no way to reach the end. The
+   handle stays fully functional from there. */
+@media (prefers-reduced-motion: reduce) {
+  .scene { --p: 1; }
+  .scene.autoplay { transition: none; }
+}
+
+.scene.autoplay {
+  transition: --p 450ms var(--ease-ios);
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- stage 1: warning light on, cause unknown -------------------------- */
+/* Lit from the start, out as the repair completes. */
+.warnLit { opacity: calc((0.84 - var(--p)) * 14); }
+.warnGlow { opacity: calc((0.84 - var(--p)) * 10); }
+.warnDim { opacity: calc((var(--p) - 0.86) * 14); }
+
+/* ---- stage 2: the connector plugs in, the cable draws ------------------- */
+.plug {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: translateX(calc((1 - clamp(0, (var(--p) - 0.14) * 6, 1)) * -84px));
+  opacity: calc(var(--p) * 14);
+}
+.cable {
+  stroke-dasharray: 1;
+  stroke-dashoffset: clamp(0, calc(1 - (var(--p) - 0.17) * 5.5), 1);
+}
+.portLive { opacity: calc((var(--p) - 0.26) * 8); }
+
+/* ---- stage 3: the code list wipes in ----------------------------------- */
+.codeList {
+  opacity: calc((var(--p) - 0.34) * 9);
+  clip-path: inset(0 calc((1 - clamp(0, (var(--p) - 0.36) * 4.4, 1)) * 100%) 0 0);
+}
+.codeRow1 { opacity: calc((var(--p) - 0.38) * 14); }
+.codeRow2 { opacity: calc((var(--p) - 0.43) * 14); }
+.codeRow3 { opacity: calc((var(--p) - 0.48) * 14); }
+
+/* ---- stage 4: the implicated part highlights, a tool moves to it -------- */
+.partHalo { opacity: calc((var(--p) - 0.56) * 9); }
+.partRing { opacity: calc((var(--p) - 0.58) * 9); }
+.tool {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transform:
+    translate(calc((1 - clamp(0, (var(--p) - 0.58) * 5, 1)) * 92px),
+              calc((1 - clamp(0, (var(--p) - 0.58) * 5, 1)) * 46px))
+    rotate(calc((1 - clamp(0, (var(--p) - 0.58) * 5, 1)) * -28deg));
+  opacity: calc((var(--p) - 0.56) * 10);
+}
+/* The flagged row is struck through as the fault is dealt with. */
+.codeResolved {
+  stroke-dasharray: 1;
+  stroke-dashoffset: clamp(0, calc(1 - (var(--p) - 0.66) * 7), 1);
+}
+
+/* The repair group settles out at the very end, so the final frame is the
+   clean cluster alone rather than a scene still mid-job. */
+.repairOut { opacity: calc((0.97 - var(--p)) * 14); }
+
+/* ---- stage 5: cleared, cluster clean ----------------------------------- */
+.cleared { opacity: calc((var(--p) - 0.86) * 10); }
+.codeListOut { opacity: calc((0.95 - var(--p)) * 12); }
+
+/* ============================================================================
+   CONTROL
+   A real range input stretched over the scene: visually transparent, fully
+   hit-testable, so pointer, touch and keyboard all drive the same element.
+   The visible handle is drawn separately and positioned from --p.
+   ========================================================================== */
+.range {
+  position: absolute;
+  inset: auto 0 0 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: grab;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  /* Vertical swipes still scroll the page; the scene never pins or hijacks it. */
+  touch-action: pan-y;
+}
+.range:active { cursor: grabbing; }
+
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: transparent;
+}
+.range::-moz-range-thumb {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.track {
+  position: absolute;
+  left: var(--gutter-inner, 20px);
+  right: var(--gutter-inner, 20px);
+  bottom: 18px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--text-muted) 28%, transparent);
+  pointer-events: none;
+}
+.trackFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--p) * 100%);
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.handle {
+  position: absolute;
+  bottom: 20px;
+  left: calc(var(--gutter-inner, 20px) + var(--p) * (100% - var(--gutter-inner, 20px) * 2));
+  width: 44px;
+  height: 44px;
+  margin-left: -22px;
+  margin-bottom: -20px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.handleDot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 45%);
+  transition: transform var(--dur-release) var(--ease-ios);
+}
+.range:active ~ .handle .handleDot,
+.range:focus-visible ~ .handle .handleDot {
+  transform: scale(1.14);
+}
+.range:focus-visible ~ .handle .handleDot {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .handleDot { transition: none; }
+}

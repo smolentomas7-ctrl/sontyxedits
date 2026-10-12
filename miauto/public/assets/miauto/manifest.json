@@ -1,0 +1,420 @@
+{
+  "about-detail-01": {
+    "height": 800,
+    "placeholder": "#403B2E",
+    "upscaled": true,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 29560,
+          "jpg": 46850,
+          "webp": 32990
+        },
+        "height": 400,
+        "width": 600
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 80091,
+          "jpg": 136768,
+          "webp": 78076
+        },
+        "height": 800,
+        "width": 1200
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 10002,
+          "jpg": 15854,
+          "webp": 12292
+        },
+        "height": 216,
+        "width": 324
+      }
+    },
+    "width": 1200
+  },
+  "about-detail-02": {
+    "height": 800,
+    "placeholder": "#3C3B36",
+    "upscaled": true,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 28531,
+          "jpg": 43072,
+          "webp": 29914
+        },
+        "height": 400,
+        "width": 600
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 80844,
+          "jpg": 129381,
+          "webp": 74532
+        },
+        "height": 800,
+        "width": 1200
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 9218,
+          "jpg": 14190,
+          "webp": 10872
+        },
+        "height": 216,
+        "width": 324
+      }
+    },
+    "width": 1200
+  },
+  "about-interior": {
+    "height": 1250,
+    "placeholder": "#474641",
+    "upscaled": true,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 35523,
+          "jpg": 55070,
+          "webp": 36688
+        },
+        "height": 625,
+        "width": 500
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 106978,
+          "jpg": 168701,
+          "webp": 97942
+        },
+        "height": 1250,
+        "width": 1000
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 11307,
+          "jpg": 17877,
+          "webp": 13344
+        },
+        "height": 338,
+        "width": 270
+      }
+    },
+    "width": 1000
+  },
+  "hero": {
+    "height": 1080,
+    "placeholder": "#56595B",
+    "upscaled": false,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 51585,
+          "jpg": 83492,
+          "webp": 54542
+        },
+        "height": 540,
+        "width": 960
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 159895,
+          "jpg": 260883,
+          "webp": 148236
+        },
+        "height": 1080,
+        "width": 1920
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 17998,
+          "jpg": 28165,
+          "webp": 21528
+        },
+        "height": 292,
+        "width": 518
+      }
+    },
+    "width": 1920
+  },
+  "service-cipovanie-ecu": {
+    "height": 800,
+    "placeholder": "#2D3536",
+    "upscaled": false,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 32696,
+          "jpg": 54137,
+          "webp": 41226
+        },
+        "height": 400,
+        "width": 600
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 100400,
+          "jpg": 168731,
+          "webp": 117696
+        },
+        "height": 800,
+        "width": 1200
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 11921,
+          "jpg": 18639,
+          "webp": 15986
+        },
+        "height": 216,
+        "width": 324
+      }
+    },
+    "width": 1200
+  },
+  "service-diagnostika": {
+    "height": 800,
+    "placeholder": "#383935",
+    "upscaled": false,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 21997,
+          "jpg": 38430,
+          "webp": 24438
+        },
+        "height": 400,
+        "width": 600
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 62895,
+          "jpg": 112315,
+          "webp": 61758
+        },
+        "height": 800,
+        "width": 1200
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 8717,
+          "jpg": 14162,
+          "webp": 10574
+        },
+        "height": 216,
+        "width": 324
+      }
+    },
+    "width": 1200
+  },
+  "service-elektroinstalacia": {
+    "height": 800,
+    "placeholder": "#4E4A4B",
+    "upscaled": true,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 24109,
+          "jpg": 41000,
+          "webp": 27324
+        },
+        "height": 400,
+        "width": 600
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 64734,
+          "jpg": 117246,
+          "webp": 64422
+        },
+        "height": 800,
+        "width": 1200
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 8975,
+          "jpg": 14954,
+          "webp": 11790
+        },
+        "height": 216,
+        "width": 324
+      }
+    },
+    "width": 1200
+  },
+  "service-geometria": {
+    "height": 800,
+    "placeholder": "#4B4E4F",
+    "upscaled": false,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 33404,
+          "jpg": 54133,
+          "webp": 40624
+        },
+        "height": 400,
+        "width": 600
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 107692,
+          "jpg": 180110,
+          "webp": 122410
+        },
+        "height": 800,
+        "width": 1200
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 10870,
+          "jpg": 17370,
+          "webp": 14646
+        },
+        "height": 216,
+        "width": 324
+      }
+    },
+    "width": 1200
+  },
+  "service-klimatizacia": {
+    "height": 800,
+    "placeholder": "#353A3D",
+    "upscaled": true,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 30351,
+          "jpg": 44638,
+          "webp": 31610
+        },
+        "height": 400,
+        "width": 600
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 89158,
+          "jpg": 138385,
+          "webp": 80336
+        },
+        "height": 800,
+        "width": 1200
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 9938,
+          "jpg": 14691,
+          "webp": 11752
+        },
+        "height": 216,
+        "width": 324
+      }
+    },
+    "width": 1200
+  },
+  "service-pneuservis": {
+    "height": 800,
+    "placeholder": "#444544",
+    "upscaled": false,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 39205,
+          "jpg": 58445,
+          "webp": 46738
+        },
+        "height": 400,
+        "width": 600
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 128013,
+          "jpg": 196905,
+          "webp": 143656
+        },
+        "height": 800,
+        "width": 1200
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 12101,
+          "jpg": 18493,
+          "webp": 15904
+        },
+        "height": 216,
+        "width": 324
+      }
+    },
+    "width": 1200
+  },
+  "service-rozvody": {
+    "height": 800,
+    "placeholder": "#43423E",
+    "upscaled": false,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 30363,
+          "jpg": 48876,
+          "webp": 34520
+        },
+        "height": 400,
+        "width": 600
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 86422,
+          "jpg": 145265,
+          "webp": 89642
+        },
+        "height": 800,
+        "width": 1200
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 10860,
+          "jpg": 17082,
+          "webp": 14122
+        },
+        "height": 216,
+        "width": 324
+      }
+    },
+    "width": 1200
+  }
+}

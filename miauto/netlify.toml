@@ -1,0 +1,12 @@
+[build]
+  base    = "miauto"
+  command = "npm run build"
+  publish = "miauto/.next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The official Next.js runtime adapter. Required: it is what makes the chat route
+# handler and the form POST execute as functions rather than 404.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
