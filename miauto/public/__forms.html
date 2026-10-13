@@ -16,7 +16,13 @@
       lib/forms.ts, or that field is silently dropped from the submission.
 
       Nobody is meant to look at this page.
+
+      The sentinel below is load-bearing: lib/forms.ts treats a response
+      containing it as a FAILED submission. A host that simply serves this file
+      back in answer to the POST would otherwise return 200, and the visitor
+      would be told the enquiry was sent when nothing processed it.
     -->
+    <!-- MIAUTO_FORM_REGISTRATION_PAGE -->
     <form name="dopyt" netlify netlify-honeypot="bot-field" hidden>
       <input type="hidden" name="form-name" value="dopyt" />
       <input type="text" name="bot-field" />

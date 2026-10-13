@@ -130,6 +130,25 @@ launch** — see "Known limitations".
 
 ## 5. How to deploy to Netlify
 
+There are two routes, and they are not equivalent. **Read the comparison before
+choosing**, because the drag-and-drop one gives up the grounded assistant.
+
+| | Git / CLI build | Drag-and-drop (`npm run build:static`) |
+|---|---|---|
+| All 24 pages | ✅ | ✅ |
+| Enquiry form (Netlify Forms) | ✅ | ✅ |
+| Map, signature interaction, both locales | ✅ | ✅ |
+| Scripted assistant | ✅ server-side | ✅ in the browser |
+| **Grounded assistant (`CHAT_API_KEY`)** | ✅ | ❌ **not possible** |
+| Needs a Git connection or the CLI | yes | no |
+
+A static site has no server, so there is nowhere to keep an API key and no
+`/api/chat` to call. That is the whole of the difference. The form is unaffected
+either way: Netlify Forms is handled by Netlify's own infrastructure, not by a
+function.
+
+### Route A — Git or CLI (recommended, full functionality)
+
 The repository already contains `miauto/netlify.toml` with the right settings.
 
 1. In Netlify, **Add new site → Import an existing project**, and pick this
@@ -145,6 +164,29 @@ The repository already contains `miauto/netlify.toml` with the right settings.
 4. Set `NEXT_PUBLIC_SITE_URL` to the final public URL (e.g.
    `https://miauto.sk`). It drives canonicals, `hreflang`, the sitemap and the
    Open Graph image URLs. Without it those fall back to Netlify's deploy URL.
+
+### Route B — drag and drop
+
+Netlify's manual deploy publishes the folder you hand it and **runs no build**,
+so the folder has to be finished files.
+
+```bash
+cd miauto
+npm install
+npm run build:static     # writes out/
+```
+
+Then drag the **`out/` folder** (or a zip of its *contents*, not of the folder
+itself) onto the deploy area in the Netlify dashboard.
+
+`build:static` sets `STATIC_EXPORT=1`, moves `app/api` aside for the duration of
+the build because a route handler cannot coexist with `output: "export"`, puts it
+straight back afterwards, and copies `_redirects` and `_headers` into `out/` —
+those do the jobs that `redirects()` and `headers()` in `next.config.ts` do for
+the server build.
+
+To move from Route B to Route A later, connect the repository in Netlify and
+redeploy. Nothing in the source needs changing.
 
 ### Custom domain and DNS
 

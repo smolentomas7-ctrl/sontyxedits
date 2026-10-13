@@ -1,0 +1,6 @@
+# Security headers for the static (drag-and-drop) build. The Git/CLI build sets
+# the same three through headers() in next.config.ts.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN

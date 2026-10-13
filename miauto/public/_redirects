@@ -1,0 +1,4 @@
+# Netlify redirects, used by the static (drag-and-drop) build. The Git/CLI build
+# does the same job through redirects() in next.config.ts.
+/            /sk/        302
+/index.html  /sk/        302

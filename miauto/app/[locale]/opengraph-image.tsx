@@ -1,11 +1,18 @@
 import { ImageResponse } from "next/og";
 import { formattedAddress, site } from "@/config/miauto";
-import { isLocale } from "@/content";
+import { isLocale, LOCALES } from "@/content";
 
 /**
  * Asset slot 5.1 was not supplied, so the share image is generated rather than
  * faked with a photograph that is not theirs. Everything on it is a confirmed fact.
  */
+/** Prerendered for both builds: every value on it is a confirmed constant. */
+export const dynamic = "force-static";
+
+export function generateStaticParams() {
+  return LOCALES.map((locale) => ({ locale }));
+}
+
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = `${site.legalName} — ${site.city}`;
@@ -35,9 +42,22 @@ export default async function OpengraphImage({
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ width: 14, height: 44, background: "#FF7A3D", borderRadius: 4 }} />
-          <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: -1 }}>
-            M.I.<span style={{ color: "#FF7A3D" }}>Auto</span>
-            <span style={{ fontSize: 20, color: "#94A1A8", marginLeft: 8 }}>s.r.o.</span>
+          {/* Satori needs an explicit display on any element with more than one
+              child; without it the whole image throws at render time. */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              fontSize: 34,
+              fontWeight: 700,
+              letterSpacing: -1,
+            }}
+          >
+            <span>M.I.</span>
+            <span style={{ color: "#FF7A3D" }}>Auto</span>
+            <span style={{ fontSize: 20, color: "#94A1A8", marginLeft: 8, fontWeight: 400 }}>
+              s.r.o.
+            </span>
           </div>
         </div>
 

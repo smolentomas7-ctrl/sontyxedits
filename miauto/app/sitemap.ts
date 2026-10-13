@@ -4,6 +4,9 @@ import { ROUTES } from "@/lib/i18n";
 import { siteUrl } from "@/config/miauto";
 
 /** All 24 routes: 12 per locale, both locales, each with its hreflang alternates. */
+/** Both builds emit this as a file; nothing about it varies per request. */
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     { path: ROUTES.home, priority: 1 },

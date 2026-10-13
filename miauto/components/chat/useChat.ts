@@ -3,6 +3,33 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Locale, LocaleContent } from "@/content/types";
 
+/**
+ * A static export has no server, so there is no /api/chat to call. In that build
+ * the scripted tier runs here in the browser instead — it is pure functions over
+ * the same content the pages render, with no key and nothing to hide. The
+ * grounded tier is genuinely unavailable in that mode, and the panel header says
+ * the answers are prepared in advance.
+ *
+ * This is lazily imported so it only reaches the bundle of the build that needs
+ * it, and only once the visitor opens the panel.
+ */
+const STATIC_CHAT = process.env.NEXT_PUBLIC_STATIC_CHAT === "1";
+
+async function answerLocally(locale: Locale, message: string) {
+  const [{ respondScripted }, { SOURCES }] = await Promise.all([
+    import("@/lib/chat/scripted"),
+    import("@/content/knowledge.generated"),
+  ]);
+  const node = respondScripted(locale, message);
+  const sources: Source[] = [];
+  for (const match of node.answer.matchAll(/\[source:\s*([^\]]+)\]/gi)) {
+    const id = (match[1] ?? "").trim();
+    const href = SOURCES[locale][id];
+    if (href && !sources.some((s) => s.id === id)) sources.push({ id, href });
+  }
+  return { content: node.answer, sources, chips: [...(node.chips ?? [])] };
+}
+
 export type Source = { id: string; href: string };
 
 export type Turn = {
@@ -92,6 +119,13 @@ export function useChat(locale: Locale, t: LocaleContent) {
         );
 
       try {
+        if (STATIC_CHAT) {
+          const reply = await answerLocally(locale, message);
+          setMode("scripted");
+          patch((turn) => ({ ...turn, ...reply, streaming: false }));
+          return;
+        }
+
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
