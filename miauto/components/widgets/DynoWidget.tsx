@@ -17,6 +17,34 @@ const H = 300;
 const PAD = { l: 52, r: 52, t: 18, b: 34 };
 
 /** Axis maxima, chosen so each quarter gridline is a round figure in both units. */
+/**
+ * The car on the rollers: a low four-door fastback, front to the right, drawn to
+ * the proportions of the brand's own silhouette — roughly three wheel diameters
+ * of wheelbase, a roofline that peaks over the cabin and falls away to a short
+ * deck, and almost no overhang.
+ *
+ * Wheels are r=48 at y=116, so their contact line lands at 164 and dips into the
+ * cradle between each pair of rollers below.
+ */
+const WHEELS = [250, 561] as const;
+const WHEEL_R = 48;
+const SPOKES = [0, 1, 2, 3, 4].map((i) => (i / 5) * Math.PI * 2 - Math.PI / 2);
+const BODY =
+  "M650 104 C652 90 646 83 632 81 L470 64 C446 60 420 44 392 30 L344 27 " +
+  "C300 27 262 36 212 56 L166 76 C154 80 150 88 150 98 L150 140 " +
+  "C150 145 153 148 159 148 L207.5 146 " +
+  // Each arch is a circle centred on its wheel, four units wider than the tyre,
+  // cut off where it crosses the sill. It is the long way round that circle,
+  // hence the large-arc flag: the short way bulges the wrong side and swallows
+  // the wheel.
+  "A52 52 0 1 1 292.5 146 L518.5 146 A52 52 0 1 1 603.5 146 L640 146 " +
+  "C646 146 650 142 650 136 Z";
+/** The roofline, picked out by the same upper-left light as the rest of the site. */
+const ROOFLINE =
+  "M650 104 C652 90 646 83 632 81 L470 64 C446 60 420 44 392 30 L344 27 " +
+  "C300 27 262 36 212 56 L166 76";
+const GLASS = "M455 68 C432 56 414 44 394 32 L348 30 C306 32 268 42 224 62 Z";
+
 const MAX_KW = 160;
 const MAX_NM = 480;
 
@@ -101,21 +129,25 @@ export function DynoWidget({ t }: { t: LocaleContent }) {
 
       {/* ── the car on the rollers ── */}
       <svg
-        viewBox="0 0 760 180"
+        viewBox="0 0 760 212"
         className="w-full"
         role="img"
         aria-label={w.sceneAlt}
-        style={{ aspectRatio: "760 / 180" }}
+        style={{ aspectRatio: "760 / 212" }}
       >
         <defs>
-          <linearGradient id="dy-body" x1="0.1" y1="0" x2="0.6" y2="1">
-            <stop offset="0%" stopColor="#39424a" />
-            <stop offset="55%" stopColor="#222a31" />
-            <stop offset="100%" stopColor="#141a1f" />
+          <linearGradient id="dy-body" x1="0.1" y1="0" x2="0.45" y2="1">
+            <stop offset="0%" stopColor="#424c55" />
+            <stop offset="42%" stopColor="#262f36" />
+            <stop offset="100%" stopColor="#11161a" />
           </linearGradient>
-          <linearGradient id="dy-glass" x1="0" y1="0" x2="0.4" y2="1">
-            <stop offset="0%" stopColor="#8fa3b0" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#8fa3b0" stopOpacity="0.12" />
+          <linearGradient id="dy-glass" x1="0.1" y1="0" x2="0.5" y2="1">
+            <stop offset="0%" stopColor="#a6bac8" stopOpacity="0.42" />
+            <stop offset="100%" stopColor="#748794" stopOpacity="0.08" />
+          </linearGradient>
+          <linearGradient id="dy-tyre" x1="0.25" y1="0" x2="0.75" y2="1">
+            <stop offset="0%" stopColor="#222a30" />
+            <stop offset="100%" stopColor="#0a0e11" />
           </linearGradient>
           <radialGradient id="dy-smoke">
             <stop offset="0%" stopColor="#ffffff" stopOpacity="0.16" />
@@ -123,65 +155,112 @@ export function DynoWidget({ t }: { t: LocaleContent }) {
           </radialGradient>
         </defs>
 
-        {/* floor and rollers */}
-        <rect x="0" y="150" width="760" height="2" fill="var(--border)" />
-        {[266, 338].map((cx) => (
+        {/* floor, and a pair of rollers under each wheel */}
+        <rect x="0" y="200" width="760" height="2" fill="var(--border)" />
+        {WHEELS.flatMap((wheel) => [wheel - 32, wheel + 32]).map((cx) => (
           <g key={cx}>
-            <circle cx={cx} cy="132" r="26" fill="#1b2227" stroke="var(--border)" strokeWidth="1.2" />
-            <g style={{ transformOrigin: `${cx}px 132px`, animation: `dy-spin ${spin}s linear infinite` }}>
-              <path d={`M${cx - 18} 132 h36 M${cx} 114 v36`} stroke="var(--text-muted)" strokeOpacity="0.4" strokeWidth="1.4" />
+            <circle cx={cx} cy="180" r="20" fill="#171d22" stroke="var(--border)" strokeWidth="1.2" />
+            <g
+              className="dy-roll"
+              style={{ transformOrigin: `${cx}px 180px`, transformBox: "view-box", animationDuration: `${spin}s` }}
+            >
+              <path
+                d={`M${cx - 13} 180 h26 M${cx} 167 v26 M${cx - 9} 171 l18 18 M${cx + 9} 171 l-18 18`}
+                stroke="#49545c"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+              />
             </g>
           </g>
         ))}
 
-        {/* body, tilting back a little under load */}
+        {/* body, settling back a little under load */}
         <g
           style={{
-            transformOrigin: "300px 130px",
-            transform: `rotate(${(-gain / dyno.maxGainPercent) * 1.1}deg)`,
+            transformOrigin: "405px 140px",
+            transformBox: "view-box",
+            transform: `rotate(${(-gain / dyno.maxGainPercent) * 1.2}deg)`,
             transition: "transform 420ms var(--ease-ios)",
           }}
         >
-          <path
-            d="M150 128 L168 92 Q176 78 196 76 L300 70 Q330 69 356 82 L418 110 L470 118 Q486 121 486 132 L486 140 L150 140 Z"
-            fill="url(#dy-body)"
-          />
-          <path d="M206 84 L296 79 Q320 78 340 88 L382 108 L212 112 Z" fill="url(#dy-glass)" />
-          <path
-            d="M150 128 L168 92 Q176 78 196 76 L300 70"
-            fill="none"
-            stroke="#ffffff"
-            strokeOpacity="0.16"
-            strokeWidth="1.2"
-          />
-          {/* wheels */}
-          {[218, 420].map((cx) => (
+          {/* Wheels first: the body is drawn over them, so each arch reads as an
+              opening with the tyre behind it rather than a tyre stuck on top. */}
+          {WHEELS.map((cx) => (
             <g key={cx}>
-              <circle cx={cx} cy="140" r="30" fill="#0e1316" stroke="#2b3339" strokeWidth="2" />
-              <g style={{ transformOrigin: `${cx}px 140px`, animation: `dy-spin ${spin}s linear infinite` }}>
-                <path
-                  d={`M${cx - 15} 140 h30 M${cx} 125 v30 M${cx - 11} 129 l22 22 M${cx + 11} 129 l-22 22`}
-                  stroke="#4a545b"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                />
+              <circle cx={cx} cy="116" r={WHEEL_R} fill="url(#dy-tyre)" stroke="#333c43" strokeWidth="2" />
+              <circle cx={cx} cy="116" r="33" fill="#161c21" stroke="#404a52" strokeWidth="1.2" />
+              <g
+                className="dy-roll"
+                style={{ transformOrigin: `${cx}px 116px`, transformBox: "view-box", animationDuration: `${spin}s` }}
+              >
+                {SPOKES.map((a, i) => (
+                  <path
+                    key={i}
+                    d={`M${(cx + Math.cos(a) * 9).toFixed(1)} ${(116 + Math.sin(a) * 9).toFixed(1)} L${(cx + Math.cos(a) * 30).toFixed(1)} ${(116 + Math.sin(a) * 30).toFixed(1)}`}
+                    stroke="#5d6871"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                  />
+                ))}
               </g>
-              <circle cx={cx} cy="140" r="6" fill="#39434a" />
+              <circle cx={cx} cy="116" r="8" fill="#434d55" stroke="#616d76" strokeWidth="1" />
             </g>
           ))}
+
+          <path d={BODY} fill="url(#dy-body)" stroke="#39434b" strokeWidth="1" strokeLinejoin="round" />
+          <path d={ROOFLINE} fill="none" stroke="#ffffff" strokeOpacity="0.2" strokeWidth="1.3" strokeLinejoin="round" />
+
+          {/* glasshouse and its pillars */}
+          <path d={GLASS} fill="url(#dy-glass)" />
+          <g stroke="#0d1216" strokeOpacity="0.6" strokeWidth="2.2">
+            <path d="M348 30 L344 64" />
+            <path d="M394 33 L398 66" />
+          </g>
+
+          {/* shut lines, handles and the crease down the flank */}
+          <g stroke="#0d1216" strokeOpacity="0.5" strokeWidth="1.3" fill="none">
+            <path d="M300 60 L300 140" />
+            <path d="M420 64 L422 140" />
+          </g>
+          <g fill="#6c7984" opacity="0.75">
+            <rect x="326" y="78" width="17" height="3.2" rx="1.6" />
+            <rect x="440" y="80" width="17" height="3.2" rx="1.6" />
+          </g>
+          <path
+            d="M306 92 C360 89 440 89 512 92"
+            fill="none"
+            stroke="#ffffff"
+            strokeOpacity="0.1"
+            strokeWidth="1.6"
+          />
+          {/* sill shadow, so the car sits in its own light rather than floating */}
+          <path d="M296 142 C360 147 460 147 523 142" fill="none" stroke="#070a0c" strokeOpacity="0.5" strokeWidth="4" />
+          {/* mirror */}
+          <path d="M452 64 l17 -2 q6 0 5 5 l-1 3 l-21 1 z" fill="#2d353c" stroke="#49545c" strokeWidth="0.9" />
+
+          {/* light signatures, the one place the car carries the brand colour */}
+          <path d="M602 78 L636 81 q7 1 7 6 l-38 1 z" fill="var(--accent)" opacity="0.92" />
+          <path d="M154 86 L190 82 l1 7 l-37 3 z" fill="var(--accent)" opacity="0.7" />
+          {/* lower intake and diffuser */}
+          <path d="M604 128 L644 127 l-3 10 l-38 1 z" fill="#0b0f12" opacity="0.85" />
+          <path d="M154 126 L190 125 l0 10 l-35 1 z" fill="#0b0f12" opacity="0.85" />
+
         </g>
 
         {/* exhaust haze, stronger with load */}
         <circle
-          cx="128"
-          cy="126"
-          r="34"
+          cx="124"
+          cy="112"
+          r="38"
           fill="url(#dy-smoke)"
-          style={{ opacity: 0.25 + (gain / dyno.maxGainPercent) * 0.75 }}
+          style={{ opacity: 0.2 + (gain / dyno.maxGainPercent) * 0.8 }}
         />
 
-        <style>{`@keyframes dy-spin { to { transform: rotate(360deg) } }
-          @media (prefers-reduced-motion: reduce) { [style*="dy-spin"] { animation: none !important } }`}</style>
+        <style>{`
+          .dy-roll { animation-name: dy-spin; animation-timing-function: linear; animation-iteration-count: infinite }
+          @keyframes dy-spin { to { transform: rotate(360deg) } }
+          @media (prefers-reduced-motion: reduce) { .dy-roll { animation: none !important } }
+        `}</style>
       </svg>
 
       {/* ── the curves ── */}

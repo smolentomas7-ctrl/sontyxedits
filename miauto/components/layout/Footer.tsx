@@ -28,7 +28,7 @@ export function Footer({ locale, t }: { locale: Locale; t: LocaleContent }) {
     <footer className="border-t border-[var(--border)] bg-[var(--bg)]">
       <div className="container grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr] md:gap-8 md:py-20">
         <div>
-          <Logo markClassName="size-9" wordmarkClassName="text-[1.25rem] md:text-[1.375rem]" />
+          <Logo markClassName="size-11" wordmarkClassName="text-[1.25rem] md:text-[1.375rem]" />
           <p className="prose-width mt-4 max-w-[34ch] text-[color:var(--text-muted)]">
             {t.footer.tagline}
           </p>

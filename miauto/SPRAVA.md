@@ -64,14 +64,17 @@ predtým, než sa spustí, čo by jej pomohlo, a ako sa nasadzuje.
   majiteľov, nie dĺžka pôsobenia firmy, aby si to asistent nespojil.
 
 ### Značka
-- **Logo**: písmeno M vedené ako jedna signálová dráha — zvislé úseky a rohy pod
-  45°, tak ako sa vedie spoj na doske plošných spojov, zakončené dvoma ploškami.
-  Technické, geometrické, bez gradientov a bez 3D. Čitateľné od 16 px.
+- **Logo je vaše vlastné** — kruhový emblém s monogramom „Mi" a profilom auta.
+  Dodaná predloha bola rastrový obrázok; obrysy sme obkreslili do vektora, takže
+  je ostrý v akejkoľvek veľkosti, preberá farbu textu a nestojí ani jeden
+  obrázkový request navyše.
 - Z jednej predlohy vychádza všetko: značka v hlavičke a v pätičke, favicon
   (SVG aj PNG 180×180 pre iOS), ikony pre manifest a obrázok pre zdieľanie na
   sociálnych sieťach (1200×630, zvlášť pre slovenskú a anglickú verziu).
-- Logo je vložené priamo do stránky ako SVG, nie ako obrázok, takže sa
-  prispôsobuje farbe textu. Hlavička stále oznamuje čítačkám „M.I.Auto s.r.o.".
+- Logo je vložené priamo do stránky ako SVG, nie ako obrázok. Hlavička stále
+  oznamuje čítačkám „M.I.Auto s.r.o.".
+- Vo favicone je prsteň vynechaný: pri 16 px tenká kružnica zanikne, preto je
+  tam ten istý znak ako plná oranžová plôška s vyrezaným monogramom.
 
 ### Diagnostická animácia na úvodnej stránke
 Prekreslená od základu. Jeden zdroj svetla vľavo hore, podľa ktorého je
@@ -229,6 +232,11 @@ funkčná, len asistent odpovedá z pripravených odpovedí a sám to hovorí.
   Popisy pri ilustračných fotografiách opisujú činnosť a nikde netvrdia, že ide
   o vaše priestory. Vlastné fotografie by boli priamočiare zlepšenie — stačí ich
   poslať a prejdú rovnakým spracovaním.
+- **Logo je pri 16 px nečitateľné v detaile.** Kresba má tenký prsteň a jemné
+  ťahy; vo favicone sme to riešili plnou plôškou s vyrezaným monogramom, ale na
+  karte prehliadača z neho zostane oranžový krúžok. Je to vlastnosť predlohy,
+  nie chyba — ak raz vznikne zjednodušená verzia znaku pre malé veľkosti,
+  nahradí sa jedným súborom.
 - **Menovky v portrétoch sú po anglicky.** Na fotografiách je „co-owner";
   slovenská stránka by privítala „spolumajiteľ". Fotografie sme neupravovali —
   stačí poslať znovu vyexportované verzie s rovnakým rozložením a nahradia sa
