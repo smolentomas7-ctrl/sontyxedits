@@ -74,7 +74,7 @@ export const CASES: readonly Case[] = [
 
   // ---------- contact, Slovak -------------------------------------------
   { id: "sk-hodiny", locale: "sk", input: "Aké máte otváracie hodiny?", kind: "answer",
-    expect: { hasSource: true, sourceIs: "contact", mentionsAny: ["08:00", "8:00"] } },
+    expect: { hasSource: true, sourceIs: "contact", mentionsAny: ["07:00", "7:00"] } },
   { id: "sk-vikend", locale: "sk", input: "Mate otvorene v sobotu?", kind: "answer",
     expect: { hasSource: true, sourceIs: "contact", mentionsAny: ["zatvoren"] } },
   { id: "sk-kde", locale: "sk", input: "Kde vas najdem?", kind: "answer",
@@ -132,7 +132,7 @@ export const CASES: readonly Case[] = [
 
   // ---------- English ----------------------------------------------------
   { id: "en-hours", locale: "en", input: "What are your opening hours?", kind: "answer",
-    expect: { hasSource: true, sourceIs: "contact", mentionsAny: ["08:00", "8:00"] } },
+    expect: { hasSource: true, sourceIs: "contact", mentionsAny: ["07:00", "7:00"] } },
   { id: "en-where", locale: "en", input: "Where are you?", kind: "answer",
     expect: { hasSource: true, sourceIs: "contact", mentionsAny: ["sladkovicova"] } },
   { id: "en-alignment", locale: "en", input: "Do you do wheel alignment?", kind: "answer",

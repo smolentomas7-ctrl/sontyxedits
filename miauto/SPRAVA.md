@@ -250,8 +250,9 @@ funkčná, len asistent odpovedá z pripravených odpovedí a sám to hovorí.
   správne, ale do štruktúrovaných údajov (`geo`) patria presné súradnice — Google
   si potom miesto spáruje istejšie. V konfigurácii je pole `geo`, prázdne.
 - **Facebook a Instagram**, ak existujú. Dnes sa odkazy nevykresľujú vôbec.
-- **Potvrdiť otváracie hodiny.** Teraz je to pondelok až piatok 8:00–16:00, víkend
-  zatvorené. Sviatky stránka nepozná a zámerne o nich nič netvrdí.
+- **Sviatky stránka nepozná.** Otváracie hodiny sú pondelok až piatok 7:00–17:00
+  s obedňajšou prestávkou 12:00–13:00, víkend zatvorené. O sviatkoch stránka
+  zámerne nič netvrdí — žiadne údaje o nich nemá.
 
 ### Rozšírenia
 - **Oznámenie o dopyte e-mailom.** Po prvom nasadení sa formulár objaví v Netlify

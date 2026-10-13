@@ -21,17 +21,22 @@ const SCHEMA_DAY: Record<string, string> = {
  * coordinates, social profiles — are omitted entirely rather than guessed.
  */
 export function autoRepairJsonLd(locale: Locale) {
+  // A midday break is expressed as two spans for the day, not as one span with a
+  // hole in it: schema.org has no way to say "closed between".
   const openingHoursSpecification = DAY_ORDER.flatMap((day) => {
     const hours = site.hours[day];
     if (!hours) return [];
-    return [
-      {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: `https://schema.org/${SCHEMA_DAY[day]}`,
-        opens: hours[0],
-        closes: hours[1],
-      },
+    const [breakStart, breakEnd] = site.lunchBreak;
+    const spans: [string, string][] = [
+      [hours[0], breakStart],
+      [breakEnd, hours[1]],
     ];
+    return spans.map(([opens, closes]) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: `https://schema.org/${SCHEMA_DAY[day]}`,
+      opens,
+      closes,
+    }));
   });
 
   const data: Record<string, unknown> = {

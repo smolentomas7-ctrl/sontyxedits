@@ -247,7 +247,7 @@ final report and the widget itself all say so.
   with the phone number. This is deliberate: it never reports success for a
   message that was not sent.
 - **Opening hours have no public-holiday data.** `lib/hours.ts` computes
-  open/closed from the confirmed Monday–Friday 08:00–16:00 against
+  open/closed from the confirmed Monday–Friday 07:00–17:00 (with a 12:00–13:00 break) against
   Europe/Bratislava. It cannot know about public holidays, and guessing one would
   be a false claim about the business. On a holiday the badge will say "open"
   while the workshop is shut.

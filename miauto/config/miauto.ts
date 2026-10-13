@@ -63,14 +63,23 @@ export const site = {
   ] as readonly Owner[],
 
   hours: {
-    mon: ["08:00", "16:00"],
-    tue: ["08:00", "16:00"],
-    wed: ["08:00", "16:00"],
-    thu: ["08:00", "16:00"],
-    fri: ["08:00", "16:00"],
+    mon: ["07:00", "17:00"],
+    tue: ["07:00", "17:00"],
+    wed: ["07:00", "17:00"],
+    thu: ["07:00", "17:00"],
+    fri: ["07:00", "17:00"],
     sat: null,
     sun: null,
   },
+
+  /**
+   * The midday break, which is the same on every day that has hours — so it is
+   * written once rather than repeated on each day. Everything that reads the
+   * hours reads this too: the badge reports the break as its own state, the
+   * table prints it under the week, and the structured data splits each day
+   * into two spans, which is how schema.org expresses a break.
+   */
+  lunchBreak: ["12:00", "13:00"],
 
   /**
    * Geocoded from the street address: exact coordinates were never supplied.

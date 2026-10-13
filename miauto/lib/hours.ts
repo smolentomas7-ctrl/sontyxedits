@@ -4,7 +4,14 @@ export const TIME_ZONE = "Europe/Bratislava";
 
 export type OpenState =
   | { readonly open: true; readonly closingAt: string }
-  | { readonly open: false; readonly nextDay: DayKey; readonly nextOpening: string };
+  /** Inside the midday break: open today, but not at this minute. */
+  | { readonly open: false; readonly onBreak: true; readonly reopensAt: string }
+  | {
+      readonly open: false;
+      readonly onBreak?: false;
+      readonly nextDay: DayKey;
+      readonly nextOpening: string;
+    };
 
 /**
  * The wall-clock day and time in Ružomberok, whatever time zone the visitor is in.
@@ -38,8 +45,9 @@ function toMinutes(hhmm: string): number {
 }
 
 /**
- * Open/closed against the confirmed hours. Saturday and Sunday are null in the
- * config, so this can never report open at the weekend.
+ * Open, on the midday break, or closed, against the confirmed hours. Saturday
+ * and Sunday are null in the config, so this can never report open at the
+ * weekend.
  *
  * It knows nothing about public holidays: there is no holiday data here and
  * guessing one would be a false claim about the business. See README.
@@ -50,7 +58,13 @@ export function getOpenState(now: Date = new Date()): OpenState {
 
   if (today) {
     const [open, close] = today;
+    const [breakStart, breakEnd] = site.lunchBreak;
     if (minutes >= toMinutes(open) && minutes < toMinutes(close)) {
+      // The break is a closed state of its own: the workshop is not open, but
+      // the next opening is an hour away, not tomorrow morning.
+      if (minutes >= toMinutes(breakStart) && minutes < toMinutes(breakEnd)) {
+        return { open: false, onBreak: true, reopensAt: breakEnd };
+      }
       return { open: true, closingAt: close };
     }
     // Before opening on a working day: today is still the next opening.
@@ -69,7 +83,7 @@ export function getOpenState(now: Date = new Date()): OpenState {
     }
   }
   // Unreachable while any weekday has hours, but the type has to be total.
-  return { open: false, nextDay: "mon", nextOpening: "08:00" };
+  return { open: false, nextDay: "mon", nextOpening: site.hours.mon[0] };
 }
 
 export function isToday(day: DayKey, now: Date = new Date()): boolean {

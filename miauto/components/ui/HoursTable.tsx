@@ -71,12 +71,31 @@ export function HoursTable({ t, compact = false }: { t: LocaleContent; compact?:
           );
         })}
       </tbody>
+      {/* The break is the same every working day, so it belongs under the week
+          rather than repeated on five rows. */}
+      <tfoot>
+        <tr>
+          <td
+            colSpan={2}
+            className={clsx(
+              "pt-3 pl-3 pr-3 text-[0.8125rem] text-[color:var(--text-muted)]",
+              compact && "text-[0.75rem]",
+            )}
+          >
+            {t.common.breakLabel}{" "}
+            <span className="tabular-nums">
+              {site.lunchBreak[0]} – {site.lunchBreak[1]}
+            </span>
+          </td>
+        </tr>
+      </tfoot>
     </table>
   );
 }
 
 /**
- * "Teraz otvorené — zatvárame o 16:00" / "Teraz zatvorené — otvárame v pondelok o 8:00".
+ * "Otvorené — zatvárame o 17:00", "Obedňajšia prestávka — otvárame o 13:00", or
+ * "Zatvorené — otvárame v pondelok o 7:00".
  * Renders nothing until mounted, so the server never asserts an opening state.
  */
 export function OpenBadge({ t, className }: { t: LocaleContent; className?: string }) {
@@ -95,23 +114,30 @@ export function OpenBadge({ t, className }: { t: LocaleContent; className?: stri
   }
 
   const state = getOpenState();
-  const label = state.open
-    ? fmt(t.common.openNow, { time: state.closingAt })
-    : fmt(t.common.closedNow, {
-        day: t.common.days[state.nextDay].toLowerCase(),
-        time: state.nextOpening,
-      });
+
+  // Three states, three colours: open, on the break, closed. The break gets the
+  // accent rather than the closed grey, because they are there and reopen within
+  // the hour — telling a visitor "closed" at 12:30 would send them away.
+  const { label, colour } = state.open
+    ? { label: fmt(t.common.openNow, { time: state.closingAt }), colour: "var(--success)" }
+    : state.onBreak
+      ? { label: fmt(t.common.breakNow, { time: state.reopensAt }), colour: "var(--accent)" }
+      : {
+          label: fmt(t.common.closedNow, {
+            day: t.common.days[state.nextDay].toLowerCase(),
+            time: state.nextOpening,
+          }),
+          colour: "var(--text-muted)",
+        };
 
   return (
     <span className={clsx("inline-flex min-h-6 items-center gap-2", className)}>
       <span
         aria-hidden="true"
         className="inline-block size-2 rounded-full"
-        style={{ backgroundColor: state.open ? "var(--success)" : "var(--text-muted)" }}
+        style={{ backgroundColor: colour }}
       />
-      <span className={state.open ? "text-[color:var(--success)]" : "text-[color:var(--text-muted)]"}>
-        {label}
-      </span>
+      <span style={{ color: colour }}>{label}</span>
     </span>
   );
 }

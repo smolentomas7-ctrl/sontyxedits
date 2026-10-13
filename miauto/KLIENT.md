@@ -78,7 +78,9 @@ Po nasadení treba v Netlify ešte nastaviť, na ktorý e-mail majú správy cho
 ### Hláška „Teraz otvorené / zatvorené"
 
 Na stránke sa automaticky počíta, či máte práve otvorené. Vie o vašich hodinách
-pondelok až piatok 08:00–16:00 a o zatvorenom víkende.
+pondelok až piatok 07:00–17:00, o obedňajšej prestávke 12:00–13:00 a o
+zatvorenom víkende. Počas prestávky nepíše „zatvorené", ale „Obedňajšia
+prestávka — otvárame o 13:00", aby zákazníka neposlala preč.
 
 **Nevie o štátnych sviatkoch.** Na sviatok, ktorý padne na pracovný deň, bude
 stránka tvrdiť, že máte otvorené. Nevymýšľali sme zoznam sviatkov, lebo

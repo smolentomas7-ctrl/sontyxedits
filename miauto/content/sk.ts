@@ -16,6 +16,8 @@ export const sk: LocaleContent = {
     home: "Domov",
     openNow: "Teraz otvorené — zatvárame o {time}",
     closedNow: "Teraz zatvorené — otvárame {day} o {time}",
+    breakNow: "Obedňajšia prestávka — otvárame o {time}",
+    breakLabel: "Obedňajšia prestávka",
     closedToday: "Dnes zatvorené",
     today: "dnes",
     hoursHeading: "Otváracie hodiny",
@@ -422,7 +424,7 @@ export const sk: LocaleContent = {
     meta: {
       title: "Kontakt | M.I.Auto s.r.o. Ružomberok",
       description:
-        "Sládkovičova 2528/108, 034 01 Ružomberok. Otvorené pondelok až piatok 08:00–16:00. Zavolajte na +421 918 918 109 alebo napíšte cez formulár.",
+        "Sládkovičova 2528/108, 034 01 Ružomberok. Otvorené pondelok až piatok 07:00–17:00, prestávka 12:00–13:00. Zavolajte na +421 918 918 109 alebo napíšte cez formulár.",
     },
     h1: "Kontakt",
     lead:
@@ -493,7 +495,7 @@ export const sk: LocaleContent = {
     {
       id: "hodiny",
       q: "Aké máte otváracie hodiny?",
-      a: "Pondelok až piatok od 08:00 do 16:00. V sobotu a v nedeľu je zatvorené.",
+      a: "Pondelok až piatok od 07:00 do 17:00, s obedňajšou prestávkou od 12:00 do 13:00. V sobotu a v nedeľu je zatvorené.",
     },
     {
       id: "termin",

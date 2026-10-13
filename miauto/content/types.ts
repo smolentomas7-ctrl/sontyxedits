@@ -75,9 +75,13 @@ export type LocaleContent = {
      * across that boundary. Placeholders are filled by `fmt()` in lib/format.ts.
      *   openNow   — {time}
      *   closedNow — {day}, {time}
+     *   breakNow  — {time}
      */
     readonly openNow: string;
     readonly closedNow: string;
+    /** Midday break; placeholder {time} is when they open again. */
+    readonly breakNow: string;
+    readonly breakLabel: string;
     readonly closedToday: string;
     readonly today: string;
     readonly hoursHeading: string;

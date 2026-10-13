@@ -26,10 +26,13 @@ const SHRINK_LIMIT = 0.5;
 function hoursLine(locale: Locale): string {
   const open = DAY_ORDER.filter((day) => site.hours[day]);
   const first = site.hours[open[0] ?? "mon"];
+  const [breakStart, breakEnd] = site.lunchBreak;
   return locale === "sk"
-    ? `Otváracie hodiny: pondelok až piatok ${first?.[0]}–${first?.[1]}. ` +
+    ? `Otváracie hodiny: pondelok až piatok ${first?.[0]}–${first?.[1]}, ` +
+      `s obedňajšou prestávkou ${breakStart}–${breakEnd}. ` +
       `V sobotu a v nedeľu je zatvorené.`
-    : `Opening hours: Monday to Friday ${first?.[0]}–${first?.[1]}. ` +
+    : `Opening hours: Monday to Friday ${first?.[0]}–${first?.[1]}, ` +
+      `with a lunch break from ${breakStart} to ${breakEnd}. ` +
       `Closed on Saturday and Sunday.`;
 }
 

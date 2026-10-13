@@ -103,12 +103,13 @@ export function buildNodes(locale: Locale): Node[] {
       id: "contact.hours",
       keywords: [
         "hodiny", "otvaracie", "otvorene", "otvoreno", "zatvorene", "vikend",
+        "prestavka", "prestavku", "obed", "obedna", "obednajsia", "pauza", "break", "lunch",
         "sobota", "sobotu", "nedela", "nedelu",
         "hours", "open", "opening", "closed", "weekend", "saturday", "sunday",
       ],
       answer: sk
-        ? `Otvorené máme v pracovné dni od ${site.hours.mon[0]} do ${site.hours.mon[1]}. V sobotu a v nedeľu je zatvorené. [source: contact]`
-        : `We are open on weekdays from ${site.hours.mon[0]} to ${site.hours.mon[1]}. Closed on Saturday and Sunday. [source: contact]`,
+        ? `Otvorené máme v pracovné dni od ${site.hours.mon[0]} do ${site.hours.mon[1]}, s obedňajšou prestávkou od ${site.lunchBreak[0]} do ${site.lunchBreak[1]}. V sobotu a v nedeľu je zatvorené. [source: contact]`
+        : `We are open on weekdays from ${site.hours.mon[0]} to ${site.hours.mon[1]}, with a lunch break from ${site.lunchBreak[0]} to ${site.lunchBreak[1]}. Closed on Saturday and Sunday. [source: contact]`,
       chips: sk ? ["Kde vás nájdem?", "Ako si dohodnem termín?"] : ["Where are you?", "How do I arrange a visit?"],
       cta: "phone",
     },

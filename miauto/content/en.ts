@@ -16,6 +16,8 @@ export const en: LocaleContent = {
     home: "Home",
     openNow: "Open now — closing at {time}",
     closedNow: "Closed now — opening {day} at {time}",
+    breakNow: "On a lunch break — open again at {time}",
+    breakLabel: "Lunch break",
     closedToday: "Closed today",
     today: "today",
     hoursHeading: "Opening hours",
@@ -422,7 +424,7 @@ export const en: LocaleContent = {
     meta: {
       title: "Contact | M.I.Auto s.r.o. Ružomberok",
       description:
-        "Sládkovičova 2528/108, 034 01 Ružomberok, Slovakia. Open Monday to Friday 08:00–16:00. Call +421 918 918 109 or send an enquiry through the form.",
+        "Sládkovičova 2528/108, 034 01 Ružomberok, Slovakia. Open Monday to Friday 07:00–17:00, with a break from 12:00 to 13:00. Call +421 918 918 109 or send an enquiry through the form.",
     },
     h1: "Contact",
     lead:
@@ -494,7 +496,7 @@ export const en: LocaleContent = {
     {
       id: "hodiny",
       q: "What are your opening hours?",
-      a: "Monday to Friday, 08:00 to 16:00. Closed on Saturday and Sunday.",
+      a: "Monday to Friday, 07:00 to 17:00, with a lunch break from 12:00 to 13:00. Closed on Saturday and Sunday.",
     },
     {
       id: "termin",
