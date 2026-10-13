@@ -27,9 +27,41 @@ VARIANTS = (
     ("thumb", 0.27, 70,  40),
 )
 
+# Provenance per slot, written into the manifest so the site can never describe
+# a generic photograph as this workshop's own premises.
+#   "own"   — photographed at M.I.Auto
+#   "stock" — generic imagery, NOT their workshop
+ORIGIN = {
+    "hero": "own",
+    "service-diagnostika": "stock",
+    "service-cipovanie-ecu": "stock",
+    "service-geometria": "stock",
+    "service-pneuservis": "stock",
+    "service-elektroinstalacia": "stock",
+    "service-rozvody": "stock",
+    "service-klimatizacia": "own",
+    "about-interior": "own",
+    "about-detail-01": "own",
+    "about-detail-02": "own",
+    "owner-01": "own",
+    "owner-02": "own",
+}
+
 # Source-pixel crops applied before everything else, where framing alone solves a
 # problem that retouching would only half-solve.
 PRECROP = {
+    # Owner portraits. Both arrive as phone shots with the subject low in the
+    # frame; these boxes take a 4:5 portrait around each person. The second one
+    # also arrives letterboxed (246px of black top and bottom), and the crop
+    # starts below that black.
+    #
+    # The 4:5 target is 560x700 rather than anything larger on purpose: the
+    # tighter of the two crops is 560px wide, and upscaling a face past its real
+    # resolution looks worse than showing it smaller. Reshooting both portraits
+    # on a camera, framed waist-up, is the one change that would lift them.
+    "owner-01-marian.jpg": (330, 1120, 1010, 1970),
+    "owner-02-ivan.jpg": (175, 1090, 735, 1790),
+
     # Reframes away from a "Volkswagen Service" fender cover in the background.
     # The VW Group electrics page states in both locales that this is an independent
     # workshop and NOT an authorised Volkswagen service centre, and a legible
@@ -47,12 +79,19 @@ SLOTS = {
     "service-cipovanie-ecu":        ("ecu.jpg",         1200,  800, 0.50, 80),
     "service-geometria":            ("geometria.jpg",   1200,  800, 0.50, 80),
     "service-pneuservis":           ("pneuservis.jpg",  1200,  800, 0.50, 80),
-    "service-elektroinstalacia":    ("elektro.jpg",     1200,  800, 0.50, 80),
+    # Targets below 1200x800 are deliberate: these originals are smaller than
+    # that once cropped to ratio, and an upscale invents detail that was never
+    # photographed. The handover report lists them as worth reshooting.
+    "service-elektroinstalacia":    ("elektro.jpg",      816,  544, 0.50, 80),
     "service-rozvody":              ("rozvody.jpg",     1200,  800, 0.50, 80),
-    "service-klimatizacia":         ("klimatizacia.jpg",1200,  800, 0.42, 80),
-    "about-interior":               ("about-01.jpg",    1000, 1250, 0.50, 80),
-    "about-detail-01":              ("about-02.jpg",    1200,  800, 0.45, 80),
-    "about-detail-02":              ("about-03.jpg",    1200,  800, 0.50, 80),
+    "service-klimatizacia":         ("klimatizacia.jpg", 894,  596, 0.42, 80),
+    "about-interior":               ("about-01.jpg",     896, 1120, 0.50, 80),
+    "about-detail-01":              ("about-02.jpg",     894,  596, 0.45, 80),
+    "about-detail-02":              ("about-03.jpg",     894,  596, 0.50, 80),
+
+    # 1.2 — owner portraits, 4:5.
+    "owner-01":                     ("owner-01-marian.jpg", 560, 700, 0.50, 84),
+    "owner-02":                     ("owner-02-ivan.jpg",   560, 700, 0.50, 84),
 }
 
 # Redactions applied BEFORE crop, in source-pixel coordinates.
@@ -190,6 +229,9 @@ def main() -> int:
 
         colour = dominant(im)
         variants, after = {}, 0.0
+        if upscaled:
+            print(f"  WARNING {slot}: source is smaller than the target; "
+                  f"shrink the target or reshoot rather than shipping an upscale")
         for vname, scale, vq, budget in VARIANTS:
             vw, vh = int(round(tw * scale)), int(round(th * scale))
             vim = im if scale == 1.0 else im.resize((vw, vh), Image.LANCZOS)
@@ -212,6 +254,7 @@ def main() -> int:
 
         manifest[slot] = {
             "width": tw, "height": th, "placeholder": colour,
+            "origin": ORIGIN.get(slot, "stock"),
             "upscaled": upscaled, "variants": variants,
         }
         rows.append((slot, before, after, variants, upscaled))

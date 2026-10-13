@@ -1,4 +1,5 @@
-import { DAY_ORDER, formattedAddress, isPlaceholder, site, siteUrl } from "@/config/miauto";
+import { DAY_ORDER, formattedAddress, has, site, siteUrl } from "@/config/miauto";
+import { images } from "@/config/images";
 import type { Locale } from "@/content/types";
 
 const SCHEMA_DAY: Record<string, string> = {
@@ -15,9 +16,9 @@ const SCHEMA_DAY: Record<string, string> = {
  * AutoRepair structured data, built ONLY from config/miauto.ts.
  *
  * Deliberately absent: aggregateRating, review, priceRange. There are no
- * ratings, no reviews and no prices, so emitting any of them would be inventing
- * them. Any property whose value is still a placeholder is omitted entirely
- * rather than published as the literal "[EMAIL]".
+ * ratings, no reviews and no published prices, so emitting any of them would be
+ * inventing them. Properties whose value is not known yet — company number,
+ * coordinates, social profiles — are omitted entirely rather than guessed.
  */
 export function autoRepairJsonLd(locale: Locale) {
   const openingHoursSpecification = DAY_ORDER.flatMap((day) => {
@@ -36,9 +37,12 @@ export function autoRepairJsonLd(locale: Locale) {
   const data: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "AutoRepair",
+    "@id": `${siteUrl}/#autorepair`,
     name: site.legalName,
     url: `${siteUrl}/${locale}`,
     telephone: site.phone,
+    email: site.email,
+    image: `${siteUrl}${images.hero.src}`,
     address: {
       "@type": "PostalAddress",
       streetAddress: site.street,
@@ -48,15 +52,29 @@ export function autoRepairJsonLd(locale: Locale) {
       addressCountry: site.country,
     },
     areaServed: { "@type": "City", name: site.city },
+    hasMap: site.mapUrl,
     openingHoursSpecification,
   };
 
-  if (!isPlaceholder(site.email)) data["email"] = site.email;
+  // Coordinates were never supplied. An estimate here would put a pin on the
+  // wrong building, which is worse than having no pin at all.
+  if (has(site.geo.lat) && has(site.geo.lng)) {
+    data["geo"] = {
+      "@type": "GeoCoordinates",
+      latitude: site.geo.lat,
+      longitude: site.geo.lng,
+    };
+  }
 
-  const sameAs = [site.social.facebook, site.social.instagram].filter(
-    (value) => !isPlaceholder(value),
-  );
+  if (has(site.ico)) data["identifier"] = { "@type": "PropertyValue", name: "IČO", value: site.ico };
+  if (has(site.icDph)) data["vatID"] = site.icDph;
+  if (has(site.dic)) data["taxID"] = site.dic;
+
+  const sameAs = [site.social.facebook, site.social.instagram].filter(has);
   if (sameAs.length > 0) data["sameAs"] = sameAs;
+
+  const founders = site.owners.map((owner) => ({ "@type": "Person", name: owner.name }));
+  if (founders.length > 0) data["founder"] = founders;
 
   return data;
 }

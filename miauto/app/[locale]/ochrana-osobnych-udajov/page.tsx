@@ -3,20 +3,8 @@ import { AlertTriangle } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getContent, isLocale } from "@/content";
 import { ROUTES, canonicalFor } from "@/lib/i18n";
+import { formattedAddress, has, mailtoHref, site } from "@/config/miauto";
 import { Container, Section } from "@/components/ui/Section";
-import { PlaceholderToken } from "@/components/ui/Placeholder";
-
-/** Renders [IČO], [EMAIL] and [TO CONFIRM: …] visibly wherever they appear. */
-function withPlaceholders(text: string) {
-  const parts = text.split(/(\[[^\]]+\])/g);
-  return parts.map((part, index) =>
-    /^\[[^\]]+\]$/.test(part) ? (
-      <PlaceholderToken key={index}>{part}</PlaceholderToken>
-    ) : (
-      <span key={index}>{part}</span>
-    ),
-  );
-}
 
 export async function generateMetadata({
   params,
@@ -43,6 +31,18 @@ export default async function PrivacyPage({
   if (!isLocale(locale)) notFound();
   const t = getContent(locale);
 
+  /**
+   * Identification of the controller, rendered from config/miauto.ts so it
+   * matches the footer exactly. Registration lines appear as soon as they hold
+   * a value; nothing is invented to fill a gap.
+   */
+  const registration = [
+    { label: t.footer.icoLabel, value: site.ico },
+    { label: t.footer.dicLabel, value: site.dic },
+    { label: t.footer.icDphLabel, value: site.icDph },
+    { label: t.footer.registryLabel, value: site.zapisVOR },
+  ].filter((item) => has(item.value));
+
   return (
     <Section rhythm="tight" className="pt-[calc(var(--nav-h)+56px)]">
       <Container>
@@ -59,7 +59,42 @@ export default async function PrivacyPage({
             <p className="text-[0.9375rem] leading-relaxed">{t.privacy.reviewNotice}</p>
           </div>
 
-          <p className="mt-6 text-[0.875rem] text-[color:var(--text-muted)]">{t.privacy.updated}</p>
+          <p className="mt-6 text-[0.875rem] text-[color:var(--text-muted)]">
+            {t.privacy.updated}
+          </p>
+
+          <section className="mt-12">
+            <h2 className="text-[1.375rem] md:text-[1.625rem]">
+              {t.privacy.controller.heading}
+            </h2>
+            <p className="mt-5 text-[color:var(--text-muted)]">{t.privacy.controller.intro}</p>
+            <address className="mt-4 not-italic leading-relaxed">
+              <strong className="font-semibold">{site.legalName}</strong>
+              <br />
+              {formattedAddress}
+              <br />
+              <a href={site.phoneHref} className="no-underline hover:text-[color:var(--accent)]">
+                {site.phone}
+              </a>
+              {" · "}
+              <a href={mailtoHref} className="no-underline hover:text-[color:var(--accent)]">
+                {site.email}
+              </a>
+              {registration.length > 0 ? (
+                <>
+                  <br />
+                  <span className="text-[0.9375rem] text-[color:var(--text-muted)]">
+                    {registration.map((item, index) => (
+                      <span key={item.label}>
+                        {index > 0 ? " · " : null}
+                        {item.label}: {item.value}
+                      </span>
+                    ))}
+                  </span>
+                </>
+              ) : null}
+            </address>
+          </section>
 
           <div className="mt-12 space-y-12">
             {t.privacy.sections.map((section) => (
@@ -71,9 +106,9 @@ export default async function PrivacyPage({
                     .map((paragraph) => (
                       <p
                         key={paragraph.slice(0, 28)}
-                        className="flex flex-wrap items-center gap-x-1 leading-relaxed text-[color:var(--text-muted)]"
+                        className="leading-relaxed text-[color:var(--text-muted)]"
                       >
-                        {withPlaceholders(paragraph)}
+                        {paragraph}
                       </p>
                     ))}
                 </div>

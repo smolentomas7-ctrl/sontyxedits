@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="M.I.Auto s.r.o.">
+  <title>M.I.Auto s.r.o.</title>
+  <!-- Favicon: the mark on a filled tile. At 16px a silhouette reads where a
+       hairline does not, so the tile carries the accent and the trace is cut
+       out of it in the page background colour. -->
+  <rect width="32" height="32" rx="7" fill="#FF7A3D"/>
+  <path d="M6.6 25V12.4L10.8 8.2L16 13.4L21.2 8.2L25.4 12.4V25"
+        stroke="#0B0D0E" stroke-width="3.8" stroke-linecap="butt" stroke-linejoin="miter" fill="none"/>
+</svg>

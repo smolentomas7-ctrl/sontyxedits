@@ -8,8 +8,14 @@ import type { ChatMessage, FallbackReason, Node } from "./types";
 import type { Locale } from "@/content/types";
 
 export const MAX_ASSISTANT_TURNS = 10;
-const MAX_TOKENS = 400;
-const UPSTREAM_TIMEOUT_MS = 15_000;
+/**
+ * Generous for a two-to-five-sentence answer, because on the current models
+ * thinking cannot be switched off and it is billed out of the same budget. A
+ * tight ceiling would truncate the answer mid-sentence instead of saving money;
+ * `effort: "low"` is what keeps the reasoning short.
+ */
+const MAX_TOKENS = 1200;
+const UPSTREAM_TIMEOUT_MS = 20_000;
 
 export type Strategy =
   | { readonly mode: "scripted"; readonly node: Node; readonly reason: FallbackReason }
@@ -24,14 +30,42 @@ export type ModelResult = {
   readonly blocked: boolean;
 };
 
-const MODEL = process.env.CHAT_MODEL ?? "";
-const API_KEY = process.env.CHAT_API_KEY ?? "";
+/**
+ * Server-side configuration. None of these is a NEXT_PUBLIC_ variable, so none
+ * of them can reach the browser bundle.
+ *
+ * `CHAT_MODEL` is the operator's lever: unset it and the assistant runs on the
+ * default below. The deployment notes in README.md list what each model costs.
+ */
+const MODEL = process.env.CHAT_MODEL ?? "claude-opus-5-5";
+const API_KEY = process.env.ANTHROPIC_API_KEY ?? process.env.CHAT_API_KEY ?? "";
 /** Optional: point the SDK at a gateway or a local stub instead of the default API. */
 const BASE_URL = process.env.CHAT_BASE_URL ?? "";
+
+/**
+ * Server-side refusal fallback: if the model declines a request on safety
+ * grounds, the API re-runs it on a fallback model inside the same call. Only
+ * some models accept the parameter, so it is sent only for those — on anything
+ * else a decline still degrades to the scripted tier rather than erroring.
+ */
+const SUPPORTS_FALLBACK = /^claude-(opus-5|opus-5-5|fable-5|fable-5-1|sonnet-5-5)\b/.test(MODEL);
 
 export function modelConfigured(): boolean {
   return API_KEY !== "" && MODEL !== "";
 }
+
+/**
+ * The fields this code reads from a streamed event. Both the stable and the beta
+ * event unions are supersets of this, which lets one loop consume either.
+ */
+type StreamEvent = {
+  readonly type: string;
+  readonly delta?: { readonly type?: string; readonly text?: string; readonly stop_reason?: string | null };
+  readonly message?: {
+    readonly usage?: { readonly input_tokens?: number; readonly cache_read_input_tokens?: number | null };
+  };
+  readonly usage?: { readonly output_tokens?: number };
+};
 
 /**
  * The single entry point. Tier 1 is built first and is the fallback for every
@@ -115,37 +149,51 @@ async function* runModel(
     let outputTokens = 0;
     let cacheHit = false;
 
+    let refused = false;
+
     try {
-      const stream = await client.messages.create(
-        {
-          model: MODEL,
-          max_tokens: MAX_TOKENS,
-          system: [
-            { type: "text", text: rulesBlock(locale) },
-            {
-              type: "text",
-              text: knowledgeBlock(locale),
-              cache_control: { type: "ephemeral" },
-            },
-          ],
-          messages: buildMessages(locale, message, history, instruction),
-          stream: true,
-        },
-        { signal: controller.signal },
-      );
+      const params = {
+        model: MODEL,
+        max_tokens: MAX_TOKENS,
+        // Short answers from a fixed knowledge block need no deep reasoning, and
+        // thinking cannot be disabled on the current models — low effort is the
+        // control that keeps both latency and the bill down.
+        output_config: { effort: "low" as const },
+        system: [
+          { type: "text" as const, text: rulesBlock(locale) },
+          {
+            type: "text" as const,
+            text: knowledgeBlock(locale),
+            cache_control: { type: "ephemeral" as const },
+          },
+        ],
+        messages: buildMessages(locale, message, history, instruction),
+        stream: true as const,
+      };
+
+      const raw = SUPPORTS_FALLBACK
+        ? await client.beta.messages.create(
+            { ...params, betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" },
+            { signal: controller.signal },
+          )
+        : await client.messages.create(params, { signal: controller.signal });
+
+      const stream = raw as unknown as AsyncIterable<StreamEvent>;
 
       for await (const event of stream) {
-        if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-          text += event.delta.text;
+        if (event.type === "content_block_delta" && event.delta?.type === "text_delta") {
+          const chunk = event.delta.text ?? "";
+          text += chunk;
           // Only the first attempt streams to the visitor; a retry is verified
           // in full before anything is shown, so a bad reply is never half-seen.
-          if (attempt === 0) yield event.delta.text;
+          if (attempt === 0) yield chunk;
         } else if (event.type === "message_start") {
-          const usage = event.message.usage;
-          inputTokens = usage.input_tokens ?? 0;
-          cacheHit = (usage.cache_read_input_tokens ?? 0) > 0;
+          const usage = event.message?.usage;
+          inputTokens = usage?.input_tokens ?? 0;
+          cacheHit = (usage?.cache_read_input_tokens ?? 0) > 0;
         } else if (event.type === "message_delta") {
-          outputTokens = event.usage.output_tokens ?? 0;
+          outputTokens = event.usage?.output_tokens ?? 0;
+          if (event.delta?.stop_reason === "refusal") refused = true;
         }
       }
     } catch (error) {
@@ -157,6 +205,15 @@ async function* runModel(
     }
     clearTimeout(timeout);
     recordTokens(inputTokens + outputTokens);
+
+    // A safety decline arrives as a normal 200 with little or no text. Treat it
+    // like any other upstream failure: the visitor gets the scripted answer, not
+    // a half sentence that stops.
+    if (refused || text.trim() === "") {
+      throw Object.assign(new Error("upstream"), {
+        reason: "upstream-error" satisfies FallbackReason,
+      });
+    }
 
     const verdict = verify(text, { locale, ecuContext });
     if (verdict.ok) {

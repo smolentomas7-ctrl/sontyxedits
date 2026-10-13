@@ -9,7 +9,7 @@ import { site } from "@/config/miauto";
 import { ROUTES, path } from "@/lib/i18n";
 import { usePressHandlers } from "@/lib/motion";
 import { LangSwitcher } from "./LangSwitcher";
-import { Wordmark } from "./Wordmark";
+import { Logo } from "@/components/brand/Logo";
 import type { Locale, LocaleContent } from "@/content/types";
 
 export function Nav({ locale, t }: { locale: Locale; t: LocaleContent }) {
@@ -102,7 +102,7 @@ export function Nav({ locale, t }: { locale: Locale; t: LocaleContent }) {
           aria-label={site.legalName}
           {...press}
         >
-          <Wordmark />
+          <Logo />
         </Link>
 
         <nav aria-label={t.nav.services} className="hidden items-center gap-1 md:flex">

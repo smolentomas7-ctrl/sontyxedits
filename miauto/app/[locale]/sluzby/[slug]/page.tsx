@@ -10,9 +10,9 @@ import { site } from "@/config/miauto";
 import { Container, Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { SlotImage } from "@/components/ui/SlotImage";
-import { ToConfirm } from "@/components/ui/Placeholder";
 import { ServiceIcon } from "@/components/ui/ServiceIcon";
 import { ButtonLink } from "@/components/ui/Button";
+import { ServiceWidget } from "@/components/widgets/ServiceWidget";
 import type { ServiceSlug } from "@/content/types";
 
 export function generateStaticParams() {
@@ -168,10 +168,13 @@ export default async function ServiceDetailPage({
               </div>
             </Reveal>
           ) : null}
+        </Container>
+      </Section>
 
-          <Reveal className="mt-10 max-w-[64ch]">
-            <ToConfirm items={service.toConfirm} label={t.common.toConfirmLabel} />
-          </Reveal>
+      {/* One interactive piece per service, mounted only near the viewport. */}
+      <Section rhythm="tight">
+        <Container>
+          <ServiceWidget slug={slug} t={t} />
         </Container>
       </Section>
 

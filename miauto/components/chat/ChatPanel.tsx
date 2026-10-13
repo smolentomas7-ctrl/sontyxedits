@@ -20,7 +20,7 @@ export function ChatPanel({
   open: boolean;
   onClose: () => void;
 }) {
-  const { turns, busy, mode, send, stop } = useChat(locale, t);
+  const { turns, busy, send, stop } = useChat(locale, t);
   const [draft, setDraft] = useState("");
   const [closing, setClosing] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -107,7 +107,6 @@ export function ChatPanel({
           <p className="font-heading text-[1rem] font-semibold">{t.chat.panelTitle}</p>
           <p className="mt-0.5 text-[0.75rem] text-[color:var(--text-muted)]">
             {t.chat.panelSubtitle}
-            {mode === "scripted" ? ` · ${t.chat.scriptedNotice}` : ""}
           </p>
         </div>
         <button
@@ -229,6 +228,9 @@ export function ChatPanel({
 
 function Message({ turn, t }: { turn: Turn; t: LocaleContent }) {
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
+  // The phone number is a link, so the notice is split around its placeholder
+  // rather than interpolated as text.
+  const [noticeBefore = "", noticeAfter = ""] = t.chat.scriptedNotice.split("{phone}");
 
   if (turn.role === "user") {
     return (
@@ -251,6 +253,18 @@ function Message({ turn, t }: { turn: Turn; t: LocaleContent }) {
           />
         ) : null}
       </p>
+
+      {/* A scripted answer says so, in the conversation, with the phone number.
+          The visitor is never left thinking the grounded assistant replied. */}
+      {turn.scripted && !turn.streaming ? (
+        <p className="mt-2 rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-[0.8125rem] leading-relaxed text-[color:var(--text-muted)]">
+          {noticeBefore}
+          <a href={site.phoneHref} className="whitespace-nowrap text-[color:var(--accent)]">
+            {site.phone}
+          </a>
+          {noticeAfter}
+        </p>
+      ) : null}
 
       {/* The highest-value element here: it makes every answer checkable and
           routes the visitor to the page the answer came from. */}

@@ -39,6 +39,11 @@ export type Turn = {
   sources?: Source[];
   chips?: string[];
   streaming?: boolean;
+  /**
+   * Which tier answered. A scripted answer says so under itself: the widget
+   * never lets a fallback pass for the grounded assistant.
+   */
+  scripted?: boolean;
 };
 
 const STORAGE_KEY = "miauto-chat";
@@ -175,7 +180,12 @@ export function useChat(locale: Locale, t: LocaleContent) {
               }));
             } else if (event.type === "done") {
               setMode(event.mode);
-              patch((turn) => ({ ...turn, streaming: false, chips: event.chips }));
+              patch((turn) => ({
+                ...turn,
+                streaming: false,
+                chips: event.chips,
+                scripted: event.mode === "scripted",
+              }));
             } else {
               patch((turn) => ({ ...turn, content: t.chat.errorMessage, streaming: false }));
             }

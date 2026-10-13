@@ -1,120 +1,124 @@
 {
   "about-detail-01": {
-    "height": 800,
+    "height": 596,
+    "origin": "own",
     "placeholder": "#403B2E",
-    "upscaled": true,
+    "upscaled": false,
     "variants": {
       "card": {
         "budgetKB": 80,
         "bytes": {
-          "avif": 29560,
-          "jpg": 46850,
-          "webp": 32990
+          "avif": 18878,
+          "jpg": 29253,
+          "webp": 21028
         },
-        "height": 400,
-        "width": 600
+        "height": 298,
+        "width": 447
       },
       "full": {
         "budgetKB": 200,
         "bytes": {
-          "avif": 80091,
-          "jpg": 136768,
-          "webp": 78076
+          "avif": 55999,
+          "jpg": 90780,
+          "webp": 57944
         },
-        "height": 800,
-        "width": 1200
+        "height": 596,
+        "width": 894
       },
       "thumb": {
         "budgetKB": 40,
         "bytes": {
-          "avif": 10002,
-          "jpg": 15854,
-          "webp": 12292
+          "avif": 6507,
+          "jpg": 9934,
+          "webp": 7782
         },
-        "height": 216,
-        "width": 324
+        "height": 161,
+        "width": 241
       }
     },
-    "width": 1200
+    "width": 894
   },
   "about-detail-02": {
-    "height": 800,
+    "height": 596,
+    "origin": "own",
     "placeholder": "#3C3B36",
-    "upscaled": true,
+    "upscaled": false,
     "variants": {
       "card": {
         "budgetKB": 80,
         "bytes": {
-          "avif": 28531,
-          "jpg": 43072,
-          "webp": 29914
+          "avif": 18095,
+          "jpg": 26713,
+          "webp": 18954
         },
-        "height": 400,
-        "width": 600
+        "height": 298,
+        "width": 447
       },
       "full": {
         "budgetKB": 200,
         "bytes": {
-          "avif": 80844,
-          "jpg": 129381,
-          "webp": 74532
+          "avif": 55825,
+          "jpg": 85056,
+          "webp": 54574
         },
-        "height": 800,
-        "width": 1200
+        "height": 596,
+        "width": 894
       },
       "thumb": {
         "budgetKB": 40,
         "bytes": {
-          "avif": 9218,
-          "jpg": 14190,
-          "webp": 10872
+          "avif": 5781,
+          "jpg": 9055,
+          "webp": 6778
         },
-        "height": 216,
-        "width": 324
+        "height": 161,
+        "width": 241
       }
     },
-    "width": 1200
+    "width": 894
   },
   "about-interior": {
-    "height": 1250,
+    "height": 1120,
+    "origin": "own",
     "placeholder": "#474641",
-    "upscaled": true,
+    "upscaled": false,
     "variants": {
       "card": {
         "budgetKB": 80,
         "bytes": {
-          "avif": 35523,
-          "jpg": 55070,
-          "webp": 36688
+          "avif": 29042,
+          "jpg": 45152,
+          "webp": 30586
         },
-        "height": 625,
-        "width": 500
+        "height": 560,
+        "width": 448
       },
       "full": {
         "budgetKB": 200,
         "bytes": {
-          "avif": 106978,
-          "jpg": 168701,
-          "webp": 97942
+          "avif": 93283,
+          "jpg": 143916,
+          "webp": 86786
         },
-        "height": 1250,
-        "width": 1000
+        "height": 1120,
+        "width": 896
       },
       "thumb": {
         "budgetKB": 40,
         "bytes": {
-          "avif": 11307,
-          "jpg": 17877,
-          "webp": 13344
+          "avif": 9448,
+          "jpg": 14866,
+          "webp": 11078
         },
-        "height": 338,
-        "width": 270
+        "height": 302,
+        "width": 242
       }
     },
-    "width": 1000
+    "width": 896
   },
   "hero": {
     "height": 1080,
+    "origin": "own",
     "placeholder": "#56595B",
     "upscaled": false,
     "variants": {
@@ -151,8 +155,87 @@
     },
     "width": 1920
   },
+  "owner-01": {
+    "height": 700,
+    "origin": "own",
+    "placeholder": "#494948",
+    "upscaled": false,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 8295,
+          "jpg": 12654,
+          "webp": 8038
+        },
+        "height": 350,
+        "width": 280
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 23148,
+          "jpg": 36124,
+          "webp": 20564
+        },
+        "height": 700,
+        "width": 560
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 3177,
+          "jpg": 4783,
+          "webp": 3118
+        },
+        "height": 189,
+        "width": 151
+      }
+    },
+    "width": 560
+  },
+  "owner-02": {
+    "height": 700,
+    "origin": "own",
+    "placeholder": "#565653",
+    "upscaled": false,
+    "variants": {
+      "card": {
+        "budgetKB": 80,
+        "bytes": {
+          "avif": 6460,
+          "jpg": 11501,
+          "webp": 6364
+        },
+        "height": 350,
+        "width": 280
+      },
+      "full": {
+        "budgetKB": 200,
+        "bytes": {
+          "avif": 16349,
+          "jpg": 29787,
+          "webp": 14034
+        },
+        "height": 700,
+        "width": 560
+      },
+      "thumb": {
+        "budgetKB": 40,
+        "bytes": {
+          "avif": 2586,
+          "jpg": 4648,
+          "webp": 2710
+        },
+        "height": 189,
+        "width": 151
+      }
+    },
+    "width": 560
+  },
   "service-cipovanie-ecu": {
     "height": 800,
+    "origin": "stock",
     "placeholder": "#2D3536",
     "upscaled": false,
     "variants": {
@@ -191,6 +274,7 @@
   },
   "service-diagnostika": {
     "height": 800,
+    "origin": "stock",
     "placeholder": "#383935",
     "upscaled": false,
     "variants": {
@@ -228,45 +312,47 @@
     "width": 1200
   },
   "service-elektroinstalacia": {
-    "height": 800,
+    "height": 544,
+    "origin": "stock",
     "placeholder": "#4E4A4B",
-    "upscaled": true,
+    "upscaled": false,
     "variants": {
       "card": {
         "budgetKB": 80,
         "bytes": {
-          "avif": 24109,
-          "jpg": 41000,
-          "webp": 27324
+          "avif": 14043,
+          "jpg": 22750,
+          "webp": 16444
         },
-        "height": 400,
-        "width": 600
+        "height": 272,
+        "width": 408
       },
       "full": {
         "budgetKB": 200,
         "bytes": {
-          "avif": 64734,
-          "jpg": 117246,
-          "webp": 64422
+          "avif": 39247,
+          "jpg": 66931,
+          "webp": 41970
         },
-        "height": 800,
-        "width": 1200
+        "height": 544,
+        "width": 816
       },
       "thumb": {
         "budgetKB": 40,
         "bytes": {
-          "avif": 8975,
-          "jpg": 14954,
-          "webp": 11790
+          "avif": 5496,
+          "jpg": 8566,
+          "webp": 7028
         },
-        "height": 216,
-        "width": 324
+        "height": 147,
+        "width": 220
       }
     },
-    "width": 1200
+    "width": 816
   },
   "service-geometria": {
     "height": 800,
+    "origin": "stock",
     "placeholder": "#4B4E4F",
     "upscaled": false,
     "variants": {
@@ -304,45 +390,47 @@
     "width": 1200
   },
   "service-klimatizacia": {
-    "height": 800,
+    "height": 596,
+    "origin": "own",
     "placeholder": "#353A3D",
-    "upscaled": true,
+    "upscaled": false,
     "variants": {
       "card": {
         "budgetKB": 80,
         "bytes": {
-          "avif": 30351,
-          "jpg": 44638,
-          "webp": 31610
+          "avif": 19436,
+          "jpg": 27580,
+          "webp": 20490
         },
-        "height": 400,
-        "width": 600
+        "height": 298,
+        "width": 447
       },
       "full": {
         "budgetKB": 200,
         "bytes": {
-          "avif": 89158,
-          "jpg": 138385,
-          "webp": 80336
+          "avif": 60358,
+          "jpg": 88953,
+          "webp": 57952
         },
-        "height": 800,
-        "width": 1200
+        "height": 596,
+        "width": 894
       },
       "thumb": {
         "budgetKB": 40,
         "bytes": {
-          "avif": 9938,
-          "jpg": 14691,
-          "webp": 11752
+          "avif": 6350,
+          "jpg": 9257,
+          "webp": 7344
         },
-        "height": 216,
-        "width": 324
+        "height": 161,
+        "width": 241
       }
     },
-    "width": 1200
+    "width": 894
   },
   "service-pneuservis": {
     "height": 800,
+    "origin": "stock",
     "placeholder": "#444544",
     "upscaled": false,
     "variants": {
@@ -381,6 +469,7 @@
   },
   "service-rozvody": {
     "height": 800,
+    "origin": "stock",
     "placeholder": "#43423E",
     "upscaled": false,
     "variants": {

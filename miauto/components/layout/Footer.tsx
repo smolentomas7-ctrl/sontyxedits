@@ -1,23 +1,34 @@
 import Link from "next/link";
 import { SERVICE_SLUGS } from "@/content/types";
-import { formattedAddress, isPlaceholder, site } from "@/config/miauto";
+import { formattedAddress, has, mailtoHref, site } from "@/config/miauto";
 import { ROUTES, path, servicePath } from "@/lib/i18n";
-import { PlaceholderToken } from "@/components/ui/Placeholder";
-import { Wordmark } from "./Wordmark";
+import { Logo } from "@/components/brand/Logo";
 import type { Locale, LocaleContent } from "@/content/types";
 
 export function Footer({ locale, t }: { locale: Locale; t: LocaleContent }) {
-  // Social links render only when their value is a real URL, never as "[FACEBOOK_URL]".
+  // Social links exist only when a real URL does; no dead icons.
   const social = [
     { href: site.social.facebook, label: "Facebook" },
     { href: site.social.instagram, label: "Instagram" },
-  ].filter((item) => !isPlaceholder(item.href));
+  ].filter((item) => has(item.href));
+
+  /**
+   * § 3a of the Slovak Commercial Code requires the company number and the
+   * commercial-register entry on a business website. Each line appears as soon
+   * as config/miauto.ts holds it, and nothing is invented to fill the gap.
+   */
+  const registration = [
+    { label: t.footer.icoLabel, value: site.ico },
+    { label: t.footer.dicLabel, value: site.dic },
+    { label: t.footer.icDphLabel, value: site.icDph },
+    { label: t.footer.registryLabel, value: site.zapisVOR },
+  ].filter((item) => has(item.value));
 
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--bg)]">
       <div className="container grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr] md:gap-8 md:py-20">
         <div>
-          <Wordmark className="text-[1.25rem]" />
+          <Logo markClassName="size-9" wordmarkClassName="text-[1.25rem] md:text-[1.375rem]" />
           <p className="prose-width mt-4 max-w-[34ch] text-[color:var(--text-muted)]">
             {t.footer.tagline}
           </p>
@@ -72,14 +83,10 @@ export function Footer({ locale, t }: { locale: Locale; t: LocaleContent }) {
                   {site.phone}
                 </a>
               </p>
-              <p className="flex flex-wrap items-center gap-2">
-                {isPlaceholder(site.email) ? (
-                  <PlaceholderToken>{site.email}</PlaceholderToken>
-                ) : (
-                  <a href={`mailto:${site.email}`} className="no-underline hover:text-[color:var(--text)]">
-                    {site.email}
-                  </a>
-                )}
+              <p>
+                <a href={mailtoHref} className="no-underline hover:text-[color:var(--text)]">
+                  {site.email}
+                </a>
               </p>
             </address>
           </div>
@@ -115,14 +122,15 @@ export function Footer({ locale, t }: { locale: Locale; t: LocaleContent }) {
           <p>
             © {new Date().getFullYear()} {site.legalName}. {t.footer.rights}
           </p>
-          <p className="flex items-center gap-2">
-            {t.footer.icoLabel}:{" "}
-            {isPlaceholder(site.ico) ? (
-              <PlaceholderToken>{site.ico}</PlaceholderToken>
-            ) : (
-              <span>{site.ico}</span>
-            )}
-          </p>
+          {registration.length > 0 ? (
+            <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              {registration.map((item) => (
+                <span key={item.label}>
+                  {item.label}: {item.value}
+                </span>
+              ))}
+            </p>
+          ) : null}
         </div>
       </div>
     </footer>

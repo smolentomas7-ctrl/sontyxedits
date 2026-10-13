@@ -45,16 +45,13 @@ export type ServiceContent = {
   readonly when: readonly string[];
   /** "Čo robíme" — 3–5 plain steps. */
   readonly what: readonly string[];
-  /**
-   * Scope that the client has not confirmed. Rendered visibly, brackets and all,
-   * so it cannot ship unnoticed. Never replaced with a plausible guess.
-   */
-  readonly toConfirm: readonly string[];
   /** Standing factual note, e.g. the independent-workshop sentence. */
   readonly note?: string;
   readonly related: readonly [ServiceSlug, ServiceSlug];
   readonly meta: Meta;
 };
+
+export type Beat = { readonly name: string; readonly body: string };
 
 export type FaqItem = { readonly id: string; readonly q: string; readonly a: string };
 
@@ -95,8 +92,6 @@ export type LocaleContent = {
     readonly copyAddress: string;
     readonly addressCopied: string;
     readonly relatedServices: string;
-    readonly toConfirmLabel: string;
-    readonly placeholderLabel: string;
   };
 
   readonly nav: {
@@ -146,10 +141,9 @@ export type LocaleContent = {
     readonly whatWeDoHeading: string;
     readonly quietHeading: string;
     readonly quietBody: readonly string[];
-    readonly ownerHeading: string;
-    readonly ownerRole: string;
-    readonly placeholderShop: string;
-    readonly placeholderOwner: string;
+    readonly ownersHeading: string;
+    /** Roles, keyed from config/miauto.ts `owners[].roleKey`. */
+    readonly ownerRoles: Readonly<Record<"owner" | "coOwner", string>>;
     readonly factsHeading: string;
     readonly interiorAlt: string;
     readonly detail01Alt: string;
@@ -166,7 +160,6 @@ export type LocaleContent = {
     readonly mapDisclosureLink: string;
     readonly formHeading: string;
     readonly formLead: string;
-    readonly emailPendingNote: string;
   };
 
   readonly form: {
@@ -215,19 +208,34 @@ export type LocaleContent = {
     readonly h1: string;
     readonly reviewNotice: string;
     readonly updated: string;
+    /**
+     * The controller block is rendered from config/miauto.ts rather than written
+     * out here, so the identification data required by § 3a of the Slovak
+     * Commercial Code can never drift from the footer, and each line appears
+     * only once it actually holds a value.
+     */
+    readonly controller: { readonly heading: string; readonly intro: string };
     readonly sections: readonly { readonly heading: string; readonly body: readonly string[] }[];
   };
 
   readonly signature: {
     readonly title: string;
-    readonly instructions: string;
+    /** Short visible hint; the full keyboard map lives in `keyboardHint`, sr-only. */
+    readonly hint: string;
     readonly keyboardHint: string;
     readonly svgTitle: string;
     readonly stageLabel: string;
-    readonly stages: readonly [string, string, string, string, string];
-    readonly codeListLabel: string;
-    readonly codeRowLabel: string;
-    readonly dashboardLabel: string;
+    /** Five beats. `name` labels the stage, `body` says why it matters. */
+    readonly stages: readonly [Beat, Beat, Beat, Beat, Beat];
+    /** Illustrative fault codes shown on the tool's display. */
+    readonly codes: readonly { readonly id: string; readonly label: string }[];
+    readonly displayTitle: string;
+    readonly circuitTitle: string;
+    /** Four labelled points on the test circuit. */
+    readonly circuitPoints: readonly [string, string, string, string];
+    readonly dialRpm: string;
+    readonly dialSpeed: string;
+    readonly odo: string;
   };
 
   readonly chat: {
@@ -253,6 +261,64 @@ export type LocaleContent = {
     readonly feedbackThanks: string;
   };
 
+  /** Strings for the seven interactive service widgets. */
+  readonly widgets: {
+    readonly dyno: {
+      readonly heading: string; readonly lead: string; readonly disclaimer: string;
+      readonly sliderLabel: string; readonly power: string; readonly torque: string;
+      readonly stock: string; readonly sceneAlt: string; readonly chartAlt: string;
+      readonly legendPower: string; readonly legendTorque: string; readonly legendStock: string;
+    };
+    readonly diagnostics: {
+      readonly heading: string; readonly lead: string; readonly disclaimer: string;
+      readonly pick: string; readonly remaining: string; readonly narrowed: string;
+      readonly stepLabel: string; readonly reset: string; readonly sceneAlt: string;
+      readonly symptoms: readonly {
+        readonly id: string; readonly label: string;
+        /** Candidate causes, narrowed step by step; the last one is what is left. */
+        readonly causes: readonly string[];
+        readonly steps: readonly string[];
+      }[];
+    };
+    readonly alignment: {
+      readonly heading: string; readonly lead: string; readonly disclaimer: string;
+      readonly toe: string; readonly camber: string; readonly wear: string;
+      readonly pull: string; readonly ok: string; readonly sceneAlt: string;
+      readonly wearInner: string; readonly wearOuter: string; readonly wearEven: string;
+      readonly pullLeft: string; readonly pullRight: string; readonly pullNone: string;
+      /** Captions under the three panels, plus the note that angles are drawn larger. */
+      readonly frontView: string; readonly topView: string;
+      readonly section: string; readonly exaggerated: string;
+    };
+    readonly tyres: {
+      readonly heading: string; readonly lead: string; readonly disclaimer: string;
+      readonly depth: string; readonly braking: string; readonly legalMin: string;
+      readonly versusNew: string; readonly sceneAlt: string; readonly fromSpeed: string;
+    };
+    readonly electrics: {
+      readonly heading: string; readonly lead: string; readonly disclaimer: string;
+      readonly instruction: string; readonly measure: string; readonly reset: string;
+      readonly found: string; readonly sceneAlt: string; readonly notMeasured: string;
+      readonly points: readonly { readonly id: string; readonly label: string }[];
+    };
+    readonly timing: {
+      readonly heading: string; readonly lead: string; readonly disclaimer: string;
+      readonly mileage: string; readonly condition: string; readonly interval: string;
+      readonly run: string; readonly reset: string; readonly sceneAlt: string;
+      readonly states: readonly [string, string, string];
+      readonly failure: string; readonly failureBody: string;
+    };
+    readonly aircon: {
+      readonly heading: string; readonly lead: string; readonly disclaimer: string;
+      readonly charge: string; readonly ventTemp: string; readonly state: string;
+      readonly sceneAlt: string;
+      readonly states: readonly [string, string, string];
+      /** Compressor, condenser, expansion valve, evaporator — labels on the diagram. */
+      readonly parts: readonly [string, string, string, string];
+      readonly cabin: string;
+    };
+  };
+
   readonly footer: {
     readonly tagline: string;
     readonly servicesHeading: string;
@@ -260,6 +326,9 @@ export type LocaleContent = {
     readonly legalHeading: string;
     readonly rights: string;
     readonly icoLabel: string;
+    readonly dicLabel: string;
+    readonly icDphLabel: string;
+    readonly registryLabel: string;
   };
 
   readonly notFound: {

@@ -4,10 +4,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getContent, isLocale } from "@/content";
 import { ROUTES, canonicalFor, path } from "@/lib/i18n";
-import { formattedAddress, isPlaceholder, site } from "@/config/miauto";
+import { formattedAddress, mailtoHref, site } from "@/config/miauto";
 import { Container, Section } from "@/components/ui/Section";
 import { HoursTable, OpenBadge } from "@/components/ui/HoursTable";
-import { PlaceholderToken } from "@/components/ui/Placeholder";
 import { ButtonLink } from "@/components/ui/Button";
 import { CopyAddress } from "@/components/contact/CopyAddress";
 import { MapFrame } from "@/components/contact/MapFrame";
@@ -76,17 +75,10 @@ export default async function ContactPage({
                   {site.phone}
                 </a>
               </p>
-              <p className="mt-3 flex flex-wrap items-center gap-2 text-[0.9375rem]">
-                {isPlaceholder(site.email) ? (
-                  <>
-                    <PlaceholderToken>{site.email}</PlaceholderToken>
-                    <span className="text-[color:var(--text-muted)]">
-                      {t.contact.emailPendingNote}
-                    </span>
-                  </>
-                ) : (
-                  <a href={`mailto:${site.email}`}>{site.email}</a>
-                )}
+              <p className="mt-3 text-[1.0625rem]">
+                <a href={mailtoHref} className="no-underline hover:text-[color:var(--accent)]">
+                  {site.email}
+                </a>
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">

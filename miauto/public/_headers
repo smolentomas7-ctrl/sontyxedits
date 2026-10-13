@@ -1,6 +1,14 @@
 # Security headers for the static (drag-and-drop) build. The Git/CLI build sets
-# the same three through headers() in next.config.ts.
+# the same set through headers() in next.config.ts — keep the two in step.
+#
+# script-src allows inline scripts because the App Router emits an inline
+# bootstrap on every page; what the policy prevents is any script, style, frame
+# or connection to a host that is not listed. www.google.com is the embedded map
+# (frame-src) and the reachability probe the contact page makes before mounting
+# it (connect-src).
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=(), midi=(), browsing-topics=()
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://www.google.com; frame-src https://www.google.com; upgrade-insecure-requests

@@ -44,10 +44,12 @@ function collect(locale: Locale, t: LocaleContent): Section[] {
     body: [
       t.about.lead,
       ...t.about.quietBody,
-      `${t.about.ownerHeading}: ${site.ownerName} (${t.about.ownerRole}).`,
+      `${t.about.ownersHeading}: ${site.owners
+        .map((owner) => `${owner.name} (${t.about.ownerRoles[owner.roleKey]})`)
+        .join(", ")}.`,
       locale === "sk"
-        ? "Text o servise a o majiteľovi zatiaľ klient nedodal, takže o histórii, počte rokov ani o tíme nie sú žiadne údaje."
-        : "The client has not yet supplied the copy about the workshop or its owner, so there is no information about history, years in business or team size.",
+        ? "O histórii servisu, počte rokov na trhu, veľkosti tímu ani o vybavení dielne nie sú na stránke žiadne údaje."
+        : "The site carries no information about the workshop's history, years in business, team size or equipment.",
     ].join("\n"),
   });
 
@@ -67,9 +69,6 @@ function collect(locale: Locale, t: LocaleContent): Section[] {
         locale === "sk" ? "Čo robíme:" : "What we do:",
         ...service.what.map((item) => `- ${item}`),
         service.note ? `\n${service.note}` : "",
-        "",
-        locale === "sk" ? "Nepotvrdený rozsah:" : "Unconfirmed scope:",
-        ...service.toConfirm.map((item) => `- ${item}`),
       ]
         .filter((line) => line !== undefined)
         .join("\n"),
@@ -94,10 +93,11 @@ function collect(locale: Locale, t: LocaleContent): Section[] {
     body: [
       `${site.legalName}, ${formattedAddress}, ${locale === "sk" ? "Slovensko" : "Slovakia"}.`,
       `${locale === "sk" ? "Telefón" : "Phone"}: ${site.phone}.`,
+      `E-mail: ${site.email}.`,
       hoursLine(locale),
       locale === "sk"
-        ? "E-mailová adresa zatiaľ nie je známa. Termín si zákazník dohodne telefonicky alebo cez formulár na stránke Kontakt."
-        : "No email address is known yet. Visits are arranged by phone or through the form on the contact page.",
+        ? "Termín si zákazník dohodne telefonicky alebo cez formulár na stránke Kontakt."
+        : "Visits are arranged by phone or through the form on the contact page.",
       locale === "sk"
         ? "Na stránke nie sú žiadne ceny, cenníky, trvania opráv ani záruky."
         : "There are no prices, price lists, repair durations or guarantees anywhere on this site.",

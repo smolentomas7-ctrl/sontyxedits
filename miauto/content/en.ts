@@ -38,8 +38,6 @@ export const en: LocaleContent = {
     copyAddress: "Copy address",
     addressCopied: "Address copied",
     relatedServices: "Related services",
-    toConfirmLabel: "To be confirmed",
-    placeholderLabel: "To be supplied by the client",
   },
 
   nav: {
@@ -66,7 +64,7 @@ export const en: LocaleContent = {
       "Seven services. Most faults start with diagnostics, which is why it comes first.",
     signatureHeading: "From warning light to repair",
     signatureLead:
-      "Drag the slider to walk through what happens between a warning light coming on and going out again.",
+      "There are five steps between a lit warning light and a repaired car. Drag the slider to see what happens at each one, and why none of them can be skipped.",
     whyHeading: "Why bring it here",
     why: [
       {
@@ -110,7 +108,7 @@ export const en: LocaleContent = {
     },
     h1: "Services",
     lead:
-      "Seven areas we work in. Each one covers when to deal with it and how we go about it. Anything not confirmed with the workshop is marked as unconfirmed.",
+      "Seven areas we work in. Each one covers when to deal with it, how we go about it, and something you can try out for yourself.",
     faqHeading: "Common questions",
     ctaHeading: "Not sure which service your fault belongs to?",
     ctaLead:
@@ -147,7 +145,6 @@ export const en: LocaleContent = {
         "We narrow the fault down to a specific circuit or component.",
         "We tell you what we found and agree what happens next.",
       ],
-      toConfirm: ["[TO CONFIRM: which makes and systems the diagnostics covers]"],
       related: ["cipovanie-ecu", "elektroinstalacia-vw"],
       meta: {
         title: "Vehicle diagnostics in Ružomberok | M.I.Auto s.r.o.",
@@ -184,9 +181,6 @@ export const en: LocaleContent = {
       ],
       note:
         "Before deciding, consider the circumstances of your own vehicle and how you use it. Specific questions are best handled on the phone.",
-      toConfirm: [
-        "[TO CONFIRM: which types of ECU work the workshop carries out, and for which engines]",
-      ],
       related: ["diagnostika-vozidiel", "elektroinstalacia-vw"],
       meta: {
         title: "ECU software and chiptuning in Ružomberok | M.I.Auto s.r.o.",
@@ -224,9 +218,6 @@ export const en: LocaleContent = {
         "We adjust whatever is adjustable on that vehicle.",
         "We go through the figures with you, before and after.",
       ],
-      toConfirm: [
-        "[TO CONFIRM: alignment type (3D/laser), which vehicles and wheel sizes the workshop can handle]",
-      ],
       related: ["pneuservis", "diagnostika-vozidiel"],
       meta: {
         title: "Wheel alignment in Ružomberok | M.I.Auto s.r.o.",
@@ -241,15 +232,15 @@ export const en: LocaleContent = {
       h1: "Tyre service",
       icon: "circle-dot",
       cardDescription:
-        "Work on tyres and wheels. Please confirm the exact range of services by phone.",
+        "Work on tyres and wheels. Tread depth decides braking distance more than most drivers assume.",
       lead:
-        "Tyres are the only part of a car that touches the road. Braking distance and how the car behaves in a corner both depend on their condition. Tyre service covers work on tyres and wheels; exactly which of it you can get here is worth confirming by phone — it is marked below as unconfirmed.",
+        "Tyres are the only part of a car that touches the road. Braking distance and how the car behaves in a corner both depend on their condition, and on a wet surface the gap between nearly new and worn-out tread is wider than people expect. We look at the tyres and the wheels and tell you where they stand.",
       overview:
-        "Tyres are a car's only contact with the road. Exactly which tyre services are offered here is not yet confirmed.",
+        "Tyres are a car's only contact with the road. As tread depth approaches the legal minimum, wet braking distance grows sharply.",
       covers: [
         "Work on tyres and wheels",
-        "Assessment of tyre condition",
-        "Range of services to be confirmed by phone",
+        "Assessment of condition and tread depth",
+        "Seasonal changeover by arrangement",
       ],
       when: [
         "The season is turning and you need to change to winter or summer tyres.",
@@ -258,12 +249,9 @@ export const en: LocaleContent = {
         "Tread is close to the legal minimum, or worn unevenly.",
       ],
       what: [
-        "We look at the condition of the tyres and wheels and tell you what we see.",
-        "We agree what needs doing.",
-        "Confirm the exact scope of work by phone — see the note below.",
-      ],
-      toConfirm: [
-        "[TO CONFIRM: whether the offer includes tyre changing, balancing, seasonal changeover, puncture repair and tyre storage]",
+        "We look at the condition of the tyres and wheels and measure the tread depth.",
+        "We tell you what we see, and which of it actually needs dealing with.",
+        "We agree the work and a time — call and tell us which vehicle it is.",
       ],
       related: ["geometria-kolies", "diagnostika-vozidiel"],
       meta: {
@@ -303,9 +291,6 @@ export const en: LocaleContent = {
       ],
       note:
         "M.I.Auto s.r.o. is an independent workshop. We are not an authorised Volkswagen service centre. “Volkswagen Group vehicles” simply describes what we work on.",
-      toConfirm: [
-        "[TO CONFIRM: which specific electrical repairs the workshop carries out]",
-      ],
       related: ["diagnostika-vozidiel", "cipovanie-ecu"],
       meta: {
         title: "Volkswagen Group vehicle electrics in Ružomberok | M.I.Auto s.r.o.",
@@ -342,9 +327,6 @@ export const en: LocaleContent = {
         "We replace the parts and set the timing to the manufacturer's figures.",
         "Once it is back together we check the engine running.",
       ],
-      toConfirm: [
-        "[TO CONFIRM: the full list of supported engines, and whether the job includes the water pump]",
-      ],
       related: ["diagnostika-vozidiel", "elektroinstalacia-vw"],
       meta: {
         title: "Timing belt replacement, 2.0 TDI and 3.0 TDI | M.I.Auto Ružomberok",
@@ -359,14 +341,14 @@ export const en: LocaleContent = {
       h1: "Air conditioning service",
       icon: "snowflake",
       cardDescription:
-        "Air conditioning that stops cooling is usually refrigerant or a leak. Confirm the scope by phone.",
+        "Air conditioning that stops cooling is usually refrigerant or a leak. It fades gradually.",
       lead:
-        "Air conditioning loses refrigerant even without a fault, through the small leaks inherent in the system. When cooling gradually weakens, the reason is usually a shortage of refrigerant or a leak. Exactly which air conditioning services you can get here is worth confirming by phone; it is marked below as unconfirmed.",
+        "Air conditioning loses refrigerant even without a fault, through the small leaks inherent in the system. When cooling gradually weakens, the reason is usually a shortage of refrigerant or a leak. That is why drivers notice it in summer, although the system has been losing performance for months.",
       overview:
-        "Cooling fades gradually, so most drivers notice it in summer. The exact scope of air conditioning service here is not yet confirmed.",
+        "Cooling fades gradually, so most drivers notice it in summer. Vent temperature says more about the charge than the way it feels.",
       covers: [
         "Assessment of the air conditioning system",
-        "Range of services to be confirmed by phone",
+        "Check of cooling performance",
         "Discussed for your specific vehicle",
       ],
       when: [
@@ -377,17 +359,14 @@ export const en: LocaleContent = {
       ],
       what: [
         "You describe how the air conditioning behaves and since when.",
-        "We look at the system and tell you what we see.",
-        "We agree what happens next — confirm the exact scope by phone.",
-      ],
-      toConfirm: [
-        "[TO CONFIRM: whether the service covers diagnosis, refrigerant recharge, leak detection, cleaning, disinfection or repairs; and which refrigerants (R134a / R1234yf)]",
+        "We look at the system and measure how well it cools.",
+        "We tell you what we found and agree what happens next.",
       ],
       related: ["diagnostika-vozidiel", "elektroinstalacia-vw"],
       meta: {
         title: "Air conditioning service in Ružomberok | M.I.Auto s.r.o.",
         description:
-          "Air conditioning not cooling like it used to? We will look at it in Ružomberok. Call +421 918 918 109 to confirm the scope for your vehicle.",
+          "Air conditioning not cooling like it used to? We will look at it and measure how it performs. Call +421 918 918 109 — Ružomberok, Sládkovičova.",
       },
     },
   },
@@ -400,7 +379,7 @@ export const en: LocaleContent = {
     },
     h1: "About the workshop",
     lead:
-      "M.I.Auto s.r.o. is an independent car workshop in Ružomberok. This page carries only what has been confirmed; the rest is for the client to supply.",
+      "M.I.Auto s.r.o. is an independent car workshop on Sládkovičova in Ružomberok. We work on diagnostics, vehicle electronics and mechanical repairs.",
     whatWeDoHeading: "What we work on",
     quietHeading: "How we go about it",
     quietBody: [
@@ -408,10 +387,11 @@ export const en: LocaleContent = {
       "So a fault code gets verified by measurement. That is slower than replacing the part the code mentions, but it is the only way to avoid replacing a part that was fine.",
       "The same holds for electrics and for timing systems. Electrical faults are worked through the wiring diagram, by elimination. Timing systems are not left until they fail, because once a timing system fails the repair is no longer about the timing system.",
     ],
-    ownerHeading: "Owner",
-    ownerRole: "Owner",
-    placeholderShop: "[TEXT O SERVISE — doplní klient]",
-    placeholderOwner: "[TEXT O MAJITEĽOVI — doplní klient]",
+    ownersHeading: "Owners",
+    ownerRoles: {
+      owner: "Owner",
+      coOwner: "Co-owner",
+    },
     factsHeading: "Where to find us",
     interiorAlt: "Inside the M.I.Auto workshop, vehicles in for service",
     detail01Alt: "A vehicle raised on the two-post lift in the M.I.Auto workshop",
@@ -435,8 +415,6 @@ export const en: LocaleContent = {
     formHeading: "Send an enquiry",
     formLead:
       "The more specifically you describe what the car is doing, the better we can prepare.",
-    emailPendingNote:
-      "An email address has not been supplied yet. Please use the phone or the form.",
   },
 
   form: {
@@ -524,28 +502,33 @@ export const en: LocaleContent = {
     meta: {
       title: "Privacy policy | M.I.Auto s.r.o.",
       description:
-        "What the enquiry form collects, how the embedded Google map works and what the automated assistant does. Questions about your data: +421 918 918 109.",
+        "What the enquiry form collects, how long we keep it, how the embedded map and the automated assistant work, and what rights you have.",
     },
     h1: "Privacy policy",
     reviewNotice:
-      "This document is a TEMPLATE and has not been legally reviewed. It must be checked and completed by someone legally qualified before this site goes live. We make no claim that it complies with the GDPR or any other regulation.",
+      "This document has not been legally reviewed. It must be checked and completed by someone legally qualified before this site goes live. We make no claim that it complies with the GDPR or any other regulation.",
     updated: "Last updated: on deployment of this site",
+    controller: {
+      heading: "Who processes the data",
+      intro:
+        "The controller deciding how personal data from this site is processed is:",
+    },
     sections: [
-      {
-        heading: "Who processes the data",
-        body: [
-          "The controller is M.I.Auto s.r.o., Sládkovičova 2528/108, 034 01 Ružomberok, Slovakia.",
-          "Company number: [IČO]",
-          "Contact: +421 918 918 109, [EMAIL]",
-        ],
-      },
       {
         heading: "The enquiry form",
         body: [
           "The form on the contact page collects a name, a phone number, optionally an email address, optionally a note about the vehicle, the service selected and the text of the message.",
-          "This is used solely to reply to your enquiry. It is not used for marketing and is not passed to third parties for their own purposes.",
-          "A submitted form is processed by Netlify Forms, which stores the message and makes it available to us. The data therefore sits on infrastructure operated by Netlify.",
-          "[TO CONFIRM: how long submitted enquiries are retained, and who has access to them]",
+          "We process this solely in order to reply to your enquiry and arrange a time if needed. We do not use it for marketing and do not pass it to third parties for their own purposes.",
+          "The legal basis is our legitimate interest in answering an enquiry you sent us yourself, or steps taken prior to entering into a contract if we agree on a repair.",
+          "A submitted form is processed by Netlify Forms, operated by Netlify, which stores the message and makes it available to us; the data sits on its infrastructure. Netlify acts as a processor here.",
+          "We keep submitted enquiries for 12 months after the enquiry is dealt with, then delete them. If an enquiry turns into a job, the data belonging to that job follows the retention periods for accounting and tax records. Only the owners of the workshop have access to the messages.",
+        ],
+      },
+      {
+        heading: "Photographs of the owners",
+        body: [
+          "The About page shows photographs of the workshop's owners together with their names. A photograph of an identifiable person is personal data, and it is published with the consent of the people concerned.",
+          "That consent can be withdrawn at any time using the contact details above; once withdrawn, we remove the photograph from the site.",
         ],
       },
       {
@@ -560,8 +543,9 @@ export const en: LocaleContent = {
         body: [
           "There is an automated assistant in the bottom right corner. It is not a person, and the panel header says so.",
           "The transcript is kept only in your own browser (sessionStorage) and disappears when you close the tab. We do not retain transcripts on our side.",
-          "If the assistant is configured to use a language model, the text of your question is sent to the model provider so it can answer. Your name, phone number and email are not sent — the assistant does not ask for them and has no access to them.",
-          "We record only technical data about each request: the time, the language, how long the answer took, token counts, and whether a fallback answer was used. We do not record message text.",
+          "When the assistant is connected to a language model, the text of your question is sent to the model provider — Anthropic — so it can answer. Your name, phone number and email are not sent; the assistant does not ask for them and has no access to them. It is also instructed not to collect personal data.",
+          "We record only technical data about each request: the time, the language of the page, how long the answer took, how many tokens were processed, whether a fallback answer was used, and which section of the site the answer drew on. We do not record message text, and these records are not linked to your identity.",
+          "If you click thumbs up or thumbs down under an answer, only that signal and the answer's position in the conversation are recorded — not its text, and not the text of your question.",
         ],
       },
       {
@@ -569,21 +553,28 @@ export const en: LocaleContent = {
         body: [
           "This site sets no tracking cookies and has no analytics installed. That is also why there is no consent banner — there would be nothing to consent to.",
           "Your browser remembers only your chosen language and the conversation in progress with the assistant. Neither leaves your device.",
-          "",
         ],
       },
       {
         heading: "Fonts and external content",
         body: [
           "Fonts are served from this site itself. Nothing is fetched from an external font service.",
-          "The only external content is the Google map described above.",
+          "External content consists of the Google map described above and, when the assistant is switched on, its requests to the model provider.",
         ],
       },
       {
         heading: "Your rights",
         body: [
-          "[TO CONFIRM: the data subject rights section — to be supplied by someone legally qualified]",
-          "For questions about your data, use the contact details above.",
+          "As a data subject you have the following rights in relation to your personal data:",
+          "Right of access — you may ask for confirmation of whether we process data about you, and for a copy of it.",
+          "Right to rectification — if the data is inaccurate or incomplete, you may ask us to correct or complete it.",
+          "Right to erasure — you may ask us to delete the data, in particular where it is no longer needed for the purpose it was collected for.",
+          "Right to restriction of processing — you may ask us to store the data only, for example while its accuracy is being verified.",
+          "Right to data portability — data you provided to us can be supplied to you in a commonly used, machine-readable format.",
+          "Right to object — you may object at any time to processing based on legitimate interest.",
+          "Right to withdraw consent — where processing is based on consent, you may withdraw it at any time; withdrawal does not affect the lawfulness of processing before it.",
+          "Right to lodge a complaint — you may contact the Office for Personal Data Protection of the Slovak Republic, Hraničná 12, 820 07 Bratislava.",
+          "You can exercise these rights using the contact details at the top of this document. We will respond without undue delay.",
         ],
       },
     ],
@@ -591,23 +582,45 @@ export const en: LocaleContent = {
 
   signature: {
     title: "From warning light to repair",
-    instructions:
-      "Drag the slider, or use the arrow keys, to step through the five stages.",
+    hint: "Drag the slider to step through the five stages.",
     keyboardHint:
       "Arrow keys move in small steps, Page Up and Page Down move a stage at a time, Home and End jump to the ends.",
     svgTitle:
-      "Instrument cluster diagram: after the repair the cluster shows no warning lights.",
+      "An instrument cluster with a diagnostic tool connected. In the final stage the cluster shows no warning lights.",
     stageLabel: "Stage",
     stages: [
-      "Warning light on",
-      "Diagnostics connected",
-      "Fault codes read",
-      "Repair",
-      "Cleared, warning lights out",
+      {
+        name: "Warning light on",
+        body: "A control unit recorded a value outside what it expected and lit the lamp. What caused it cannot be read from the lamp itself.",
+      },
+      {
+        name: "Diagnostics connected",
+        body: "The tool plugs into the OBD port and starts talking to the control units. Only then can we see what they recorded.",
+      },
+      {
+        name: "Fault codes read",
+        body: "The codes say which circuit is reporting a problem. They are leads, not a diagnosis — one code can have several different causes.",
+      },
+      {
+        name: "Repair",
+        body: "Measuring narrows the circuit down to one point, and that point gets repaired. This is the step you cannot skip by replacing whatever the code names.",
+      },
+      {
+        name: "Cleared, warning lights out",
+        body: "After the repair the memory is cleared and we check the lamp stays out. Clearing it without the repair only postpones the problem.",
+      },
     ],
-    codeListLabel: "Fault code list (illustrative, not real codes)",
-    codeRowLabel: "Fault code",
-    dashboardLabel: "Instrument cluster",
+    codes: [
+      { id: "P0401", label: "EGR circuit" },
+      { id: "P0299", label: "boost pressure" },
+      { id: "P0133", label: "oxygen sensor" },
+    ],
+    displayTitle: "FAULT CODES — ILLUSTRATION",
+    circuitTitle: "CIRCUIT TEST",
+    circuitPoints: ["supply", "fuse", "connector", "ground"],
+    dialRpm: "rpm × 1000",
+    dialSpeed: "km/h",
+    odo: "124 870",
   },
 
   chat: {
@@ -634,11 +647,177 @@ export const en: LocaleContent = {
       "What are your opening hours?",
       "Where are you?",
     ],
-    scriptedNotice: "Answers are prepared in advance.",
+    scriptedNotice:
+      "Right now I can only answer basic questions. For anything else, call {phone}.",
     thinking: "Writing a reply",
     feedbackUp: "This helped",
     feedbackDown: "This did not help",
     feedbackThanks: "Thank you.",
+  },
+
+  widgets: {
+    dyno: {
+      heading: "What a remap does to the power curve",
+      lead: "The slider adds power and the chart alongside shows what happens to the curve. Grey is the baseline, orange the modified one. Power is calculated from torque as P = M × n / 9549, so the two curves always agree with each other.",
+      disclaimer:
+        "This illustrates the principle on a representative 2.0 TDI. It is not a measurement of your vehicle and not a promise of a result. What is possible on a particular engine depends on its condition and is discussed by phone:",
+      sliderLabel: "Power increase",
+      power: "Power",
+      torque: "Torque",
+      stock: "standard",
+      sceneAlt: "A vehicle on a rolling road, its wheels turning on the rollers.",
+      chartAlt: "Chart of power and torque against engine speed.",
+      legendPower: "power (kW)",
+      legendTorque: "torque (Nm)",
+      legendStock: "standard",
+    },
+    diagnostics: {
+      heading: "From symptom to cause",
+      lead: "Pick what the car is doing. You will see how many causes are in play and how measuring narrows them to one. This is what diagnostics actually is — a fault code is a lead, not a diagnosis.",
+      disclaimer:
+        "A simplified illustration of the process. The real number and order of steps depend on the vehicle and on what the measurements show. Tell us what your car is doing:",
+      pick: "What the car is doing",
+      remaining: "Causes remaining",
+      narrowed: "Narrowed to",
+      stepLabel: "Measurement step",
+      reset: "Start again",
+      sceneAlt: "A list of possible causes being narrowed down by measurement.",
+      symptoms: [
+        {
+          id: "mil",
+          label: "Engine warning light is on",
+          causes: [
+            "manifold pressure sensor",
+            "intake system leak",
+            "recirculation valve",
+            "turbocharger",
+            "air mass sensor",
+            "injection",
+          ],
+          steps: [
+            "We read the stored codes and the conditions they were recorded under.",
+            "We compare requested and actual boost pressure in the live data.",
+            "A leak test rules out a leak in the intake tract.",
+            "One cause is left, and we confirm it by measuring at the component.",
+          ],
+        },
+        {
+          id: "power",
+          label: "Down on power",
+          causes: [
+            "blocked fuel filter",
+            "boost pressure control",
+            "air mass sensor",
+            "play in the timing system",
+            "exhaust restriction",
+          ],
+          steps: [
+            "We check whether the control unit is limiting power, and why.",
+            "We measure fuel pressure under load.",
+            "We compare boost pressure against the requested value.",
+            "One cause is left, and we confirm it by measuring.",
+          ],
+        },
+        {
+          id: "cold",
+          label: "Hard to start from cold",
+          causes: [
+            "glow plugs",
+            "fuel system tightness",
+            "rail pressure",
+            "temperature sensor",
+            "battery condition",
+          ],
+          steps: [
+            "We measure battery voltage while cranking.",
+            "We check the glow system and the resistance of each plug.",
+            "We check whether the fuel system holds pressure overnight.",
+            "One cause is left, and we confirm it by measuring.",
+          ],
+        },
+      ],
+    },
+    alignment: {
+      heading: "How geometry wears a tyre out",
+      lead: "Move the toe and camber settings and watch what they do to the tyre and to the way the car behaves. With the right values the tread wears evenly and the car holds its line.",
+      disclaimer:
+        "An illustration of the principle. Correct values differ for every vehicle, are set by the manufacturer, and can only be measured on the car itself:",
+      toe: "Toe",
+      camber: "Camber",
+      wear: "Tread wear",
+      pull: "Pulling",
+      ok: "Within range",
+      sceneAlt: "A suspension diagram and a tyre cross-section showing the wear pattern.",
+      wearInner: "on the inner edge",
+      wearOuter: "on the outer edge",
+      wearEven: "even",
+      pullLeft: "to the left",
+      pullRight: "to the right",
+      pullNone: "none",
+      frontView: "front view — camber",
+      topView: "top view — toe",
+      section: "tyre in section",
+      exaggerated: "Angles are drawn larger than they are, so they can be seen.",
+    },
+    tyres: {
+      heading: "Tread depth and braking distance",
+      lead: "Move the tread depth from a new tyre down to the legal minimum and see what it does to braking distance on a wet road.",
+      disclaimer:
+        "Indicative figures from publicly published wet-braking tests, not a measurement of your tyre. Real distance depends on the tyre, the surface and the depth of water. We can measure the state of yours:",
+      depth: "Tread depth",
+      braking: "Wet braking distance",
+      legalMin: "legal minimum",
+      versusNew: "compared with a new tyre",
+      fromSpeed: "from 80 km/h",
+      sceneAlt: "A tyre cross-section with diminishing tread, and a braking distance comparison.",
+    },
+    electrics: {
+      heading: "Finding a break in a circuit",
+      lead: "Click the points along the circuit and measure where voltage is still present and where it is not. The fault lies between the last point with voltage and the first without.",
+      disclaimer:
+        "A simplified circuit, to illustrate the method. A real wiring diagram has considerably more branches and connectors:",
+      instruction: "Measure voltage at each point",
+      measure: "Measure",
+      reset: "Start again",
+      found: "The break is between these points",
+      notMeasured: "not measured",
+      sceneAlt: "A circuit diagram running from supply through fuse and connector to the load and ground.",
+      points: [
+        { id: "supply", label: "Supply" },
+        { id: "fuse", label: "After the fuse" },
+        { id: "connector", label: "After the connector" },
+        { id: "load", label: "At the load" },
+      ],
+    },
+    timing: {
+      heading: "Why you do not wait on a timing belt",
+      lead: "Move the mileage and watch what happens to the belt. You can run what happens when it snaps at any point — and that is the reason a timing belt is replaced on an interval rather than on condition.",
+      disclaimer:
+        "An illustration of wear, not a prediction for your vehicle. The replacement interval is set by the manufacturer for the specific engine, and we will check it for you:",
+      mileage: "Mileage since last replacement",
+      condition: "Belt condition",
+      interval: "illustrative replacement interval",
+      run: "Run the failure scenario",
+      reset: "Back",
+      sceneAlt: "A timing belt running over its sprockets, and its wear.",
+      states: ["no visible wear", "tooth wear beginning", "cracking, past the interval"],
+      failure: "Belt snapped",
+      failureBody:
+        "The camshaft stops, the crankshaft keeps turning. A piston meets an open valve. A timing belt job has just become cylinder head work.",
+    },
+    aircon: {
+      heading: "Refrigerant charge and vent temperature",
+      lead: "Move the refrigerant charge and watch how the air coming out of the vents responds. Cooling does not fail suddenly — it fades, which is why drivers notice it in summer.",
+      disclaimer:
+        "An illustration of the principle at a cabin temperature of around 30 °C, not a measurement of your air conditioning. We can establish its real condition on the car:",
+      charge: "Refrigerant charge",
+      ventTemp: "Vent temperature",
+      state: "State",
+      sceneAlt: "An air conditioning circuit with compressor, condenser and evaporator.",
+      states: ["badly undercharged", "low charge", "correct charge"],
+      parts: ["compressor", "condenser", "expansion valve", "evaporator"],
+      cabin: "cabin",
+    },
   },
 
   footer: {
@@ -648,6 +827,9 @@ export const en: LocaleContent = {
     legalHeading: "Documents",
     rights: "All rights reserved.",
     icoLabel: "Company number",
+    dicLabel: "Tax number",
+    icDphLabel: "VAT number",
+    registryLabel: "Registered",
   },
 
   notFound: {

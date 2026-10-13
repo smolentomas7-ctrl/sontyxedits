@@ -8,8 +8,8 @@ import { formattedAddress, site } from "@/config/miauto";
 import { Container, Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { SlotImage } from "@/components/ui/SlotImage";
-import { PlaceholderBlock } from "@/components/ui/Placeholder";
 import { HoursTable } from "@/components/ui/HoursTable";
+import { Owners } from "@/components/about/Owners";
 import { ServiceIcon } from "@/components/ui/ServiceIcon";
 import { ButtonLink } from "@/components/ui/Button";
 import { CtaBand } from "@/components/layout/CtaBand";
@@ -62,17 +62,6 @@ export default async function AboutPage({
         </Container>
       </Section>
 
-      {/* The client's own words about the shop. Nothing invented in their place. */}
-      <Section rhythm="tight">
-        <Container>
-          <Reveal className="max-w-[64ch]">
-            <PlaceholderBlock label={t.common.placeholderLabel}>
-              {t.about.placeholderShop}
-            </PlaceholderBlock>
-          </Reveal>
-        </Container>
-      </Section>
-
       {/* One quiet section that is nothing but well-set words. */}
       <Section className="border-y border-[var(--border)]">
         <Container>
@@ -87,35 +76,9 @@ export default async function AboutPage({
         </Container>
       </Section>
 
-      {/* Owner. The name is confirmed; the words about him are not. */}
       <Section>
         <Container>
-          <div className="grid gap-10 md:grid-cols-[1fr_1.3fr] md:items-start md:gap-14">
-            <Reveal>
-              <h2 className="text-[1.5rem] md:text-[2rem]">{t.about.ownerHeading}</h2>
-              <p className="mt-5 font-heading text-[1.5rem] font-semibold tracking-[-0.02em]">
-                {site.ownerName}
-              </p>
-              <p className="mt-1 text-[0.9375rem] text-[color:var(--text-muted)]">
-                {t.about.ownerRole}, {site.legalName}
-              </p>
-              <ButtonLink
-                href={site.phoneHref}
-                variant="secondary"
-                className="mt-7"
-                aria-label={t.common.callAria}
-              >
-                <Phone size={17} aria-hidden="true" />
-                {site.phone}
-              </ButtonLink>
-            </Reveal>
-
-            <Reveal index={1}>
-              <PlaceholderBlock label={t.common.placeholderLabel}>
-                {t.about.placeholderOwner}
-              </PlaceholderBlock>
-            </Reveal>
-          </div>
+          <Owners locale={locale} t={t} />
         </Container>
       </Section>
 

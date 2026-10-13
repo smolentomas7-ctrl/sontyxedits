@@ -89,42 +89,31 @@ Nothing in a component references an image path directly.
 
 ---
 
-## 4. Where the placeholders are
+## 4. What is still missing
 
-Everything still to be supplied renders **visibly, with its square brackets**, so
-it cannot ship unnoticed.
+Contact details, the owners and every text block on the site are filled in. What
+remains is the company's registration data, and the site is built so that each
+line appears only once it holds a value — there are no bracketed tokens left on
+any page.
 
 ### In `config/miauto.ts`
 
-| Token | Where it shows | What it needs |
+| Field | Where it would show | Status |
 |---|---|---|
-| `[EMAIL]` | footer, contact page, privacy policy | the shop's email address |
-| `[IČO]` | footer, privacy policy | the company registration number |
+| `ico` | footer, privacy policy | **required before launch** — § 3a of the Slovak Commercial Code |
+| `zapisVOR` | footer, privacy policy | **required before launch** — the commercial-register entry |
+| `dic` | footer | optional |
+| `icDph` | footer | optional, only if the company is VAT-registered |
+| `geo.lat` / `geo.lng` | JSON-LD | optional; the map works from the street address |
+| `social.facebook` / `social.instagram` | footer | optional |
 
-Once filled, both start behaving as real values automatically: `[EMAIL]` becomes
-a `mailto:` link and gets added to the JSON-LD; `[IČO]` renders as plain text.
-`isPlaceholder()` is what decides.
+`has()` in the same file is what decides: an empty string means the line, its
+label and its separator are not rendered at all. Fill the value in and it appears
+— in the footer, in the privacy policy, and (for `ico`, `dic`, `geo`) in the
+JSON-LD — with no other edit.
 
-`social.facebook` and `social.instagram` hold `[FACEBOOK_URL]` and
-`[INSTAGRAM_URL]`. These are the exception: they **do not render at all** until
-they hold real URLs, because a footer link pointing at the literal text
-`[FACEBOOK_URL]` is worse than no link.
-
-### On the About page (`content/sk.ts` / `content/en.ts`, `about:`)
-
-| Token | What it needs |
-|---|---|
-| `[TEXT O SERVISE — doplní klient]` | a paragraph or two about the workshop |
-| `[TEXT O MAJITEĽOVI — doplní klient]` | a paragraph about the owner |
-
-The owner's name, **Ivan Kubis**, is confirmed and set in `config/miauto.ts`.
-
-### `[TO CONFIRM: …]` markers
-
-These mark service scope nobody has confirmed. They are in `content/sk.ts` and
-`content/en.ts` under each service's `toConfirm`, and they render in a visible
-panel on the service page. They **must be resolved with the client before
-launch** — see "Known limitations".
+The owners are set in `site.owners` and render on the About page with their
+photographs. Their roles come from `about.ownerRoles` in both locales.
 
 ---
 
@@ -207,8 +196,10 @@ redeploy. Nothing in the source needs changing.
 Netlify Forms needs the form to exist in the deployed HTML, which a React
 component does not provide at build time. `public/__forms.html` is a static form
 carrying the same field names; Netlify detects it and accepts POSTs to it. After
-the first deploy the form appears under **Forms → dopyt**; add a notification
-email there so submissions actually reach someone.
+the first deploy the form appears under **Forms → dopyt**. Add the notification
+address there — **ivankubis96@centrum.sk** — otherwise enquiries sit in the
+Netlify dashboard and nobody is told about them. This is a dashboard setting, not
+a code change, and it has to be done once per site.
 
 ---
 
@@ -216,16 +207,31 @@ email there so submissions actually reach someone.
 
 | Variable | Required? | Effect |
 |---|---|---|
-| `CHAT_API_KEY` | No | Without it the assistant runs in **scripted mode**. With it, and with `CHAT_MODEL`, it runs grounded against the model. |
-| `CHAT_MODEL` | With a key | A **pinned** model id, never a floating alias. Both this and the key must be set; either one alone keeps it scripted. |
+| `ANTHROPIC_API_KEY` | No | Without it the assistant runs in **scripted mode**. With it, it runs grounded against the model. (`CHAT_API_KEY` is still read as a fallback name.) |
+| `CHAT_MODEL` | No | Overrides the model id. Default `claude-opus-5-5`. Always a **pinned** id, never a floating alias. |
 | `CHAT_DAILY_TOKEN_CAP` | No | Daily token ceiling; default 300,000. When reached, everyone drops to scripted until the next day. |
 | `CHAT_BASE_URL` | No | Points the SDK at a gateway instead of the default API. Used for testing against a stub. |
-| `NEXT_PUBLIC_SITE_URL` | Recommended | The public URL, for canonicals, sitemap and OG images. |
+| `NEXT_PUBLIC_SITE_URL` | **Yes, before the production build** | The public URL, for canonicals, `hreflang`, the sitemap and the Open Graph image URLs. It is inlined **at build time**, so setting it after a build has no effect — set it, then redeploy. |
 
-Set them in **Site configuration → Environment variables**. `CHAT_API_KEY` is
-read from `process.env` inside the route handler only. It is never a
-`NEXT_PUBLIC_` variable, never reaches a client component, and never appears in
-the shipped bundle.
+Set them in **Site configuration → Environment variables**. The API key is read
+from `process.env` inside the route handler only. It is never a `NEXT_PUBLIC_`
+variable, never reaches a client component, and never appears in the shipped
+bundle.
+
+### What the assistant costs to run
+
+A grounded answer sends the rules block plus the knowledge base (together about
+5,000 tokens, of which the knowledge block is cached and bills at a tenth after
+the first request) and returns a short answer at `effort: "low"`. At the default
+model that is roughly a cent or two per answer; `CHAT_DAILY_TOKEN_CAP` is the
+hard ceiling. Published per-million-token prices are on Anthropic's pricing page,
+and the model can be changed to a cheaper one with `CHAT_MODEL` — `claude-haiku-5-5`
+is the cheapest current model, at the cost of some nuance in the answers.
+
+The assistant also sends `fallbacks: "default"` on the models that accept it, so
+a safety decline is retried on a fallback model inside the same call instead of
+leaving the visitor with half a sentence. If it still fails, the widget drops to
+the scripted tier and **says so under the answer, with the phone number**.
 
 **Without any key, the site is fully functional.** Every page works; the
 assistant answers from a scripted decision tree built from the same content the
@@ -263,9 +269,10 @@ final report and the widget itself all say so.
   If it lands on the wrong building, replace `mapEmbedUrl` in `config/miauto.ts`
   with `https://www.google.com/maps?q=<lat>,<lng>&output=embed` — one value, one
   edit, and `mapDirectionsUrl` beside it takes the same treatment.
-- **The `[TO CONFIRM: …]` service scopes must be resolved with the client before
-  launch.** Seven services carry at least one. Until they are answered, the
-  pages tell visitors to confirm by phone, which is honest but costs conversions.
+- **IČO and the commercial-register entry are missing.** § 3a of the Slovak
+  Commercial Code requires both on a company's business website. `config/miauto.ts`
+  has the fields; until they are filled the footer and the privacy policy simply
+  omit those lines, which is not a lawful end state. This blocks launch.
 - **The privacy policy is a template and has not been legally reviewed.** The
   page says so in a visible notice at the top, not a footnote. It makes no claim
   of GDPR compliance. It needs a qualified person before launch.
@@ -276,9 +283,6 @@ final report and the widget itself all say so.
   records `origin: "own" | "stock"` per slot. Alt text on the generic ones
   describes the activity and never implies it is M.I.Auto's own premises. Real
   photographs for those slots would be a straight upgrade.
-- **No logo file.** The brand is set as a text wordmark in
-  `components/layout/Wordmark.tsx`. Dropping in a real logo means editing that
-  one component.
 - **The hero photograph has the workshop's logo burned into the middle of the
   frame.** The scrim is weighted hard to the left to keep the headline legible
   over it. A clean version of the same photograph would let the hero breathe.

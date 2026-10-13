@@ -1,9 +1,11 @@
 /* ============================================================================
-   "Od kontrolky k oprave" — single source of truth is one registered custom
-   property, --p, in 0..1. JavaScript writes --p and nothing else; every layer
-   below derives its own state from it in CSS.
+   "Od kontrolky k oprave"
 
-   Only opacity, transform, clip-path and --p itself are ever animated.
+   One registered custom property, --p (0..1), is the single source of truth.
+   JavaScript writes --p and a data-stage attribute and nothing else; every
+   layer below derives its own state from those in CSS.
+
+   Only opacity, transform, clip-path, stroke-dashoffset and --p are animated.
    ========================================================================== */
 @property --p {
   syntax: "<number>";
@@ -13,28 +15,40 @@
 
 .scene {
   --p: 0;
+  /* Needles settle rather than snap. This is the only curve in the project with
+     an overshoot, and it exists because a gauge needle that stops dead reads as
+     a drawing rather than an instrument. */
+  --ease-needle: cubic-bezier(0.22, 1.32, 0.36, 1);
+  --dur-needle: 760ms;
+
   position: relative;
   width: 100%;
   /* Box reserved before anything renders, so the scene never shifts layout. */
   aspect-ratio: 16 / 9;
   border-radius: var(--radius-card);
   border: 1px solid var(--border);
-  background-color: var(--surface);
+  background: radial-gradient(
+      120% 90% at 22% 8%,
+      color-mix(in srgb, var(--surface-hover) 85%, #ffffff) 0%,
+      var(--surface) 42%,
+      color-mix(in srgb, var(--bg) 70%, var(--surface)) 100%
+    );
   overflow: hidden;
   touch-action: pan-y;
 }
 
 /* Reduced motion opens on the FINAL state — a clear cluster, stage 5 — rather
    than stranding the visitor on stage 1 with no way to reach the end. The
-   handle stays fully functional from there. */
+   handle stays fully functional from there, and every transition is off. */
 @media (prefers-reduced-motion: reduce) {
   .scene { --p: 1; }
   .scene.autoplay { transition: none; }
+  .scene * { transition: none !important; animation: none !important; }
+  /* The grain filter is pure decoration and the most expensive thing here. */
+  .grain { display: none; }
 }
 
-.scene.autoplay {
-  transition: --p 450ms var(--ease-ios);
-}
+.scene.autoplay { transition: --p 460ms var(--ease-ios); }
 
 .svg {
   position: absolute;
@@ -43,73 +57,115 @@
   height: 100%;
 }
 
-/* ---- stage 1: warning light on, cause unknown -------------------------- */
-/* Lit from the start, out as the repair completes. */
-.warnLit { opacity: calc((0.84 - var(--p)) * 14); }
-.warnGlow { opacity: calc((0.84 - var(--p)) * 10); }
-.warnDim { opacity: calc((var(--p) - 0.86) * 14); }
+/* ---- depth -------------------------------------------------------------- */
+.vignette { pointer-events: none; }
+.grain { pointer-events: none; mix-blend-mode: overlay; opacity: 0.035; }
 
-/* ---- stage 2: the connector plugs in, the cable draws ------------------- */
-.plug {
+/* ============================================================================
+   STAGE 1 — the lamp is lit and nobody knows why
+   ========================================================================== */
+.warnLit { opacity: calc((0.84 - var(--p)) * 14); }
+.warnBloom { opacity: calc((0.84 - var(--p)) * 9); }
+.warnOff { opacity: calc((var(--p) - 0.86) * 14); }
+.telltaleLit { opacity: calc((0.8 - var(--p)) * 12); }
+.telltaleOff { opacity: calc((var(--p) - 0.82) * 12); }
+
+/* Needles are driven by the stage, not by --p, so they settle between beats
+   instead of tracking the slider like a dial on a string. */
+.needle {
+  /* Origin is set inline in view-box coordinates, so it is the dial centre
+     exactly rather than a percentage of the needle's bounding box. */
+  transition: transform var(--dur-needle) var(--ease-needle);
+}
+/* Angles are `240 * value - 120`, so each one lands on a real number on the
+   scale. Idle is about 800 rpm, the read in stage 3 blips the throttle, and the
+   check in stage 4 runs it up and rolls the wheels on the stand. */
+.scene[data-stage="0"] .needleRpm { transform: rotate(-98deg); }   /* ~800 rpm */
+.scene[data-stage="1"] .needleRpm { transform: rotate(-98deg); }
+.scene[data-stage="2"] .needleRpm { transform: rotate(-38deg); }   /* ~2700 rpm */
+.scene[data-stage="3"] .needleRpm { transform: rotate(-67deg); }   /* ~1800 rpm */
+.scene[data-stage="4"] .needleRpm { transform: rotate(-98deg); }
+
+.scene[data-stage="0"] .needleSpeed { transform: rotate(-120deg); } /* standing */
+.scene[data-stage="1"] .needleSpeed { transform: rotate(-120deg); }
+.scene[data-stage="2"] .needleSpeed { transform: rotate(-108deg); }
+.scene[data-stage="3"] .needleSpeed { transform: rotate(-86deg); }
+.scene[data-stage="4"] .needleSpeed { transform: rotate(-120deg); }
+
+/* ============================================================================
+   STAGE 2 — the tool is connected and the line comes alive
+   Stagger: the tool body, then its screen, then the cable, 50ms apart.
+   ========================================================================== */
+.tool {
+  opacity: calc((var(--p) - 0.1) * 9);
   transform-box: fill-box;
   transform-origin: center;
-  transform: translateX(calc((1 - clamp(0, (var(--p) - 0.14) * 6, 1)) * -84px));
-  opacity: calc(var(--p) * 14);
+  transform: translateX(calc((1 - clamp(0, (var(--p) - 0.1) * 7, 1)) * 34px));
+  transition: opacity var(--dur-state) var(--ease-ios);
 }
+.toolScreen { opacity: calc((var(--p) - 0.16) * 10); }
+.toolLed { opacity: calc((var(--p) - 0.2) * 12); }
+
 .cable {
   stroke-dasharray: 1;
-  stroke-dashoffset: clamp(0, calc(1 - (var(--p) - 0.17) * 5.5), 1);
+  stroke-dashoffset: clamp(0, calc(1 - (var(--p) - 0.14) * 5.2), 1);
 }
-.portLive { opacity: calc((var(--p) - 0.26) * 8); }
-
-/* ---- stage 3: the code list wipes in ----------------------------------- */
-.codeList {
-  opacity: calc((var(--p) - 0.34) * 9);
-  clip-path: inset(0 calc((1 - clamp(0, (var(--p) - 0.36) * 4.4, 1)) * 100%) 0 0);
+/* Short bright segments running along the line once it is drawn: data moving. */
+.dataFlow {
+  stroke-dasharray: 0.03 0.1;
+  stroke-dashoffset: calc(var(--p) * -6);
+  opacity: calc(((var(--p) - 0.24) * 9) * (0.92 - var(--p)) * 4);
 }
-.codeRow1 { opacity: calc((var(--p) - 0.38) * 14); }
-.codeRow2 { opacity: calc((var(--p) - 0.43) * 14); }
-.codeRow3 { opacity: calc((var(--p) - 0.48) * 14); }
+.portGlow { opacity: calc((var(--p) - 0.2) * 8); }
 
-/* ---- stage 4: the implicated part highlights, a tool moves to it -------- */
-.partHalo { opacity: calc((var(--p) - 0.56) * 9); }
-.partRing { opacity: calc((var(--p) - 0.58) * 9); }
-.tool {
+/* ============================================================================
+   STAGE 3 — codes land on the display, one row at a time
+   ========================================================================== */
+.codeList { opacity: calc((var(--p) - 0.3) * 10); }
+.codeRow1 { opacity: calc((var(--p) - 0.34) * 16); }
+.codeRow2 { opacity: calc((var(--p) - 0.39) * 16); }
+.codeRow3 { opacity: calc((var(--p) - 0.44) * 16); }
+.scanline { opacity: calc(((var(--p) - 0.3) * 9) * (0.95 - var(--p)) * 5); }
+
+/* ============================================================================
+   STAGE 4 — the implicated circuit is isolated and worked on
+   ========================================================================== */
+.circuit { opacity: calc((var(--p) - 0.52) * 9); }
+.circuitFaultDim { opacity: calc((0.74 - var(--p)) * 10); }
+.circuitFaultFixed { opacity: calc((var(--p) - 0.76) * 10); }
+.probe {
   transform-box: fill-box;
-  transform-origin: 50% 50%;
+  transform-origin: 50% 100%;
+  opacity: calc((var(--p) - 0.54) * 10);
   transform:
-    translate(calc((1 - clamp(0, (var(--p) - 0.58) * 5, 1)) * 92px),
-              calc((1 - clamp(0, (var(--p) - 0.58) * 5, 1)) * 46px))
-    rotate(calc((1 - clamp(0, (var(--p) - 0.58) * 5, 1)) * -28deg));
-  opacity: calc((var(--p) - 0.56) * 10);
+    translate(calc((1 - clamp(0, (var(--p) - 0.54) * 6, 1)) * 54px),
+              calc((1 - clamp(0, (var(--p) - 0.54) * 6, 1)) * -30px))
+    rotate(calc((1 - clamp(0, (var(--p) - 0.54) * 6, 1)) * 14deg));
 }
-/* The flagged row is struck through as the fault is dealt with. */
-.codeResolved {
+
+/* ============================================================================
+   STAGE 5 — cleared; the lamps go out one after another, the tick is drawn
+   ========================================================================== */
+.cleared {
   stroke-dasharray: 1;
-  stroke-dashoffset: clamp(0, calc(1 - (var(--p) - 0.66) * 7), 1);
+  stroke-dashoffset: clamp(0, calc(1 - (var(--p) - 0.88) * 11), 1);
 }
-
-/* The repair group settles out at the very end, so the final frame is the
-   clean cluster alone rather than a scene still mid-job. */
-.repairOut { opacity: calc((0.97 - var(--p)) * 14); }
-
-/* ---- stage 5: cleared, cluster clean ----------------------------------- */
-.cleared { opacity: calc((var(--p) - 0.86) * 10); }
-.codeListOut { opacity: calc((0.95 - var(--p)) * 12); }
+.clearedGlow { opacity: calc((var(--p) - 0.9) * 9); }
+/* The code list clears as the tool switches to circuit testing, so the display
+   only ever shows one screen at a time. */
+.codeListOut { opacity: calc((0.58 - var(--p)) * 16); }
 
 /* ============================================================================
    CONTROL
    A real range input stretched over the scene: visually transparent, fully
    hit-testable, so pointer, touch and keyboard all drive the same element.
-   The visible handle is drawn separately and positioned from --p.
    ========================================================================== */
 .range {
   position: absolute;
-  inset: auto 0 0 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 0;
   opacity: 0;
   cursor: grab;
   -webkit-appearance: none;
@@ -119,7 +175,6 @@
   touch-action: pan-y;
 }
 .range:active { cursor: grabbing; }
-
 .range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -138,12 +193,12 @@
 
 .track {
   position: absolute;
-  left: var(--gutter-inner, 20px);
-  right: var(--gutter-inner, 20px);
+  left: 22px;
+  right: 22px;
   bottom: 18px;
   height: 4px;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--text-muted) 28%, transparent);
+  background: color-mix(in srgb, var(--text-muted) 26%, transparent);
   pointer-events: none;
 }
 .trackFill {
@@ -153,11 +208,24 @@
   border-radius: inherit;
   background: var(--accent);
 }
+.ticks {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tick {
+  width: 2px;
+  height: 10px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--text-muted) 40%, transparent);
+}
 
 .handle {
   position: absolute;
   bottom: 20px;
-  left: calc(var(--gutter-inner, 20px) + var(--p) * (100% - var(--gutter-inner, 20px) * 2));
+  left: calc(22px + var(--p) * (100% - 44px));
   width: 44px;
   height: 44px;
   margin-left: -22px;
@@ -176,9 +244,7 @@
   transition: transform var(--dur-release) var(--ease-ios);
 }
 .range:active ~ .handle .handleDot,
-.range:focus-visible ~ .handle .handleDot {
-  transform: scale(1.14);
-}
+.range:focus-visible ~ .handle .handleDot { transform: scale(1.14); }
 .range:focus-visible ~ .handle .handleDot {
   outline: 2px solid var(--focus);
   outline-offset: 3px;

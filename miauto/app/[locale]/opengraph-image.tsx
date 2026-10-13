@@ -40,8 +40,20 @@ export default async function OpengraphImage({
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ width: 14, height: 44, background: "#FF7A3D", borderRadius: 4 }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          {/* The same mark the header carries, drawn inline: Satori renders SVG
+              but cannot resolve a CSS variable, so the two colours are literal. */}
+          <svg width="56" height="56" viewBox="0 0 32 32" fill="none">
+            <path
+              d="M6.6 26V12.4L10.8 8.2L16 13.4L21.2 8.2L25.4 12.4V26"
+              stroke="#F2F4F5"
+              strokeWidth="3.6"
+              strokeLinecap="butt"
+              strokeLinejoin="miter"
+            />
+            <circle cx="6.6" cy="27.4" r="2.6" fill="#FF7A3D" />
+            <circle cx="25.4" cy="27.4" r="2.6" fill="#FF7A3D" />
+          </svg>
           {/* Satori needs an explicit display on any element with more than one
               child; without it the whole image throws at render time. */}
           <div

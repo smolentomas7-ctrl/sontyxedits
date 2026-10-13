@@ -38,8 +38,6 @@ export const sk: LocaleContent = {
     copyAddress: "Skopírovať adresu",
     addressCopied: "Adresa skopírovaná",
     relatedServices: "Súvisiace služby",
-    toConfirmLabel: "Na doplnenie",
-    placeholderLabel: "Na doplnenie klientom",
   },
 
   nav: {
@@ -66,7 +64,7 @@ export const sk: LocaleContent = {
       "Sedem služieb. Pri väčšine porúch sa začína diagnostikou — preto má svoje miesto na začiatku.",
     signatureHeading: "Od kontrolky k oprave",
     signatureLead:
-      "Potiahnite posuvník a prejdite si, čo sa deje medzi tým, ako sa kontrolka rozsvieti, a tým, ako zhasne.",
+      "Medzi rozsvietenou kontrolkou a opraveným autom je päť krokov. Potiahnite posuvník a pozrite si, čo sa v ktorom deje a prečo sa žiadny z nich nedá preskočiť.",
     whyHeading: "Prečo k nám",
     why: [
       {
@@ -110,7 +108,7 @@ export const sk: LocaleContent = {
     },
     h1: "Služby",
     lead:
-      "Sedem oblastí, ktorým sa venujeme. Pri každej nájdete, kedy ju riešiť a ako postupujeme. Čo nie je potvrdené, je ako nepotvrdené aj označené.",
+      "Sedem oblastí, ktorým sa venujeme. Pri každej nájdete, kedy ju riešiť, ako postupujeme a čo si na nej viete sami vyskúšať.",
     faqHeading: "Časté otázky",
     ctaHeading: "Neviete, do ktorej služby vaša porucha patrí?",
     ctaLead:
@@ -147,7 +145,6 @@ export const sk: LocaleContent = {
         "Poruchu zúžime na konkrétny okruh alebo komponent.",
         "Povieme, čo sme našli, a dohodneme ďalší postup.",
       ],
-      toConfirm: ["[TO CONFIRM: ktoré značky a systémy diagnostika pokrýva]"],
       related: ["cipovanie-ecu", "elektroinstalacia-vw"],
       meta: {
         title: "Diagnostika vozidiel Ružomberok | M.I.Auto s.r.o.",
@@ -184,9 +181,6 @@ export const sk: LocaleContent = {
       ],
       note:
         "Pred rozhodnutím zvážte okolnosti svojho vozidla a to, ako ho používate. Konkrétne otázky preberieme telefonicky.",
-      toConfirm: [
-        "[TO CONFIRM: aké typy úprav ECU servis vykonáva a pre ktoré motory]",
-      ],
       related: ["diagnostika-vozidiel", "elektroinstalacia-vw"],
       meta: {
         title: "Čipovanie ECU Ružomberok | M.I.Auto s.r.o.",
@@ -224,9 +218,6 @@ export const sk: LocaleContent = {
         "Nastavíme to, čo sa na danom vozidle nastaviť dá.",
         "Prejdeme s vami namerané hodnoty pred nastavením a po ňom.",
       ],
-      toConfirm: [
-        "[TO CONFIRM: typ geometrie (3D/laser), ktoré vozidlá a rozmery servis zvláda]",
-      ],
       related: ["pneuservis", "diagnostika-vozidiel"],
       meta: {
         title: "Geometria kolies Ružomberok | M.I.Auto s.r.o.",
@@ -241,15 +232,15 @@ export const sk: LocaleContent = {
       h1: "Pneuservis — Ružomberok",
       icon: "circle-dot",
       cardDescription:
-        "Práca s pneumatikami a diskami. Presný rozsah služieb si potvrďte telefonicky.",
+        "Práca s pneumatikami a diskami. Dezén rozhoduje o brzdnej dráhe viac, než si väčšina vodičov myslí.",
       lead:
-        "Pneumatiky sú jediná časť vozidla, ktorá sa dotýka vozovky. Na ich stave závisí brzdná dráha aj správanie v zákrute. Pneuservis zahŕňa prácu s pneumatikami a diskami; aký presný rozsah u nás viete využiť, si overte telefonicky — nižšie je to označené ako nepotvrdené.",
+        "Pneumatiky sú jediná časť vozidla, ktorá sa dotýka vozovky. Na ich stave závisí brzdná dráha aj správanie v zákrute, a rozdiel medzi takmer novým a zjazdeným dezénom je na mokrom väčší, než sa čaká. Pozrieme sa na stav pneumatík aj diskov a povieme, čo s nimi.",
       overview:
-        "Pneumatiky sú jediný kontakt vozidla s vozovkou. Aký presný rozsah pneuservisu ponúkame, zatiaľ nie je potvrdený.",
+        "Pneumatiky sú jediný kontakt vozidla s vozovkou. Pri hĺbke dezénu blízko zákonného minima rastie brzdná dráha na mokrom výrazne.",
       covers: [
         "Práca s pneumatikami a diskami",
-        "Posúdenie stavu pneumatík",
-        "Rozsah služieb na potvrdenie telefonicky",
+        "Posúdenie stavu a hĺbky dezénu",
+        "Sezónna výmena podľa dohody",
       ],
       when: [
         "Blíži sa sezóna a potrebujete prejsť na zimné alebo letné pneumatiky.",
@@ -258,12 +249,9 @@ export const sk: LocaleContent = {
         "Dezén je blízko zákonného minima alebo je zjazdený nerovnomerne.",
       ],
       what: [
-        "Pozrieme sa na stav pneumatík a diskov a povieme, čo vidíme.",
-        "Dohodneme, čo je potrebné urobiť.",
-        "Konkrétny rozsah prác si potvrďte telefonicky — pozrite poznámku nižšie.",
-      ],
-      toConfirm: [
-        "[TO CONFIRM: či ponuka zahŕňa prezúvanie, vyvažovanie, sezónnu výmenu, opravu defektov a uskladnenie pneumatík]",
+        "Pozrieme sa na stav pneumatík a diskov a odmeriame hĺbku dezénu.",
+        "Povieme, čo vidíme, a čo z toho je naozaj potrebné riešiť.",
+        "Dohodneme rozsah prác a termín — zavolajte a povedzte, o aké vozidlo ide.",
       ],
       related: ["geometria-kolies", "diagnostika-vozidiel"],
       meta: {
@@ -303,7 +291,6 @@ export const sk: LocaleContent = {
       ],
       note:
         "M.I.Auto s.r.o. je nezávislý autoservis. Nie sme autorizovaný servis Volkswagen. „Vozidlá koncernu Volkswagen“ je len popis toho, na čom pracujeme.",
-      toConfirm: ["[TO CONFIRM: aké konkrétne elektro opravy servis vykonáva]"],
       related: ["diagnostika-vozidiel", "cipovanie-ecu"],
       meta: {
         title: "Elektroinštalácia vozidiel Volkswagen Ružomberok | M.I.Auto s.r.o.",
@@ -340,9 +327,6 @@ export const sk: LocaleContent = {
         "Vymeníme diely a nastavíme rozvod podľa hodnôt výrobcu.",
         "Po zložení motor skontrolujeme za chodu.",
       ],
-      toConfirm: [
-        "[TO CONFIRM: úplný zoznam podporovaných motorov a či výmena zahŕňa vodné čerpadlo]",
-      ],
       related: ["diagnostika-vozidiel", "elektroinstalacia-vw"],
       meta: {
         title: "Výmena rozvodov 2.0 TDI a 3.0 TDI Ružomberok | M.I.Auto s.r.o.",
@@ -357,14 +341,14 @@ export const sk: LocaleContent = {
       h1: "Servis klimatizácie — Ružomberok",
       icon: "snowflake",
       cardDescription:
-        "Klimatizácia, ktorá nechladí, býva o chladive alebo o netesnosti. Rozsah si potvrďte telefonicky.",
+        "Klimatizácia, ktorá nechladí, býva o chladive alebo o netesnosti. Chladenie slabne postupne.",
       lead:
-        "Klimatizácia stráca chladivo aj bez poruchy — netesnosťami, ktoré sú súčasťou systému. Keď chladenie postupne slabne, dôvodom býva nedostatok chladiva alebo únik. Aký presný rozsah servisu klimatizácie u nás viete využiť, si overte telefonicky; nižšie je to označené ako nepotvrdené.",
+        "Klimatizácia stráca chladivo aj bez poruchy — netesnosťami, ktoré sú súčasťou systému. Keď chladenie postupne slabne, dôvodom býva nedostatok chladiva alebo únik. Práve preto si to vodič všimne až v lete, hoci systém strácal výkon celé mesiace.",
       overview:
-        "Chladenie slabne postupne, takže si to vodič všimne až v lete. Presný rozsah servisu klimatizácie zatiaľ nie je potvrdený.",
+        "Chladenie slabne postupne, takže si to vodič všimne až v lete. Teplota z výduchu povie o stave náplne viac než pocit.",
       covers: [
         "Posúdenie stavu klimatizácie",
-        "Rozsah služieb na potvrdenie telefonicky",
+        "Kontrola chladiaceho výkonu",
         "Konzultácia nad konkrétnym vozidlom",
       ],
       when: [
@@ -375,11 +359,8 @@ export const sk: LocaleContent = {
       ],
       what: [
         "Popíšete, ako sa klimatizácia správa a odkedy.",
-        "Pozrieme sa na systém a povieme, čo vidíme.",
-        "Dohodneme ďalší postup — konkrétny rozsah si potvrďte telefonicky.",
-      ],
-      toConfirm: [
-        "[TO CONFIRM: či servis zahŕňa diagnostiku, plnenie chladiva, detekciu únikov, čistenie, dezinfekciu alebo opravy; a ktoré chladivá (R134a / R1234yf)]",
+        "Pozrieme sa na systém a zmeriame, ako chladí.",
+        "Povieme, čo sme našli, a dohodneme ďalší postup.",
       ],
       related: ["diagnostika-vozidiel", "elektroinstalacia-vw"],
       meta: {
@@ -398,7 +379,7 @@ export const sk: LocaleContent = {
     },
     h1: "O servise",
     lead:
-      "M.I.Auto s.r.o. je nezávislý autoservis v Ružomberku. Na tejto stránke je zatiaľ len to, čo je potvrdené — zvyšok dopĺňa klient.",
+      "M.I.Auto s.r.o. je nezávislý autoservis v Ružomberku na Sládkovičovej. Venujeme sa diagnostike, elektronike a mechanike vozidiel.",
     whatWeDoHeading: "Čomu sa venujeme",
     quietHeading: "Ako k tomu pristupujeme",
     quietBody: [
@@ -406,10 +387,11 @@ export const sk: LocaleContent = {
       "Preto sa chybový kód overuje meraním. Je to pomalšie než vymeniť diel, ktorý kód spomína, ale je to jediný spôsob, ako nevymeniť diel, ktorý bol v poriadku.",
       "To isté platí pre elektriku a pre rozvody. Pri elektrike sa postupuje podľa schémy a vylučovaním. Pri rozvodoch sa nečaká na poruchu, pretože keď rozvod zlyhá, oprava už nie je o rozvode.",
     ],
-    ownerHeading: "Majiteľ",
-    ownerRole: "Majiteľ servisu",
-    placeholderShop: "[TEXT O SERVISE — doplní klient]",
-    placeholderOwner: "[TEXT O MAJITEĽOVI — doplní klient]",
+    ownersHeading: "Majitelia",
+    ownerRoles: {
+      owner: "Majiteľ servisu",
+      coOwner: "Spolumajiteľ servisu",
+    },
     factsHeading: "Kde nás nájdete",
     interiorAlt: "Interiér dielne M.I.Auto, vozidlá počas servisu",
     detail01Alt: "Vozidlo zdvihnuté na dvojstĺpovom zdviháku v dielni M.I.Auto",
@@ -433,8 +415,6 @@ export const sk: LocaleContent = {
     formHeading: "Napíšte nám",
     formLead:
       "Čím konkrétnejšie popíšete, čo vozidlo robí, tým lepšie sa vieme pripraviť.",
-    emailPendingNote:
-      "E-mailová adresa zatiaľ nie je doplnená. Použite telefón alebo formulár.",
   },
 
   form: {
@@ -521,28 +501,33 @@ export const sk: LocaleContent = {
     meta: {
       title: "Ochrana osobných údajov | M.I.Auto s.r.o.",
       description:
-        "Aké údaje zbiera kontaktný formulár, ako funguje vložená mapa Google a čo robí automatický asistent. Otázky k svojim údajom: +421 918 918 109.",
+        "Aké údaje zbiera kontaktný formulár, ako dlho ich uchovávame, ako funguje vložená mapa a automatický asistent, a aké máte práva.",
     },
     h1: "Ochrana osobných údajov",
     reviewNotice:
-      "Tento dokument je ŠABLÓNA a nie je právne posúdený. Pred zverejnením stránky ho musí skontrolovať a doplniť osoba s právnou kvalifikáciou. Netvrdíme, že je v súlade s GDPR ani s iným predpisom.",
+      "Tento dokument nie je právne posúdený. Pred spustením stránky ho má skontrolovať a doplniť osoba s právnou kvalifikáciou. Netvrdíme, že je v súlade s GDPR ani s iným predpisom.",
     updated: "Posledná úprava: pri nasadení stránky",
+    controller: {
+      heading: "Kto spracúva údaje",
+      intro:
+        "Prevádzkovateľom, ktorý rozhoduje o spracúvaní osobných údajov z tejto stránky, je:",
+    },
     sections: [
-      {
-        heading: "Kto spracúva údaje",
-        body: [
-          "Prevádzkovateľom je M.I.Auto s.r.o., Sládkovičova 2528/108, 034 01 Ružomberok.",
-          "IČO: [IČO]",
-          "Kontakt: +421 918 918 109, [EMAIL]",
-        ],
-      },
       {
         heading: "Kontaktný formulár",
         body: [
           "Formulár na stránke Kontakt zbiera meno, telefónne číslo, nepovinne e-mail, nepovinne údaj o vozidle, vybranú službu a text správy.",
-          "Tieto údaje sa používajú výlučne na to, aby sme vám na správu odpovedali. Nepoužívajú sa na marketing a neposkytujú sa tretím stranám na ich vlastné účely.",
-          "Odoslaný formulár spracúva služba Netlify Forms, ktorá správu uloží a sprístupní nám. Dáta sú teda uložené na infraštruktúre poskytovateľa Netlify.",
-          "[TO CONFIRM: ako dlho sa odoslané správy uchovávajú a kto k nim má prístup]",
+          "Tieto údaje spracúvame výlučne preto, aby sme vám na správu odpovedali a dohodli prípadný termín. Nepoužívame ich na marketing a neposkytujeme ich tretím stranám na ich vlastné účely.",
+          "Právnym základom je náš oprávnený záujem odpovedať na dopyt, ktorý ste nám sami poslali, prípadne kroky pred uzavretím zmluvy, ak sa dohodneme na oprave.",
+          "Odoslaný formulár spracúva služba Netlify Forms spoločnosti Netlify, ktorá správu uloží a sprístupní nám; dáta sú uložené na jej infraštruktúre. Netlify v tomto vystupuje ako sprostredkovateľ.",
+          "Odoslané správy uchovávame 12 mesiacov od vybavenia dopytu a potom ich mažeme. Ak z dopytu vznikne zákazka, údaje k nej sa riadia lehotami pre účtovné a daňové doklady. Prístup k správam majú len majitelia servisu.",
+        ],
+      },
+      {
+        heading: "Fotografie majiteľov",
+        body: [
+          "Na stránke O servise sú zverejnené fotografie majiteľov servisu spolu s ich menami. Fotografia identifikovateľnej osoby je osobný údaj a zverejňujeme ju so súhlasom dotknutých osôb.",
+          "Súhlas so zverejnením je možné kedykoľvek odvolať na kontaktoch uvedených vyššie; po odvolaní fotografiu zo stránky odstránime.",
         ],
       },
       {
@@ -556,9 +541,10 @@ export const sk: LocaleContent = {
         heading: "Automatický asistent",
         body: [
           "V pravom dolnom rohu je automatický asistent. Nie je to človek a v hlavičke panela je to aj uvedené.",
-          "Prepis rozhovoru sa ukladá len vo vašom prehliadači (sessionStorage) a po zatvorení karty zaniká. Na našej strane sa prepisy neuchovávajú.",
-          "Ak je asistent nastavený na jazykový model, text vašej otázky sa odošle poskytovateľovi modelu, aby vedel odpovedať. Neposielame k nemu vaše meno, telefón ani e-mail — asistent o ne nežiada a nemá na ne prístup.",
-          "O prevádzke zaznamenávame len technické údaje: čas, jazyk, trvanie odpovede, počet tokenov a to, či sa použila záložná odpoveď. Text správ nezaznamenávame.",
+          "Prepis rozhovoru sa ukladá len vo vašom prehliadači (sessionStorage) a po zatvorení karty zaniká. Na našej strane prepisy neuchovávame.",
+          "Keď je asistent napojený na jazykový model, text vašej otázky sa odošle poskytovateľovi modelu — spoločnosti Anthropic — aby vedel odpovedať. Neposielame k nemu vaše meno, telefón ani e-mail; asistent o ne nežiada a nemá na ne prístup. Asistent je zároveň inštruovaný, aby osobné údaje nezbieral.",
+          "O prevádzke zaznamenávame len technické údaje: čas požiadavky, jazyk stránky, trvanie odpovede, počet spracovaných tokenov, to, či sa použila záložná odpoveď, a označenie sekcie webu, z ktorej odpoveď vychádzala. Text správ nezaznamenávame a tieto záznamy nespájame s vašou totožnosťou.",
+          "Ak pod odpoveďou kliknete na palec hore alebo dole, zaznamená sa len tento signál a poradové číslo odpovede v rozhovore — nie jej text ani text vašej otázky.",
         ],
       },
       {
@@ -572,14 +558,22 @@ export const sk: LocaleContent = {
         heading: "Písma a externý obsah",
         body: [
           "Písma sú súčasťou stránky a načítavajú sa z nej. Stránka si ich nesťahuje zo žiadnej externej služby.",
-          "Jediný externý obsah je mapa Google opísaná vyššie.",
+          "Externý obsah tvorí mapa Google opísaná vyššie a, ak je asistent zapnutý, jeho požiadavky na poskytovateľa modelu.",
         ],
       },
       {
         heading: "Vaše práva",
         body: [
-          "[TO CONFIRM: znenie kapitoly o právach dotknutej osoby — doplní osoba s právnou kvalifikáciou]",
-          "S otázkami o svojich údajoch sa obráťte na kontakty uvedené vyššie.",
+          "Ako dotknutá osoba máte vo vzťahu k svojim osobným údajom tieto práva:",
+          "Právo na prístup — môžete žiadať potvrdenie, či o vás spracúvame údaje, a ich kópiu.",
+          "Právo na opravu — ak sú údaje nesprávne alebo neúplné, môžete žiadať ich opravu alebo doplnenie.",
+          "Právo na výmaz — môžete žiadať vymazanie údajov, najmä ak už nie sú potrebné na účel, na ktorý sme ich získali.",
+          "Právo na obmedzenie spracúvania — môžete žiadať, aby sme údaje dočasne iba uchovávali, napríklad kým sa overí ich správnosť.",
+          "Právo na prenosnosť — údaje, ktoré ste nám poskytli, vám vieme vydať v bežne používanom strojovo čitateľnom formáte.",
+          "Právo namietať — proti spracúvaniu založenému na oprávnenom záujme môžete kedykoľvek podať námietku.",
+          "Právo odvolať súhlas — ak je spracúvanie založené na súhlase, môžete ho kedykoľvek odvolať; odvolanie nemá vplyv na zákonnosť spracúvania pred odvolaním.",
+          "Právo podať sťažnosť — môžete sa obrátiť na Úrad na ochranu osobných údajov Slovenskej republiky, Hraničná 12, 820 07 Bratislava.",
+          "Svoje práva uplatníte na kontaktoch uvedených v úvode tohto dokumentu. Odpovieme bez zbytočného odkladu.",
         ],
       },
     ],
@@ -587,23 +581,45 @@ export const sk: LocaleContent = {
 
   signature: {
     title: "Od kontrolky k oprave",
-    instructions:
-      "Potiahnite posuvník alebo použite šípky na klávesnici a prejdite si päť fáz.",
+    hint: "Potiahnite posuvník a prejdite si päť fáz.",
     keyboardHint:
       "Šípky posúvajú po malých krokoch, Page Up a Page Down po fázach, Home a End na začiatok a koniec.",
     svgTitle:
-      "Schéma prístrojovky: po oprave je prístrojovka bez svietiacich výstražných kontroliek.",
+      "Prístrojová doska s diagnostickým prístrojom. V poslednej fáze je prístrojovka bez svietiacich výstražných kontroliek.",
     stageLabel: "Fáza",
     stages: [
-      "Kontrolka svieti",
-      "Pripojenie diagnostiky",
-      "Načítané chybové kódy",
-      "Oprava",
-      "Vymazané, kontrolky zhasnuté",
+      {
+        name: "Kontrolka svieti",
+        body: "Riadiaca jednotka zaznamenala hodnotu mimo očakávania a rozsvietila kontrolku. Čo ju spôsobilo, sa z nej prečítať nedá.",
+      },
+      {
+        name: "Pripojenie diagnostiky",
+        body: "Prístroj sa pripojí do OBD konektora a začne komunikovať s jednotkami vo vozidle. Až tým sa dostaneme k tomu, čo si zapamätali.",
+      },
+      {
+        name: "Načítané chybové kódy",
+        body: "Kódy povedia, ktorý okruh hlási problém. Sú to vodidlá, nie diagnóza — jeden kód vie mať niekoľko rôznych príčin.",
+      },
+      {
+        name: "Oprava",
+        body: "Meraním zúžime okruh na konkrétne miesto a opravíme ho. Práve toto je krok, ktorý sa nedá preskočiť výmenou dielu podľa kódu.",
+      },
+      {
+        name: "Vymazané, kontrolky zhasnuté",
+        body: "Po oprave pamäť vymažeme a overíme, že sa kontrolka nevráti. Zhasnutá kontrolka bez opravy by znamenala len odložený problém.",
+      },
     ],
-    codeListLabel: "Zoznam chybových kódov (ukážkový, nie skutočné kódy)",
-    codeRowLabel: "Chybový kód",
-    dashboardLabel: "Prístrojovka",
+    codes: [
+      { id: "P0401", label: "recirkulácia EGR" },
+      { id: "P0299", label: "plniaci tlak" },
+      { id: "P0133", label: "lambda sonda" },
+    ],
+    displayTitle: "CHYBOVÉ KÓDY — UKÁŽKA",
+    circuitTitle: "MERANIE OKRUHU",
+    circuitPoints: ["napájanie", "poistka", "konektor", "kostra"],
+    dialRpm: "ot/min × 1000",
+    dialSpeed: "km/h",
+    odo: "124 870",
   },
 
   chat: {
@@ -630,11 +646,177 @@ export const sk: LocaleContent = {
       "Aké máte otváracie hodiny?",
       "Kde vás nájdem?",
     ],
-    scriptedNotice: "Odpovede sú pripravené vopred.",
+    scriptedNotice:
+      "Teraz viem odpovedať len na základné otázky. Na čokoľvek ďalšie zavolajte na {phone}.",
     thinking: "Píše odpoveď",
     feedbackUp: "Odpoveď pomohla",
     feedbackDown: "Odpoveď nepomohla",
     feedbackThanks: "Ďakujeme.",
+  },
+
+  widgets: {
+    dyno: {
+      heading: "Čo robí úprava s krivkou výkonu",
+      lead: "Posuvníkom pridávate výkon a vedľa vidíte, ako sa mení krivka. Sivá je východisková, oranžová upravená. Výkon sa počíta z krútiaceho momentu vzťahom P = M × n / 9549, takže obe krivky vždy sedia jedna s druhou.",
+      disclaimer:
+        "Ide o ilustráciu princípu na typickom motore 2.0 TDI, nie o meranie vášho vozidla a nie o prísľub výsledku. Čo je možné pri konkrétnom motore, závisí od jeho stavu a preberá sa telefonicky:",
+      sliderLabel: "Prírastok výkonu",
+      power: "Výkon",
+      torque: "Krútiaci moment",
+      stock: "sériový stav",
+      sceneAlt: "Vozidlo na valcovej skúšobni, kolesá sa otáčajú na valcoch.",
+      chartAlt: "Graf výkonu a krútiaceho momentu v závislosti od otáčok motora.",
+      legendPower: "výkon (kW)",
+      legendTorque: "moment (Nm)",
+      legendStock: "sériový stav",
+    },
+    diagnostics: {
+      heading: "Od symptómu k príčine",
+      lead: "Vyberte, čo vozidlo robí. Uvidíte, koľko príčin prichádza do úvahy a ako sa meraním zužujú na jednu. Presne o tomto je diagnostika — chybový kód je vodidlo, nie diagnóza.",
+      disclaimer:
+        "Zjednodušená ilustrácia postupu. Skutočný počet aj poradie krokov závisia od vozidla a od toho, čo sa pri meraní ukáže. Popíšte nám, čo auto robí:",
+      pick: "Čo vozidlo robí",
+      remaining: "Zostáva príčin",
+      narrowed: "Zúžené na",
+      stepLabel: "Krok merania",
+      reset: "Začať znova",
+      sceneAlt: "Zoznam možných príčin, ktorý sa meraním postupne zužuje.",
+      symptoms: [
+        {
+          id: "mil",
+          label: "Svieti kontrolka motora",
+          causes: [
+            "snímač tlaku v sacom potrubí",
+            "netesnosť sacieho systému",
+            "ventil recirkulácie",
+            "turbodúchadlo",
+            "snímač hmotnosti vzduchu",
+            "vstrekovanie",
+          ],
+          steps: [
+            "Načítame uložené kódy a podmienky, za ktorých vznikli.",
+            "Porovnáme požadovaný a skutočný plniaci tlak v živých údajoch.",
+            "Skúškou tesnosti vylúčime netesnosť sacieho traktu.",
+            "Zostáva jedna príčina a tú overíme meraním priamo na komponente.",
+          ],
+        },
+        {
+          id: "power",
+          label: "Stráca výkon",
+          causes: [
+            "upchatý filter paliva",
+            "regulácia plniaceho tlaku",
+            "snímač hmotnosti vzduchu",
+            "vôľa v rozvodoch",
+            "obmedzenie výfuku",
+          ],
+          steps: [
+            "Overíme, či riadiaca jednotka hlási obmedzenie výkonu a prečo.",
+            "Skontrolujeme tlak paliva pod záťažou.",
+            "Porovnáme plniaci tlak s požadovanou hodnotou.",
+            "Zostáva jedna príčina a tú potvrdíme meraním.",
+          ],
+        },
+        {
+          id: "cold",
+          label: "Ťažko štartuje za studena",
+          causes: [
+            "žhaviace sviečky",
+            "tesnosť palivovej sústavy",
+            "tlak v rail",
+            "snímač teploty",
+            "stav batérie",
+          ],
+          steps: [
+            "Zmeriame napätie batérie pri štarte.",
+            "Overíme činnosť žhavenia a odpor jednotlivých sviečok.",
+            "Skontrolujeme, či palivová sústava cez noc drží tlak.",
+            "Zostáva jedna príčina a tú potvrdíme meraním.",
+          ],
+        },
+      ],
+    },
+    alignment: {
+      heading: "Ako geometria zjazdí pneumatiku",
+      lead: "Posuňte zbiehavosť a odklon kolesa a pozrite sa, čo to urobí s pneumatikou a so správaním vozidla. Pri správnych hodnotách je dezén zjazdený rovnomerne a auto drží smer.",
+      disclaimer:
+        "Ilustrácia princípu. Správne hodnoty sú pre každé vozidlo iné a určuje ich výrobca; zmerať sa dajú len na vozidle:",
+      toe: "Zbiehavosť",
+      camber: "Odklon kolesa",
+      wear: "Zjazdenie dezénu",
+      pull: "Ťahanie do strany",
+      ok: "V poriadku",
+      sceneAlt: "Schéma nápravy a pneumatika v reze s profilom zjazdenia.",
+      wearInner: "po vnútornej hrane",
+      wearOuter: "po vonkajšej hrane",
+      wearEven: "rovnomerné",
+      pullLeft: "doľava",
+      pullRight: "doprava",
+      pullNone: "žiadne",
+      frontView: "pohľad spredu — odklon",
+      topView: "pohľad zhora — zbiehavosť",
+      section: "rez pneumatikou",
+      exaggerated: "Uhly sú na obrázku zväčšené, aby boli viditeľné.",
+    },
+    tyres: {
+      heading: "Hĺbka dezénu a brzdná dráha",
+      lead: "Posuňte hĺbku dezénu od novej pneumatiky po zákonné minimum a pozrite sa, čo to urobí s brzdnou dráhou na mokrej vozovke.",
+      disclaimer:
+        "Orientačné hodnoty z verejne publikovaných testov brzdenia na mokrom, nie meranie vašej pneumatiky. Skutočná dráha závisí od pneumatiky, povrchu aj množstva vody. Stav vašich pneumatík zmeriame:",
+      depth: "Hĺbka dezénu",
+      braking: "Brzdná dráha na mokrom",
+      legalMin: "zákonné minimum",
+      versusNew: "oproti novej pneumatike",
+      fromSpeed: "z 80 km/h",
+      sceneAlt: "Pneumatika v reze s ubúdajúcim dezénom a porovnanie brzdnej dráhy.",
+    },
+    electrics: {
+      heading: "Hľadanie prerušenia v okruhu",
+      lead: "Kliknite na jednotlivé body okruhu a zmerajte, kde napätie ešte je a kde už nie. Medzi posledným bodom s napätím a prvým bez neho leží porucha.",
+      disclaimer:
+        "Zjednodušený okruh pre ilustráciu postupu. Skutočná schéma konkrétneho vozidla má podstatne viac vetiev a konektorov:",
+      instruction: "Zmerajte napätie v jednotlivých bodoch",
+      measure: "Zmerať",
+      reset: "Začať znova",
+      found: "Prerušenie je medzi týmito bodmi",
+      notMeasured: "nezmerané",
+      sceneAlt: "Schéma okruhu od napájania cez poistku a konektor k spotrebiču a kostre.",
+      points: [
+        { id: "supply", label: "Napájanie" },
+        { id: "fuse", label: "Za poistkou" },
+        { id: "connector", label: "Za konektorom" },
+        { id: "load", label: "Na spotrebiči" },
+      ],
+    },
+    timing: {
+      heading: "Prečo sa na rozvody nečaká",
+      lead: "Posuňte nájazd a pozrite sa, čo sa deje s remeňom. Kedykoľvek si môžete spustiť, čo nastane pri jeho pretrhnutí — a to je dôvod, prečo sa rozvody menia podľa intervalu a nie podľa stavu.",
+      disclaimer:
+        "Ilustrácia opotrebenia, nie predpoveď pre vaše vozidlo. Interval výmeny predpisuje výrobca pre konkrétny motor a overíme ho pre vás:",
+      mileage: "Nájazd od poslednej výmeny",
+      condition: "Stav remeňa",
+      interval: "ilustračný interval výmeny",
+      run: "Spustiť scenár pretrhnutia",
+      reset: "Späť",
+      sceneAlt: "Rozvodový remeň s ozubenými kolesami a jeho opotrebenie.",
+      states: ["bez viditeľného opotrebenia", "začínajúce opotrebenie zubov", "praskliny, po intervale"],
+      failure: "Pretrhnutý remeň",
+      failureBody:
+        "Vačkový hriadeľ sa zastaví, kľukový beží ďalej. Piest sa stretne s otvoreným ventilom. Z výmeny rozvodov sa stáva oprava hlavy motora.",
+    },
+    aircon: {
+      heading: "Náplň chladiva a teplota z výduchu",
+      lead: "Posuňte množstvo chladiva a pozrite sa, ako na to reaguje teplota vzduchu z výduchu. Chladenie neslabne skokom, ale postupne — preto si to vodič všimne až v lete.",
+      disclaimer:
+        "Ilustrácia princípu pri teplote v kabíne okolo 30 °C, nie meranie vašej klimatizácie. Skutočný stav zistíme na vozidle:",
+      charge: "Náplň chladiva",
+      ventTemp: "Teplota z výduchu",
+      state: "Stav",
+      sceneAlt: "Okruh klimatizácie s kompresorom, kondenzátorom a výparníkom.",
+      states: ["výrazný nedostatok", "znížená náplň", "správna náplň"],
+      parts: ["kompresor", "kondenzátor", "expanzný ventil", "výparník"],
+      cabin: "kabína",
+    },
   },
 
   footer: {
@@ -644,6 +826,9 @@ export const sk: LocaleContent = {
     legalHeading: "Dokumenty",
     rights: "Všetky práva vyhradené.",
     icoLabel: "IČO",
+    dicLabel: "DIČ",
+    icDphLabel: "IČ DPH",
+    registryLabel: "Zápis",
   },
 
   notFound: {
