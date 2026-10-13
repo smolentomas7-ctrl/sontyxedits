@@ -156,82 +156,82 @@
     "width": 1920
   },
   "owner-01": {
-    "height": 700,
+    "height": 1024,
     "origin": "own",
-    "placeholder": "#494948",
+    "placeholder": "#80401E",
     "upscaled": false,
     "variants": {
       "card": {
         "budgetKB": 80,
         "bytes": {
-          "avif": 8295,
-          "jpg": 12654,
-          "webp": 8038
+          "avif": 9699,
+          "jpg": 16673,
+          "webp": 8376
         },
-        "height": 350,
-        "width": 280
+        "height": 512,
+        "width": 512
       },
       "full": {
         "budgetKB": 200,
         "bytes": {
-          "avif": 23148,
-          "jpg": 36124,
-          "webp": 20564
+          "avif": 27400,
+          "jpg": 48257,
+          "webp": 22416
         },
-        "height": 700,
-        "width": 560
+        "height": 1024,
+        "width": 1024
       },
       "thumb": {
         "budgetKB": 40,
         "bytes": {
-          "avif": 3177,
-          "jpg": 4783,
-          "webp": 3118
+          "avif": 4058,
+          "jpg": 6452,
+          "webp": 3454
         },
-        "height": 189,
-        "width": 151
+        "height": 276,
+        "width": 276
       }
     },
-    "width": 560
+    "width": 1024
   },
   "owner-02": {
-    "height": 700,
+    "height": 1024,
     "origin": "own",
-    "placeholder": "#565653",
+    "placeholder": "#87411C",
     "upscaled": false,
     "variants": {
       "card": {
         "budgetKB": 80,
         "bytes": {
-          "avif": 6460,
-          "jpg": 11501,
-          "webp": 6364
+          "avif": 8719,
+          "jpg": 15603,
+          "webp": 7468
         },
-        "height": 350,
-        "width": 280
+        "height": 512,
+        "width": 512
       },
       "full": {
         "budgetKB": 200,
         "bytes": {
-          "avif": 16349,
-          "jpg": 29787,
-          "webp": 14034
+          "avif": 24081,
+          "jpg": 43985,
+          "webp": 18948
         },
-        "height": 700,
-        "width": 560
+        "height": 1024,
+        "width": 1024
       },
       "thumb": {
         "budgetKB": 40,
         "bytes": {
-          "avif": 2586,
-          "jpg": 4648,
-          "webp": 2710
+          "avif": 3824,
+          "jpg": 6109,
+          "webp": 3300
         },
-        "height": 189,
-        "width": 151
+        "height": 276,
+        "width": 276
       }
     },
-    "width": 560
+    "width": 1024
   },
   "service-cipovanie-ecu": {
     "height": 800,

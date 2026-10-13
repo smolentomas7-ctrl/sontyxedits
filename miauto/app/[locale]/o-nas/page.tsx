@@ -10,6 +10,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SlotImage } from "@/components/ui/SlotImage";
 import { HoursTable } from "@/components/ui/HoursTable";
 import { Owners } from "@/components/about/Owners";
+import { Experience } from "@/components/about/Experience";
 import { ServiceIcon } from "@/components/ui/ServiceIcon";
 import { ButtonLink } from "@/components/ui/Button";
 import { CtaBand } from "@/components/layout/CtaBand";
@@ -79,6 +80,13 @@ export default async function AboutPage({
       <Section>
         <Container>
           <Owners locale={locale} t={t} />
+        </Container>
+      </Section>
+
+      {/* Who they are, then what they bring to it. */}
+      <Section rhythm="tight" className="border-t border-[var(--border)]">
+        <Container>
+          <Experience t={t} />
         </Container>
       </Section>
 

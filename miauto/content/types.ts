@@ -142,8 +142,19 @@ export type LocaleContent = {
     readonly quietHeading: string;
     readonly quietBody: readonly string[];
     readonly ownersHeading: string;
-    /** Roles, keyed from config/miauto.ts `owners[].roleKey`. */
+    /**
+     * Roles, keyed from config/miauto.ts `owners[].roleKey`. The portraits carry
+     * their own name labels, so these are used in the alt text rather than
+     * printed under the photographs.
+     */
     readonly ownerRoles: Readonly<Record<"owner" | "coOwner", string>>;
+    /** What the owners bring to the work. Figures supplied by the owners. */
+    readonly experience: {
+      readonly heading: string;
+      readonly lead: string;
+      readonly body: string;
+      readonly points: readonly { readonly title: string; readonly body: string }[];
+    };
     readonly factsHeading: string;
     readonly interiorAlt: string;
     readonly detail01Alt: string;
@@ -216,6 +227,19 @@ export type LocaleContent = {
      */
     readonly controller: { readonly heading: string; readonly intro: string };
     readonly sections: readonly { readonly heading: string; readonly body: readonly string[] }[];
+  };
+
+  /**
+   * The Castrol Service partnership, as the owners describe it. Nothing here is
+   * a certification claim and the site reproduces no Castrol artwork.
+   */
+  readonly castrol: {
+    readonly eyebrow: string;
+    readonly heading: string;
+    readonly lead: string;
+    readonly body: string;
+    /** Four trust points, in the order the icons are assigned in the component. */
+    readonly points: readonly [string, string, string, string];
   };
 
   readonly signature: {

@@ -392,6 +392,26 @@ export const sk: LocaleContent = {
       owner: "Majiteľ servisu",
       coOwner: "Spolumajiteľ servisu",
     },
+    experience: {
+      heading: "Skúsenosti, odbornosť a poctivá práca",
+      lead: "Vaše auto v rukách odborníkov.",
+      body:
+        "Za našou prácou stoja viac ako 10 rokov skúseností so servisom a údržbou automobilov. Naše odborné základy vychádzajú aj z absolvovaného štúdia na automechanickej škole, kde sme dosahovali výborné študijné výsledky. Získané vedomosti a praktické skúsenosti využívame pri každodennej starostlivosti o vozidlá našich zákazníkov.",
+      points: [
+        {
+          title: "Viac ako 10 rokov skúseností",
+          body: "Praktické skúsenosti so servisom a údržbou automobilov.",
+        },
+        {
+          title: "Odborné technické vzdelanie",
+          body: "Absolvované štúdium na automechanickej škole.",
+        },
+        {
+          title: "Dôraz na kvalitu",
+          body: "Precízny prístup, zodpovedná práca a starostlivosť o každé vozidlo.",
+        },
+      ],
+    },
     factsHeading: "Kde nás nájdete",
     interiorAlt: "Interiér dielne M.I.Auto, vozidlá počas servisu",
     detail01Alt: "Vozidlo zdvihnuté na dvojstĺpovom zdviháku v dielni M.I.Auto",
@@ -576,6 +596,20 @@ export const sk: LocaleContent = {
           "Svoje práva uplatníte na kontaktoch uvedených v úvode tohto dokumentu. Odpovieme bez zbytočného odkladu.",
         ],
       },
+    ],
+  },
+
+  castrol: {
+    eyebrow: "Spolupráca",
+    heading: "Partner Castrol Service",
+    lead: "Kvalita, na ktorú sa môžete spoľahnúť.",
+    body:
+      "Spolupracujeme so značkou Castrol Service a pri výmene motorového oleja používame oleje Castrol. Pri každom vozidle vyberáme olej podľa požiadaviek výrobcu, potrebných špecifikácií a odporúčaní pre konkrétny motor.",
+    points: [
+      "Zmluvná spolupráca s Castrol Service",
+      "Motorové oleje Castrol",
+      "Výber oleja podľa špecifikácií výrobcu vozidla",
+      "Dôraz na kvalitu a správny servisný postup",
     ],
   },
 

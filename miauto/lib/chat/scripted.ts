@@ -75,6 +75,7 @@ const REFUSAL_KEYWORDS = {
 export function buildNodes(locale: Locale): Node[] {
   const t = getContent(locale);
   const sk = locale === "sk";
+  const castrol = t.castrol;
   const callLine = sk
     ? `Zavolajte na ${site.phone}.`
     : `Call ${site.phone}.`;
@@ -136,6 +137,20 @@ export function buildNodes(locale: Locale): Node[] {
         : `Arrange a visit by calling ${site.phone}. Outside opening hours, use the form on the contact page. I cannot book anything myself. [source: contact]`,
       chips: sk ? ["Čo si mám pripraviť?", "Aké máte otváracie hodiny?"] : ["What should I have ready?", "What are your opening hours?"],
       cta: "form",
+    },
+    {
+      id: "castrol",
+      keywords: [
+        "olej", "oleja", "oleje", "olejov", "motorovy", "motoroveho", "vymena oleja",
+        "castrol", "mazivo", "maziva", "specifikacia", "specifikacie", "viskozita",
+        "oil", "oils", "engine oil", "oil change", "lubricant", "viscosity", "spec",
+      ],
+      // `t` is already the visitor's locale, so one line serves both.
+      answer: `${castrol.body} [source: castrol]`,
+      chips: sk
+        ? ["Ako si dohodnem termín?", "Aké služby ponúkate?"]
+        : ["How do I arrange a visit?", "What services do you offer?"],
+      cta: "phone",
     },
     {
       id: "faq.priprava",

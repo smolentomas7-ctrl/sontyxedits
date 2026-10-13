@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getContent, isLocale } from "@/content";
 import { canonicalFor } from "@/lib/i18n";
 import { Container, Section } from "@/components/ui/Section";
+import { CastrolPartner } from "@/components/home/CastrolPartner";
 import { Reveal } from "@/components/ui/Reveal";
 import { CtaBand } from "@/components/layout/CtaBand";
 import { Hero } from "@/components/home/Hero";
@@ -97,6 +98,13 @@ export default async function HomePage({
               </Reveal>
             ))}
           </ul>
+        </Container>
+      </Section>
+
+      {/* The partnership, where it follows the reasons to trust the workshop. */}
+      <Section rhythm="tight">
+        <Container>
+          <CastrolPartner t={t} />
         </Container>
       </Section>
 

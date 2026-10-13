@@ -392,6 +392,26 @@ export const en: LocaleContent = {
       owner: "Owner",
       coOwner: "Co-owner",
     },
+    experience: {
+      heading: "Experience, expertise and honest work",
+      lead: "Your car in the hands of people who know it.",
+      body:
+        "Behind our work are more than 10 years of experience servicing and maintaining cars. Our grounding also comes from completed studies at a motor mechanics school, where we achieved excellent results. We put that knowledge and that practical experience into the day-to-day care of our customers' vehicles.",
+      points: [
+        {
+          title: "More than 10 years of experience",
+          body: "Hands-on experience servicing and maintaining cars.",
+        },
+        {
+          title: "Technical education in the trade",
+          body: "Completed studies at a motor mechanics school.",
+        },
+        {
+          title: "An emphasis on quality",
+          body: "A precise approach, responsible work and care for every vehicle.",
+        },
+      ],
+    },
     factsHeading: "Where to find us",
     interiorAlt: "Inside the M.I.Auto workshop, vehicles in for service",
     detail01Alt: "A vehicle raised on the two-post lift in the M.I.Auto workshop",
@@ -577,6 +597,20 @@ export const en: LocaleContent = {
           "You can exercise these rights using the contact details at the top of this document. We will respond without undue delay.",
         ],
       },
+    ],
+  },
+
+  castrol: {
+    eyebrow: "Partnership",
+    heading: "Castrol Service partner",
+    lead: "Quality you can rely on.",
+    body:
+      "We work with Castrol Service, and we use Castrol oils for engine oil changes. For every vehicle we choose the oil according to the manufacturer's requirements, the specifications it needs and the recommendations for that particular engine.",
+    points: [
+      "A contractual partnership with Castrol Service",
+      "Castrol engine oils",
+      "Oil chosen to the vehicle manufacturer's specification",
+      "An emphasis on quality and the correct service procedure",
     ],
   },
 

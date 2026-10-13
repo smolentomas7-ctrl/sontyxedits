@@ -47,9 +47,29 @@ function collect(locale: Locale, t: LocaleContent): Section[] {
       `${t.about.ownersHeading}: ${site.owners
         .map((owner) => `${owner.name} (${t.about.ownerRoles[owner.roleKey]})`)
         .join(", ")}.`,
+      "",
+      `${t.about.experience.heading}: ${t.about.experience.body}`,
+      ...t.about.experience.points.map((point) => `- ${point.title}: ${point.body}`),
+      "",
+      // The years are the owners' own experience, not the company's age, and the
+      // assistant is told the difference explicitly so it cannot blur the two.
       locale === "sk"
-        ? "O histórii servisu, počte rokov na trhu, veľkosti tímu ani o vybavení dielne nie sú na stránke žiadne údaje."
-        : "The site carries no information about the workshop's history, years in business, team size or equipment.",
+        ? "Uvedené roky sú skúsenosti majiteľov, nie dĺžka pôsobenia firmy. O histórii servisu, veľkosti tímu ani o vybavení dielne nie sú na stránke žiadne údaje."
+        : "The years above are the owners' own experience, not how long the company has existed. The site carries no information about the workshop's history, team size or equipment.",
+    ].join("\n"),
+  });
+
+  // castrol -> /{locale}
+  sections.push({
+    id: "castrol",
+    title: t.castrol.heading,
+    source: `/${locale}`,
+    body: [
+      t.castrol.body,
+      ...t.castrol.points.map((point) => `- ${point}`),
+      locale === "sk"
+        ? "Značky olejov, ich konkrétne špecifikácie, ceny ani intervaly výmeny na stránke uvedené nie sú — tie sa preberajú pre konkrétne vozidlo telefonicky."
+        : "No oil grades, specifications, prices or change intervals are published on the site — those are discussed by phone for the specific vehicle.",
     ].join("\n"),
   });
 

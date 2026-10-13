@@ -12,8 +12,10 @@ import type { Locale, LocaleContent } from "@/content/types";
  * yet, nothing is rendered at all — no outline cards, no initials, no heading
  * left hanging over an empty row.
  *
- * Portraits are 4:5 and share one frame, radius and object-fit, so two photos
- * taken at different distances still read as a pair.
+ * The supplied portraits are square, shot in the same place in the same light,
+ * and each carries its own name label. So they share one frame, one radius and
+ * one object-fit — and no caption is printed under them, because that would
+ * print each name twice.
  */
 export function Owners({ locale, t }: { locale: Locale; t: LocaleContent }) {
   const owners = site.owners
@@ -26,28 +28,23 @@ export function Owners({ locale, t }: { locale: Locale; t: LocaleContent }) {
     <div>
       <h2 className="text-[1.5rem] md:text-[2rem]">{t.about.ownersHeading}</h2>
 
-      <ul className="mt-8 grid gap-6 sm:grid-cols-2 sm:gap-8 md:max-w-[46rem]">
+      {/* Held to a column width rather than run full-bleed: two square portraits
+          at full container width would be the loudest thing on the page. */}
+      <ul className="mt-8 grid gap-5 sm:grid-cols-2 sm:gap-6 md:max-w-[52rem]">
         {owners.map((owner, index) => {
           const role = t.about.ownerRoles[owner.roleKey];
           return (
             <Reveal as="li" key={owner.name} index={index}>
-              <figure className="m-0">
-                <SlotImage
-                  slot={owner.slot!}
-                  // Describes the person, in the page's language. The branding
-                  // visible behind them is not part of the description.
-                  alt={`${owner.name} — ${role}, ${site.legalName}`}
-                  index={index}
-                  sizes="(min-width: 640px) 320px, 100vw"
-                  className="rounded-[var(--radius-card)] border border-[var(--border)]"
-                />
-                <figcaption className="mt-4">
-                  <p className="font-heading text-[1.1875rem] font-semibold tracking-[-0.02em]">
-                    {owner.name}
-                  </p>
-                  <p className="mt-1 text-[0.9375rem] text-[color:var(--text-muted)]">{role}</p>
-                </figcaption>
-              </figure>
+              <SlotImage
+                slot={owner.slot!}
+                // The name is in the photograph, where a screen reader cannot
+                // reach it, so it is spelled out here instead. The branding
+                // visible behind them is not part of the description.
+                alt={`${owner.name} — ${role}, ${site.legalName}`}
+                index={index}
+                sizes="(min-width: 640px) 400px, 100vw"
+                className="rounded-[var(--radius-card)] border border-[var(--border)]"
+              />
             </Reveal>
           );
         })}

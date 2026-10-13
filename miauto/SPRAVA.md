@@ -28,10 +28,21 @@ predtým, než sa spustí, čo by jej pomohlo, a ako sa nasadzuje.
 - Pribudol odsek o fotografiách majiteľov a o tom, že sú zverejnené s ich
   súhlasom, a odsek o tom, čo presne sa zaznamenáva pri práci s asistentom.
 
+### Partner Castrol Service
+- Na úvodnej stránke je sekcia o zmluvnej spolupráci s Castrol Service: nadpis,
+  podnadpis, odsek o tom, že pri výmene motorového oleja sa používajú oleje
+  Castrol a že sa vyberá podľa požiadaviek výrobcu, a štyri body dôvery.
+- Sekcia je typografická — **nereprodukuje žiadnu grafiku Castrolu**, netvrdí
+  certifikáciu ani autorizáciu a nenaznačuje, že by jedna špecifikácia oleja
+  sedela na každé vozidlo.
+- Asistent o spolupráci vie: na otázku „aký olej používate" odpovie z tohto
+  textu a odkáže na úvodnú stránku, v slovenčine aj v angličtine.
+
 ### Majitelia
-- Sekcia **Majitelia** na stránke O servise: dve portrétové fotografie vedľa
-  seba, na mobile pod sebou, rovnaký pomer strán 4:5, rovnaké orámovanie,
-  rovnaký polomer rohov. Pod každou je meno a rola.
+- Sekcia **Majitelia** na stránke O servise: dve štvorcové portrétové
+  fotografie vedľa seba, na mobile pod sebou, rovnaké orámovanie a rovnaký
+  polomer rohov. **Mená sa pod fotografie nepíšu** — každá fotografia má
+  vlastnú menovku priamo v obrázku.
 - Údaje sú v konfigurácii (`config/miauto.ts`, pole `owners`), komponent funguje
   pre jedného aj pre dvoch. Ak by niekto chýbal alebo nemal fotku, sekcia sa
   nevykreslí vôbec — nevznikne prázdny rámček.
@@ -39,7 +50,18 @@ predtým, než sa spustí, čo by jej pomohlo, a ako sa nasadzuje.
   orez na 4:5, tri veľkosti v troch formátoch (AVIF, WebP, JPEG), farebný
   medzistav počas načítania. **Žiadna fotografia nebola umelo zväčšená.**
 - Popisy pre čítačky obrazovky sú vecné: „Marián Hrnčiar — Spolumajiteľ servisu,
-  M.I.Auto s.r.o." a to isté pre Ivana Kubisa.
+  M.I.Auto s.r.o." a to isté pre Ivana Kubisa. Menovka je v obrázku, kam sa
+  čítačka nedostane, preto je meno zopakované v popise.
+
+### Skúsenosti a vzdelanie majiteľov
+- Na stránke O servise je samostatná sekcia „Skúsenosti, odbornosť a poctivá
+  práca" s podnadpisom, odsekom a tromi bodmi: viac ako 10 rokov skúseností,
+  odborné technické vzdelanie a dôraz na kvalitu.
+- Text je presne ten, ktorý ste dodali. **Nedopĺňali sme** názov školy, rok
+  ukončenia, ocenenia, certifikáty výrobcov ani životopis jednotlivých
+  majiteľov — nič z toho podklady neurčujú.
+- V podkladoch pre asistenta je k tomu veta, že uvedené roky sú skúsenosti
+  majiteľov, nie dĺžka pôsobenia firmy, aby si to asistent nespojil.
 
 ### Značka
 - **Logo**: písmeno M vedené ako jedna signálová dráha — zvislé úseky a rohy pod
@@ -207,11 +229,10 @@ funkčná, len asistent odpovedá z pripravených odpovedí a sám to hovorí.
   Popisy pri ilustračných fotografiách opisujú činnosť a nikde netvrdia, že ide
   o vaše priestory. Vlastné fotografie by boli priamočiare zlepšenie — stačí ich
   poslať a prejdú rovnakým spracovaním.
-- **Portréty majiteľov by si zaslúžili prefotiť.** Obe predlohy sú telefónne
-  zábery; po oreze na portrét zostalo 560 × 700 bodov, čo je presne toľko, koľko
-  sa dá použiť bez umelého zväčšovania (to by tvár rozmazalo). Na displeji to
-  obstojí, väčšie to byť nemôže. Dve fotografie fotoaparátom, na rovnakom mieste
-  a v rovnakom svetle, by sekciu posunuli najviac zo všetkého.
+- **Menovky v portrétoch sú po anglicky.** Na fotografiách je „co-owner";
+  slovenská stránka by privítala „spolumajiteľ". Fotografie sme neupravovali —
+  stačí poslať znovu vyexportované verzie s rovnakým rozložením a nahradia sa
+  jedna k jednej. (Pre čítačky obrazovky je rola po slovensky už teraz.)
 - Hero fotografia má v strede záberu vypálené logo; stmavenie je preto natiahnuté
   doľava, aby bol nadpis čitateľný. Čistá verzia tej istej fotografie by hero
   uvoľnila.
