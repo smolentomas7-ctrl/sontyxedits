@@ -11,3 +11,7 @@ next-env.d.ts
 # wrote (GPS, device, capture time) and are never published; scripts/process-images.py
 # strips and resizes them into public/assets/miauto/.
 assets-originals/
+
+# Built deployment archives. Regenerate with `npm run build:static`.
+deploy/
+out/
