@@ -26,12 +26,9 @@ export const MARK_GLYPH =
 export function LogoMark({
   className,
   title,
-  /** Drops the ring, for sizes where a hairline cannot survive. */
-  glyphOnly = false,
 }: {
   className?: string;
   title?: string;
-  glyphOnly?: boolean;
 }) {
   return (
     <svg
@@ -43,7 +40,7 @@ export function LogoMark({
       focusable="false"
     >
       {title ? <title>{title}</title> : null}
-      {glyphOnly ? null : <path d={MARK_RING} />}
+      <path d={MARK_RING} />
       <path d={MARK_GLYPH} />
     </svg>
   );

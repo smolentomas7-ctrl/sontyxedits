@@ -118,9 +118,12 @@ export function Footer({ locale, t }: { locale: Locale; t: LocaleContent }) {
       </div>
 
       <div className="border-t border-[var(--border)]">
-        <div className="container flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-6 text-[0.8125rem] text-[color:var(--text-muted)]">
+        {/* The chat launcher is fixed to the bottom right, so the last line of
+            the page keeps clear of it on the narrow layout where they collide. */}
+        <div className="container flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-6 pb-24 text-[0.8125rem] text-[color:var(--text-muted)] md:pb-6">
           <p>
-            © {new Date().getFullYear()} {site.legalName}. {t.footer.rights}
+            {/* The legal name ends in a full stop of its own, hence the middle dot. */}
+            © {new Date().getFullYear()} {site.legalName} · {t.footer.rights}
           </p>
           {registration.length > 0 ? (
             <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
