@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, LOCALES, type Locale } from "@/content/types";
-import { siteUrl } from "@/config/miauto";
+import { siteUrl, siteUrlIsPlaceholder } from "@/config/miauto";
 
 export { DEFAULT_LOCALE, LOCALES };
 export type { Locale };
@@ -43,8 +43,17 @@ export function otherLocale(locale: Locale): Locale {
 /**
  * hreflang alternates for a route, plus x-default pointing at the Slovak version.
  * `route` is the path WITHOUT the locale prefix, e.g. "/sluzby/pneuservis".
+ *
+ * Until the real domain is set as NEXT_PUBLIC_SITE_URL these come back empty, on
+ * purpose. A canonical is an absolute URL or nothing, and a build that has not
+ * been told its address would otherwise publish `http://localhost:3000/...` as
+ * the one true URL of every page — which tells a crawler that the page it is
+ * reading lives somewhere it cannot reach. No canonical at all is correct
+ * instead: the crawler keeps the URL it fetched. Set the variable and every
+ * canonical, hreflang and x-default appears.
  */
 export function alternates(route: string) {
+  if (siteUrlIsPlaceholder) return {};
   const languages: Record<string, string> = {};
   for (const locale of LOCALES) {
     languages[locale] = `${siteUrl}/${locale}${route}`;
@@ -58,6 +67,7 @@ export function alternates(route: string) {
 
 /** Canonical for a specific locale, used per-page so each locale is self-canonical. */
 export function canonicalFor(locale: Locale, route: string) {
+  if (siteUrlIsPlaceholder) return {};
   const alt = alternates(route);
   return { ...alt, canonical: `${siteUrl}/${locale}${route}` };
 }

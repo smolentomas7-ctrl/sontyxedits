@@ -117,9 +117,22 @@ export const siteUrl = (
   "http://localhost:3000"
 ).replace(/\/$/, "");
 
-/** True when siteUrl is still a local or preview address rather than the domain. */
+/**
+ * True when nothing told the build its own address, so `siteUrl` above is the
+ * local fallback.
+ *
+ * Everything that has to be an absolute URL — canonical, hreflang, the sitemap,
+ * the Host line in robots.txt, the URLs inside the structured data — is left out
+ * in that state rather than published pointing at localhost. A crawler that is
+ * told the real page lives somewhere it cannot reach is worse off than one told
+ * nothing, which simply keeps the URL it fetched.
+ *
+ * A Netlify build from Git is not in that state: Netlify sets URL to the site's
+ * own address, which is enough to be truthful. Only a build run with neither
+ * variable — which is what `npm run build:static` does here — is.
+ */
 export const siteUrlIsPlaceholder =
-  !process.env.NEXT_PUBLIC_SITE_URL || siteUrl.includes("localhost");
+  !process.env.NEXT_PUBLIC_SITE_URL && !process.env.URL;
 
 export const formattedAddress = `${site.street}, ${site.postalCode} ${site.city}`;
 export const mailtoHref = `mailto:${site.email}`;

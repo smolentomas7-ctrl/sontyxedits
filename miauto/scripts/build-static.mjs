@@ -66,6 +66,23 @@ try {
   }
 
   console.log("\nStatic site written to out/ — this is the folder to drag into Netlify.");
+
+  if (!process.env.NEXT_PUBLIC_SITE_URL) {
+    console.log(
+      [
+        "",
+        "  ⚠  NEXT_PUBLIC_SITE_URL was not set for this build.",
+        "     Canonical links, hreflang and the sitemap are therefore omitted:",
+        "     the site works and is indexable, but it does not tell search",
+        "     engines which address is the real one, and shared links have no",
+        "     preview image.",
+        "",
+        "     Build it again with the domain to get all of that:",
+        "       NEXT_PUBLIC_SITE_URL=https://www.example.sk npm run build:static",
+        "",
+      ].join("\n"),
+    );
+  }
 } finally {
   restore();
 }

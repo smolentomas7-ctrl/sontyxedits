@@ -213,7 +213,7 @@ a code change, and it has to be done once per site.
 | `CHAT_MODEL` | No | Overrides the model id. Default `claude-opus-5-5`. Always a **pinned** id, never a floating alias. |
 | `CHAT_DAILY_TOKEN_CAP` | No | Daily token ceiling; default 300,000. When reached, everyone drops to scripted until the next day. |
 | `CHAT_BASE_URL` | No | Points the SDK at a gateway instead of the default API. Used for testing against a stub. |
-| `NEXT_PUBLIC_SITE_URL` | **Yes, before the production build** | The public URL, for canonicals, `hreflang`, the sitemap and the Open Graph image URLs. It is inlined **at build time**, so setting it after a build has no effect — set it, then redeploy. |
+| `NEXT_PUBLIC_SITE_URL` | Strongly recommended, before the production build | The public URL, for canonicals, `hreflang`, the sitemap and the Open Graph image URLs. It is inlined **at build time**, so setting it after a build has no effect — set it, then redeploy. A Netlify build from Git falls back to `URL`, which Netlify sets to the site's own address. With neither, `siteUrlIsPlaceholder` is true and every absolute URL is **omitted** rather than published as `http://localhost:3000` — the pages still work and still index, they just do not name a canonical. The one exception is the Open Graph image, which Next builds from `metadataBase`: it carries the localhost URL, so shared links get no preview image until the variable is set. |
 
 Set them in **Site configuration → Environment variables**. The API key is read
 from `process.env` inside the route handler only. It is never a `NEXT_PUBLIC_`

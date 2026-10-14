@@ -1,13 +1,18 @@
 import type { MetadataRoute } from "next";
 import { LOCALES, SERVICE_SLUGS } from "@/content/types";
 import { ROUTES } from "@/lib/i18n";
-import { siteUrl } from "@/config/miauto";
+import { siteUrl, siteUrlIsPlaceholder } from "@/config/miauto";
 
 /** All 24 routes: 12 per locale, both locales, each with its hreflang alternates. */
 /** Both builds emit this as a file; nothing about it varies per request. */
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  // Every entry in a sitemap is an absolute URL, so without the real domain
+  // there is nothing truthful to put in one. An empty sitemap is valid and says
+  // exactly that; robots.txt does not advertise it in this state either.
+  if (siteUrlIsPlaceholder) return [];
+
   const routes = [
     { path: ROUTES.home, priority: 1 },
     { path: ROUTES.services, priority: 0.9 },

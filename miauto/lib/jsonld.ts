@@ -1,4 +1,21 @@
-import { DAY_ORDER, formattedAddress, has, site, siteUrl } from "@/config/miauto";
+import {
+  DAY_ORDER,
+  formattedAddress,
+  has,
+  site,
+  siteUrl,
+  siteUrlIsPlaceholder,
+} from "@/config/miauto";
+
+/**
+ * Prefix for every URL in the structured data.
+ *
+ * Empty until the real domain is set, which leaves relative references — and a
+ * relative reference in JSON-LD resolves against the page it was found on,
+ * which is exactly right. An absolute `http://localhost:3000/...` would instead
+ * claim the business lives at an address no crawler can reach.
+ */
+const base = siteUrlIsPlaceholder ? "" : siteUrl;
 import { images } from "@/config/images";
 import type { Locale } from "@/content/types";
 
@@ -42,12 +59,12 @@ export function autoRepairJsonLd(locale: Locale) {
   const data: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "AutoRepair",
-    "@id": `${siteUrl}/#autorepair`,
+    "@id": `${base}/#autorepair`,
     name: site.legalName,
-    url: `${siteUrl}/${locale}`,
+    url: `${base}/${locale}`,
     telephone: site.phone,
     email: site.email,
-    image: `${siteUrl}${images.hero.src}`,
+    image: `${base}${images.hero.src}`,
     address: {
       "@type": "PostalAddress",
       streetAddress: site.street,
@@ -94,7 +111,7 @@ export function breadcrumbJsonLd(
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: `${siteUrl}${item.url}`,
+      item: `${base}${item.url}`,
     })),
   };
 }

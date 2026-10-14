@@ -218,12 +218,31 @@ Na stránke O servise sú portréty Mariána Hrnčiara a Ivana Kubisa. Pred spus
 Dokument o ochrane osobných údajov už obsahuje odsek, ktorý hovorí, že fotografie
 sú zverejnené so súhlasom a že ho možno kedykoľvek odvolať.
 
-### 🔴 Adresa webu pred zostavením
+### 🟠 Adresa webu pred zostavením
 
 `NEXT_PUBLIC_SITE_URL` sa zapečie do stránok **v okamihu zostavenia**. Treba ju
 nastaviť na finálnu doménu (napr. `https://miauto.sk`) a až potom spustiť build.
-Keď sa nastaví neskôr, kanonické odkazy, mapa stránok aj obrázky pre zdieľanie
-budú ukazovať na adresu `*.netlify.app`.
+
+Priložený balík `deploy/miauto-netlify-drag-and-drop.zip` je zostavený bez nej,
+lebo doménu zatiaľ nepoznáme. **Nasadiť sa dá tak, ako je** — stránka funguje a
+vyhľadávače ju zaindexujú na tej adrese, na ktorej ju nájdu. Chýbajú len veci,
+ktoré musia byť absolútnou adresou, a tie sa radšej nevypíšu, než aby ukazovali
+na `localhost`: kanonický odkaz, hreflang, mapa stránok a riadky `Host` a
+`Sitemap` v `robots.txt`. Build na to upozorní na konci výpisu.
+
+Keď doménu poviete, balík prerobím za minútu a všetko sa objaví:
+
+```
+NEXT_PUBLIC_SITE_URL=https://www.miauto.sk npm run build:static
+```
+
+Pri nasadení cez Git to netreba riešiť zvlášť — Netlify si vlastnú adresu
+nastaví sám a stránka ju použije; premenná ju len prepíše na tú finálnu.
+
+Jediné, čo v balíku bez domény zostáva neúplné, je obrázok pre náhľad
+zdieľaného odkazu (`og:image`) — ten musí byť absolútny a Next ho vyrába sám, s
+adresou `localhost`. Pri zdieľaní odkazu sa teda zobrazí názov a popis, ale bez
+obrázka. Zostavenie s doménou to spraví správne.
 
 ### 🟠 Právna kontrola dokumentu o ochrane osobných údajov
 
@@ -304,6 +323,9 @@ funkčná, len asistent odpovedá z pripravených odpovedí a sám to hovorí.
    (prípadne DIČ a IČ DPH).
 2. Získať **súhlas oboch majiteľov** so zverejnením fotografie.
 3. Dať dokument o ochrane osobných údajov **skontrolovať právnikovi**.
+4. Ak už je známa **doména**, nastaviť ju ako `NEXT_PUBLIC_SITE_URL` a zostaviť
+   znova. Nie je to podmienka spustenia — bez nej stránka funguje a indexuje sa
+   — ale s ňou dostanú vyhľadávače kanonické odkazy, hreflang aj mapu stránok.
 
 ### B. Nasadenie cez Git (odporúčané — asistent funguje)
 1. Netlify → **Add new site → Import an existing project**, vybrať repozitár.
