@@ -56,6 +56,7 @@ export default async function AboutPage({
               slot={images.aboutInterior}
               alt={t.about.interiorAlt}
               priority
+              parallax
               sizes="(min-width: 1024px) 40vw, 100vw"
               className="rounded-[var(--radius-card)] border border-[var(--border)]"
             />

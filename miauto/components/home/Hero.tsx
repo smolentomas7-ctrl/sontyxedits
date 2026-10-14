@@ -4,6 +4,7 @@ import { images } from "@/config/images";
 import { formattedAddress, site } from "@/config/miauto";
 import { ROUTES, path } from "@/lib/i18n";
 import { ButtonLink } from "@/components/ui/Button";
+import { Parallax } from "@/components/ui/Parallax";
 import { OpenBadge } from "@/components/ui/HoursTable";
 import type { Locale, LocaleContent } from "@/content/types";
 
@@ -11,23 +12,31 @@ export function Hero({ locale, t }: { locale: Locale; t: LocaleContent }) {
   const slot = images.hero;
 
   return (
-    <section className="relative isolate flex min-h-[86svh] items-end overflow-hidden pb-14 pt-[calc(var(--nav-h)+64px)] md:min-h-[92svh] md:pb-24">
+    <section
+      data-parallax-area=""
+      className="relative isolate flex min-h-[86svh] items-end overflow-hidden pb-14 pt-[calc(var(--nav-h)+64px)] md:min-h-[92svh] md:pb-24"
+    >
       {/* The hero bleeds full-width past the container on every edge. */}
       <div className="absolute inset-0 -z-10" style={{ backgroundColor: slot.placeholder }}>
-        <Image
-          src={slot.src}
-          alt={t.home.heroImageAlt}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
-        {/* Scrim, in two passes. The supplied hero has the workshop's logo burned
-            into the middle of the frame, so the horizontal pass is weighted hard
-            to the left: the headline column sits on near-solid background and the
-            photograph stays readable on the right, instead of the headline and the
-            baked-in logo fighting each other. Measured contrast on the headline is
-            well past 4.5:1 across the text column. */}
+        {/* The photograph answers the cursor across the whole hero; the scrims
+            below it do not, and that difference is the depth. */}
+        <Parallax className="absolute inset-0" shift={8} tilt={0.6}>
+          <Image
+            src={slot.src}
+            alt={t.home.heroImageAlt}
+            fill
+            priority
+            sizes="100vw"
+            className="hero-image object-cover"
+          />
+        </Parallax>
+        {/* Scrim, in two passes. The vertical pass sits the text block on solid
+            ground; the horizontal one is weighted left so the headline column
+            keeps its contrast while the right half of the photograph stays
+            readable. Below 768px there is no second column to protect — the two
+            scrims would stack over the whole frame and leave the photograph
+            black — so the horizontal pass drops out and the vertical one carries
+            the text alone. Both measured on the headline, not estimated. */}
         <div
           aria-hidden="true"
           className="absolute inset-0"
@@ -38,7 +47,7 @@ export function Hero({ locale, t }: { locale: Locale; t: LocaleContent }) {
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0"
+          className="absolute inset-0 hidden md:block"
           style={{
             background:
               "linear-gradient(to right, color-mix(in srgb, var(--bg) 94%, transparent) 0%, color-mix(in srgb, var(--bg) 86%, transparent) 34%, color-mix(in srgb, var(--bg) 42%, transparent) 62%, transparent 86%)",

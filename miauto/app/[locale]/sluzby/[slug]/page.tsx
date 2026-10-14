@@ -111,6 +111,7 @@ export default async function ServiceDetailPage({
           slot={slot}
           alt={service.name}
           priority
+          parallax
           sizes="(min-width: 1200px) 1100px, 100vw"
           className="rounded-[var(--radius-card)] border border-[var(--border)]"
         />

@@ -60,7 +60,7 @@ export const en: LocaleContent = {
     heroLead:
       "We work faults from the warning light to the repair. Diagnostics, ECU software, wheel alignment, tyre service, Volkswagen Group vehicle electrics, timing system replacement and A/C service.",
     heroImageAlt:
-      "The M.I.Auto workshop in Ružomberok, two vehicles with bonnets open during servicing",
+      "A repair workshop, a vehicle raised on a two-post lift, a mechanic working on the front wheel",
     servicesHeading: "What we do",
     servicesLead:
       "Seven services. Most faults start with diagnostics, which is why it comes first.",

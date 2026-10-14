@@ -60,7 +60,7 @@ export const sk: LocaleContent = {
     heroLead:
       "Riešime poruchy od kontrolky po opravu. Diagnostika, čipovanie ECU, geometria kolies, pneuservis, elektroinštalácia vozidiel koncernu Volkswagen, výmena rozvodov a servis klimatizácie.",
     heroImageAlt:
-      "Dielňa M.I.Auto v Ružomberku, dve vozidlá s otvorenou kapotou počas servisu",
+      "Autoservisná dielňa, vozidlo zdvihnuté na dvojstĺpovom zdviháku, mechanik pracuje na prednom kolese",
     servicesHeading: "Čo robíme",
     servicesLead:
       "Sedem služieb. Pri väčšine porúch sa začína diagnostikou — preto má svoje miesto na začiatku.",

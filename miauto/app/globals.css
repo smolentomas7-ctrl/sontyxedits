@@ -222,6 +222,24 @@ iframe:focus {
     color var(--dur-state) var(--ease-ios-in);
 }
 
+/* Hover lift for the real controls — buttons and button-links, not chips or
+   icon buttons, where movement on something that small reads as a wobble. The
+   scale is deliberately under 1.02: enough to feel the surface respond, not
+   enough to shift the text under the pointer.
+
+   It sits above the pressed rule on purpose. Both selectors weigh the same, so
+   source order is what decides, and a press must always beat a hover. */
+@media (hover: hover) and (pointer: fine) {
+  .tappable--lift:hover {
+    transform: translateY(-1px) scale(1.012);
+    box-shadow: 0 10px 26px -14px rgb(0 0 0 / 65%);
+  }
+}
+
+/* A button is wide, so it needs less travel than an icon button to read as
+   pressed; the whole hover-to-press span stays inside two per cent. */
+.tappable--lift { --press-scale: 0.975; }
+
 /* :active is unreliable on touch, so the pressed state is driven by both it and
    a data-pressed attribute set on pointerdown. */
 .tappable:active,
@@ -261,6 +279,57 @@ iframe:focus {
 .reveal-image[data-revealed="true"] {
   opacity: 1;
   transform: none;
+}
+
+/* The hero's focal point moves with the viewport. On a narrow screen the 16:9
+   frame crops hard, and centring it puts the bright ceiling directly behind the
+   headline; pulling the focus down and right puts the car there instead, which
+   is both the better picture and the better contrast. Written as a property
+   rather than a utility because an arbitrary object-position in Tailwind v4 is
+   ambiguous with object-fit. */
+.hero-image { object-position: var(--hero-focus, 62% 64%); }
+@media (min-width: 768px) {
+  .hero-image { --hero-focus: 50% 50%; }
+}
+
+/* ============================================================================
+   CURSOR PARALLAX
+   Three elements, three jobs, so no two of them ever write the same property:
+   the container holds the perspective, the layer carries the cursor transform,
+   and the image inside it keeps its own entrance reveal.
+
+   The layer has no transition: the easing is the rAF loop in lib/motion.ts,
+   which is what makes the return to rest feel the same as the movement into it
+   rather than a separate animation bolted on the end.
+
+   The resting scale is what keeps the edges off screen while it translates — at
+   6px of shift, 1.035 leaves room on every side.
+   ========================================================================== */
+.parallax {
+  perspective: 1100px;
+  transform-style: preserve-3d;
+}
+.parallax-layer {
+  /* Positioned, not merely transformed: a `fill` image inside resolves against
+     this box either way, including where the transform below is removed. */
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transform:
+    translate3d(
+      calc(var(--parallax-x, 0) * var(--parallax-shift, 6px)),
+      calc(var(--parallax-y, 0) * var(--parallax-shift, 6px)),
+      0
+    )
+    rotateY(calc(var(--parallax-x, 0) * var(--parallax-tilt, 0.9deg)))
+    rotateX(calc(var(--parallax-y, 0) * var(--parallax-tilt, -0.9deg)))
+    scale(var(--parallax-scale, 1.035));
+  transform-origin: center;
+}
+/* Nothing can move it without a cursor, so there is no reason to crop the
+   picture for the room the movement would need. */
+@media (hover: none), (pointer: coarse) {
+  .parallax-layer { transform: none; }
 }
 
 /* ============================================================================
@@ -353,6 +422,12 @@ iframe:focus {
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+
+  /* The hook never starts under reduced motion, so the custom properties stay
+     at 0 — this is the belt to that braces, and it also drops the resting
+     scale so nothing is cropped for an effect that is not running. */
+  .parallax-layer { transform: none !important; }
+  .tappable--lift:hover { transform: none !important; box-shadow: none !important; }
 
   *,
   *::before,

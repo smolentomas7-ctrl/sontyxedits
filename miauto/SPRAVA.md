@@ -165,6 +165,28 @@ blíži k obrazovke, takže nespomaľuje vykreslenie stránky. Posuvníky sú sk
 - Prístupnosť: všetko interaktívne sa dá ovládať klávesnicou, fokus je viditeľný
   (3 px oranžový rám), kontrast nad úrovňou AA.
 
+### Pohyb
+
+Celý web používa jednu sústavu pohybu — jednu krivku zrýchlenia a tri dĺžky
+trvania. Nič sa nehýbe náhodne a nič si neťahá vlastnú knižnicu; animácie sú
+čisté CSS a SVG, plus asi sto riadkov vlastného JavaScriptu.
+
+- **Tlačidlá.** Pod myšou sa zdvihnú o pixel a zväčšia o 1,2 % a dostanú tichý
+  tieň; pri stlačení sa stlačia na 97,5 %. Stlačenie je zámerne rýchle (110 ms) a
+  návrat pomalší (260 ms) — tak sa správa fyzické tlačidlo.
+- **Fotografie odpovedajú kurzoru.** Hero na úvodnej stránke, veľká fotografia na
+  stránke služby a fotografia interiéru na stránke O servise sa za kurzorom
+  pohnú o pár pixelov a naklonia o zlomok stupňa. Je to zámerne málo: ide o to,
+  aby obrázok pôsobil, že je v stránke, nie na nej.
+- **Vypne sa to samo, keď nemá zmysel.** Na dotykovom displeji sa efekt
+  nenaštartuje vôbec a fotografia sa ani nezväčší — nie je dôvod orezať záber
+  kvôli pohybu, ktorý sa nikdy nespustí. Pri systémovom nastavení „obmedziť
+  pohyb" (`prefers-reduced-motion`) stojí všetko úplne.
+- **Nestojí to výkon.** Pohyb kurzoru si len poznačí cieľ; zapisuje jediná
+  slučka, ktorá sa po návrate do pokoja sama zastaví a uvoľní grafickú pamäť.
+  Nemeria sa pri tom rozloženie stránky a nemení sa žiadna vlastnosť, ktorá by
+  rozloženie prepočítala.
+
 ---
 
 ## 2. ČO BLOKUJE NASADENIE
@@ -228,7 +250,8 @@ funkčná, len asistent odpovedá z pripravených odpovedí a sám to hovorí.
 ### Fotografie
 - **Šesť zo siedmich fotografií k službám sú ilustračné**, nie z vašej dielne:
   diagnostika, čipovanie ECU, geometria, pneuservis, elektroinštalácia a
-  rozvody. Vlastné sú hero, klimatizácia a tri fotografie na stránke O servise.
+  rozvody. Vlastné sú klimatizácia, tri fotografie na stránke O servise a oba
+  portréty.
   Popisy pri ilustračných fotografiách opisujú činnosť a nikde netvrdia, že ide
   o vaše priestory. Vlastné fotografie by boli priamočiare zlepšenie — stačí ich
   poslať a prejdú rovnakým spracovaním.
@@ -241,9 +264,16 @@ funkčná, len asistent odpovedá z pripravených odpovedí a sám to hovorí.
   slovenská stránka by privítala „spolumajiteľ". Fotografie sme neupravovali —
   stačí poslať znovu vyexportované verzie s rovnakým rozložením a nahradia sa
   jedna k jednej. (Pre čítačky obrazovky je rola po slovensky už teraz.)
-- Hero fotografia má v strede záberu vypálené logo; stmavenie je preto natiahnuté
-  doľava, aby bol nadpis čitateľný. Čistá verzia tej istej fotografie by hero
-  uvoľnila.
+- **Novú hero fotografiu vedieme ako ilustračnú — a radi to zmeníme.** Záber,
+  ktorý ste poslali, je na úvodnej stránke presne tak, ako prišiel. Nevieme však
+  doložiť, že je z vašej dielne: na ostatných vlastných fotografiách je iný
+  priestor a na stene je iné logo. Preto má v `public/assets/miauto/manifest.json`
+  príznak `origin: "stock"` a popis pre čítačky obrazovky hovorí o činnosti
+  („vozidlo na dvojstĺpovom zdviháku, mechanik pracuje na prednom kolese"), nie o
+  vašich priestoroch. **Ak je to vaša dielňa, napíšte jedno slovo** — v
+  `scripts/process-images.py` sa prepíše `ORIGIN["hero"]` na `"own"`, popis sa
+  zmení na vetu o vlastnej dielni a je to. Opačne to nejde: tvrdiť o cudzom
+  priestore, že je váš, je klamlivé označenie.
 
 ### Údaje
 - **GPS súradnice prevádzky.** Mapa teraz funguje z adresy a Google ju nájde

@@ -118,16 +118,16 @@
   },
   "hero": {
     "height": 1080,
-    "origin": "own",
-    "placeholder": "#56595B",
+    "origin": "stock",
+    "placeholder": "#575553",
     "upscaled": false,
     "variants": {
       "card": {
         "budgetKB": 80,
         "bytes": {
-          "avif": 51585,
-          "jpg": 83492,
-          "webp": 54542
+          "avif": 57744,
+          "jpg": 98470,
+          "webp": 64674
         },
         "height": 540,
         "width": 960
@@ -135,9 +135,9 @@
       "full": {
         "budgetKB": 200,
         "bytes": {
-          "avif": 159895,
-          "jpg": 260883,
-          "webp": 148236
+          "avif": 194281,
+          "jpg": 326349,
+          "webp": 190150
         },
         "height": 1080,
         "width": 1920
@@ -145,9 +145,9 @@
       "thumb": {
         "budgetKB": 40,
         "bytes": {
-          "avif": 17998,
-          "jpg": 28165,
-          "webp": 21528
+          "avif": 19314,
+          "jpg": 32065,
+          "webp": 24374
         },
         "height": 292,
         "width": 518

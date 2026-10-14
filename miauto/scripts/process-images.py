@@ -32,7 +32,11 @@ VARIANTS = (
 #   "own"   — photographed at M.I.Auto
 #   "stock" — generic imagery, NOT their workshop
 ORIGIN = {
-    "hero": "own",
+    # Supplied by the client as the home-page hero. Its provenance is not
+    # established — it is not the workshop that appears in their other
+    # photographs — so it is described as an activity, never as their premises,
+    # until they confirm otherwise.
+    "hero": "stock",
     "service-diagnostika": "stock",
     "service-cipovanie-ecu": "stock",
     "service-geometria": "stock",
@@ -67,7 +71,7 @@ PRECROP = {
 # slot id -> (source file, target W, target H, crop anchor, quality)
 # anchor: where to keep the subject when cropping to ratio (0 = top/left, .5 = centre, 1 = bottom/right)
 SLOTS = {
-    "hero":                         ("hero.jpg",        1920, 1080, 0.50, 82),
+    "hero":                         ("hero-workshop.jpg", 1920, 1080, 0.50, 82),
     "service-diagnostika":          ("diagnostika.jpg", 1200,  800, 0.50, 80),
     "service-cipovanie-ecu":        ("ecu.jpg",         1200,  800, 0.50, 80),
     "service-geometria":            ("geometria.jpg",   1200,  800, 0.50, 80),
@@ -97,8 +101,11 @@ SLOTS = {
 # so anything that must be unreadable is filled, not blurred.
 REDACT = {
     # Customer licence plate on the white Skoda. The other real photos arrived
-    # with plates already blurred; this one did not.
-    "hero.jpg":          [("blur", 1428, 762, 1532, 832)],
+    # with plates already blurred; this one did not. Kept against the archived
+    # filename: the hero slot now uses the supplied workshop photograph, which
+    # carries no readable plate, but the knowledge is worth keeping if the
+    # original is ever put back.
+    "hero-own-logo-archived.jpg": [("blur", 1428, 762, 1532, 832)],
 }
 
 def strip_metadata(im: Image.Image) -> Image.Image:

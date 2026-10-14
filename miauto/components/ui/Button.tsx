@@ -9,8 +9,8 @@ type Variant = "primary" | "secondary" | "ghost";
 type Size = "md" | "lg";
 
 const base =
-  "tappable inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] " +
-  "font-semibold leading-none no-underline select-none";
+  "tappable tappable--lift inline-flex items-center justify-center gap-2 " +
+  "rounded-[var(--radius-control)] font-semibold leading-none no-underline select-none";
 
 const sizes: Record<Size, string> = {
   // 52px desktop / 48px mobile

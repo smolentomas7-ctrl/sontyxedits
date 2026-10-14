@@ -78,8 +78,10 @@ the layout reserves the right box before the file loads.
 To replace a photo:
 
 1. Drop the new original into `assets-originals/` under the name the pipeline
-   expects (`hero.jpg`, `diagnostika.jpg`, `about-01.jpg`, …; the map is at the
-   top of `scripts/process-images.py`).
+   expects (`hero-workshop.jpg`, `diagnostika.jpg`, `about-01.jpg`, …; the map is
+   at the top of `scripts/process-images.py`). Next's image optimiser caches by
+   filename, so after replacing a file under a name it has already served, clear
+   `.next/cache/images` or the old version keeps showing up in development.
 2. Run `npm run images`. It strips all metadata, crops to the slot's aspect
    ratio, writes WebP + AVIF + JPEG at three widths, and prints a byte report.
 3. If the dominant colour changed noticeably, copy the new `placeholder` value
@@ -283,9 +285,12 @@ final report and the widget itself all say so.
   records `origin: "own" | "stock"` per slot. Alt text on the generic ones
   describes the activity and never implies it is M.I.Auto's own premises. Real
   photographs for those slots would be a straight upgrade.
-- **The hero photograph has the workshop's logo burned into the middle of the
-  frame.** The scrim is weighted hard to the left to keep the headline legible
-  over it. A clean version of the same photograph would let the hero breathe.
+- **The hero photograph is marked `stock` until the client says otherwise.** The
+  image they supplied shows a different workshop from the one in their own
+  photographs, and a different logo on the wall, so its provenance is not
+  established: `ORIGIN["hero"]` in `scripts/process-images.py` is `"stock"` and
+  the alt text describes the activity rather than the premises. One word from the
+  client flips it to `"own"` and the alt text with it.
 - **The chat knowledge is about 4,800 tokens**, not the 8–15k originally
   estimated. That is a consequence of the content being honest and compact
   rather than padded; it costs less per request and nothing is missing from it.
@@ -336,3 +341,12 @@ miauto/
 - Images reserve their box with `aspect-ratio`; `priority` is set on the hero
   only. The chat panel is a separate chunk, fetched on first interaction with the
   launcher.
+- Cursor parallax (`useParallax` in `lib/motion.ts`, wrapped by
+  `components/ui/Parallax.tsx`) writes two CSS custom properties from one rAF
+  loop that stops itself at rest and releases `will-change`. The pointer is
+  tracked on the nearest `[data-parallax-area]` ancestor, or failing that on the
+  static wrapper — **never on the moving layer itself**, which steps out from
+  under the cursor near its own edge and makes the browser fire `pointerleave`
+  mid-gesture. It is gated on `(hover: hover) and (pointer: fine)` in JS and the
+  exact complement in CSS, both watched live, so a resting scale is never applied
+  where nothing can move.
