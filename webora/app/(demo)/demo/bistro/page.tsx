@@ -37,7 +37,7 @@ const GALLERY = [
 
 export default function BistroDemo() {
   return (
-    <DemoShell pkg="business">
+    <DemoShell kind="info">
       <div
         id="top"
         className="min-h-screen bg-[#FAF7F2] font-[family-name:var(--font-inter)] text-[#243B30] antialiased"

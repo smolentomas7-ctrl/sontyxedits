@@ -32,7 +32,14 @@ const nextConfig: NextConfig = {
         // redirects() requires a server; the static build ships a Netlify
         // _redirects file instead (see public/_redirects).
         async redirects() {
-          return [{ source: "/", destination: "/sk", permanent: false }];
+          return [
+            { source: "/", destination: "/sk", permanent: false },
+            // /[locale]/pricing was a fixed-price package page. Pricing is now
+            // quoted per project, so the old URL points at the explanation of
+            // what the price depends on.
+            { source: "/sk/pricing", destination: "/sk#pricing", permanent: true },
+            { source: "/en/pricing", destination: "/en#pricing", permanent: true },
+          ];
         },
       }),
 };

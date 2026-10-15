@@ -23,7 +23,7 @@ const NAV = [
 
 export default function EstateDemo() {
   return (
-    <DemoShell pkg="business">
+    <DemoShell kind="info">
       <div
         id="top"
         className="min-h-screen bg-[#F7F9FB] font-[family-name:var(--font-inter)] text-[#0E2A47] antialiased"

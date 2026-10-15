@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { Logo } from "@/components/ui/Logo";
+import { AnimatedLogo } from "@/components/ui/AnimatedLogo";
 import { siteConfig, isPlaceholder } from "@/config/site";
 import type { Dictionary, Locale } from "@/content/i18n";
 
@@ -11,7 +11,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const pages = [
     { href: `/${locale}/services`, label: dict.nav.services },
     { href: `/${locale}/portfolio`, label: dict.nav.portfolio },
-    { href: `/${locale}/pricing`, label: dict.nav.pricing },
+    { href: `/${locale}/features`, label: dict.nav.features },
     { href: `/${locale}/blog`, label: dict.nav.blog },
     { href: `/${locale}/about`, label: dict.nav.about },
     { href: `/${locale}/contact`, label: dict.nav.contact },
@@ -37,7 +37,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
       <Container>
         <div className="grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:py-20">
           <div className="flex flex-col gap-4">
-            <Logo variant="light" />
+            <AnimatedLogo locale={locale} label={dict.nav.logoLabel} />
             <p className="max-w-[32ch] text-[15px] text-text-muted">{dict.footer.tagline}</p>
           </div>
 

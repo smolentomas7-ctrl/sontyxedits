@@ -168,7 +168,7 @@ export default async function AboutPage({
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <ButtonLink href={`/${typedLocale}/contact`}>{dict.about.ctaButton}</ButtonLink>
               <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary">
-                {dict.common.seeDemos}
+                {dict.common.seeWork}
               </ButtonLink>
             </div>
           </div>

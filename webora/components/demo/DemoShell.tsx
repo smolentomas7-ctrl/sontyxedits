@@ -1,4 +1,4 @@
-import { DemoBar, DEMO_BAR_HEIGHT } from "./DemoBar";
+import { DemoBar, DEMO_BAR_HEIGHT, type DemoKind } from "./DemoBar";
 
 /**
  * Wraps a demo so the fixed Webora bar never overlaps the demo's own header.
@@ -6,17 +6,17 @@ import { DemoBar, DEMO_BAR_HEIGHT } from "./DemoBar";
  * height; each demo's own sticky header then offsets from the same number.
  */
 export function DemoShell({
-  pkg,
+  kind,
   children,
   className,
 }: {
-  pkg: "starter" | "business" | "eshop";
+  kind: DemoKind;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
     <>
-      <DemoBar pkg={pkg} />
+      <DemoBar kind={kind} />
       <div className={className} style={{ paddingTop: DEMO_BAR_HEIGHT }}>
         {children}
       </div>

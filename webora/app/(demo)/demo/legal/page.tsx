@@ -98,7 +98,7 @@ const VALUES = [
 
 export default function LegalDemo() {
   return (
-    <DemoShell pkg="business">
+    <DemoShell kind="info">
       <div
         id="top"
         className="min-h-screen bg-[#FBFAF7] font-[family-name:var(--font-inter)] text-[#0F1B2D] antialiased"

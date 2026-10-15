@@ -17,7 +17,7 @@ export type NavDict = {
   home: string;
   services: string;
   portfolio: string;
-  pricing: string;
+  features: string;
   blog: string;
   about: string;
   contact: string;
@@ -25,7 +25,10 @@ export type NavDict = {
   closeMenu: string;
   switchLanguage: string;
   skipToContent: string;
+  logoLabel: string;
 };
+
+export type FaqItem = { q: string; a: string };
 
 export type Dictionary = {
   meta: {
@@ -35,48 +38,52 @@ export type Dictionary = {
   nav: NavDict;
   common: {
     getQuote: string;
-    seeDemos: string;
-    openDemo: string;
+    seeWork: string;
+    viewExample: string;
+    caseStudy: string;
     readMore: string;
-    backToTop: string;
     from: string;
     allRightsReserved: string;
-    legalNotice: string;
     privacy: string;
-    loading: string;
     required: string;
     optional: string;
     close: string;
     previous: string;
     next: string;
     menu: string;
+    backToPortfolio: string;
+    openLiveDemo: string;
   };
+
   home: {
     metaTitle: string;
     metaDescription: string;
     heroEyebrow: string;
     heroTitle: string;
+    heroTitleAccent: string;
     heroSubtitle: string;
+    heroPrimary: string;
+    heroSecondary: string;
+    heroStats: { value: string; label: string }[];
     trustTitle: string;
     trust: { title: string; body: string }[];
-    demosEyebrow: string;
-    demosTitle: string;
-    demosSubtitle: string;
+    workEyebrow: string;
+    workTitle: string;
+    workSubtitle: string;
     servicesEyebrow: string;
     servicesTitle: string;
     servicesSubtitle: string;
     servicesLink: string;
     processEyebrow: string;
     processTitle: string;
+    processSubtitle: string;
     process: { title: string; body: string }[];
-    pricingEyebrow: string;
-    pricingTitle: string;
-    pricingSubtitle: string;
-    pricingLink: string;
     ctaTitle: string;
     ctaBody: string;
     ctaButton: string;
+    ctaSecondary: string;
   };
+
   services: {
     metaTitle: string;
     metaDescription: string;
@@ -86,7 +93,6 @@ export type Dictionary = {
     whoItSuits: string;
     included: string;
     timeline: string;
-    priceFrom: string;
     cta: string;
     items: {
       slug: string;
@@ -95,69 +101,89 @@ export type Dictionary = {
       who: string;
       includes: string[];
       timeline: string;
-      price: string;
     }[];
     alwaysTitle: string;
     alwaysSubtitle: string;
     always: { title: string; body: string }[];
   };
+
   portfolio: {
     metaTitle: string;
     metaDescription: string;
     heroTitle: string;
     heroSubtitle: string;
-    filterLabel: string;
-    filters: { id: string; label: string }[];
-    emptyTitle: string;
-    emptyBody: string;
-    clearFilter: string;
-    enlarge: string;
-    lightboxLabel: string;
-    counter: string;
     note: string;
+    typeLabel: string;
+    clientBadge: string;
+    demoBadge: string;
+    demoNote: string;
   };
-  pricing: {
-    metaTitle: string;
-    metaDescription: string;
-    heroTitle: string;
-    heroSubtitle: string;
-    popular: string;
-    choosePackage: string;
-    packages: {
-      id: string;
-      name: string;
-      price: string;
-      summary: string;
-      features: string[];
-      delivery: string;
-    }[];
-    calc: {
-      title: string;
-      subtitle: string;
-      siteType: string;
-      siteTypes: { id: string; label: string; hint: string }[];
-      pages: string;
-      pagesHint: string;
-      languages: string;
-      languagesHint: string;
-      addons: string;
-      addonLabels: Record<string, string>;
-      estimate: string;
-      breakdown: string;
-      base: string;
-      extraPages: string;
-      extraLanguages: string;
-      disclaimer: string;
-      sendCta: string;
-      decrease: string;
-      increase: string;
-    };
-    faqTitle: string;
-    faq: { q: string; a: string }[];
+
+  caseStudy: {
+    overview: string;
+    whatWeBuilt: string;
+    capabilities: string;
+    screens: string;
+    onMobile: string;
+    year: string;
+    type: string;
+    liveNote: string;
+    demoNote: string;
+    nextProject: string;
     ctaTitle: string;
     ctaBody: string;
     ctaButton: string;
   };
+
+  features: {
+    metaTitle: string;
+    metaDescription: string;
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    note: string;
+    ctaTitle: string;
+    ctaBody: string;
+    ctaButton: string;
+    groups: {
+      id: string;
+      title: string;
+      summary: string;
+      items: string[];
+      /** Shown as a caveat inside the group where one is warranted. */
+      caveat?: string;
+    }[];
+  };
+
+  testimonials: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    disclaimer: string;
+    badge: string;
+    items: { name: string; company: string; role: string; text: string }[];
+    prev: string;
+    next: string;
+  };
+
+  pricing: {
+    eyebrow: string;
+    title: string;
+    body: string[];
+    factorsTitle: string;
+    factors: { title: string; body: string }[];
+    note: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+  };
+
+  faq: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    items: FaqItem[];
+  };
+
   blog: {
     metaTitle: string;
     metaDescription: string;
@@ -172,6 +198,7 @@ export type Dictionary = {
     published: string;
     relatedTitle: string;
   };
+
   about: {
     metaTitle: string;
     metaDescription: string;
@@ -191,6 +218,7 @@ export type Dictionary = {
     ctaBody: string;
     ctaButton: string;
   };
+
   contact: {
     metaTitle: string;
     metaDescription: string;
@@ -198,14 +226,12 @@ export type Dictionary = {
     heroSubtitle: string;
     formTitle: string;
     name: string;
+    company: string;
     email: string;
     phone: string;
-    company: string;
-    packageLabel: string;
-    packagePlaceholder: string;
-    budget: string;
-    budgetPlaceholder: string;
-    budgets: string[];
+    projectType: string;
+    projectTypePlaceholder: string;
+    projectTypes: string[];
     message: string;
     messagePlaceholder: string;
     consent: string;
@@ -213,6 +239,7 @@ export type Dictionary = {
     sending: string;
     successTitle: string;
     successBody: string;
+    successNote: string;
     sendAnother: string;
     errorTitle: string;
     errorBody: string;
@@ -222,8 +249,8 @@ export type Dictionary = {
     cityLabel: string;
     responseLabel: string;
     followLabel: string;
-    faqTitle: string;
-    faq: { q: string; a: string }[];
+    nextStepsTitle: string;
+    nextSteps: string[];
     errors: {
       nameRequired: string;
       emailRequired: string;
@@ -234,6 +261,7 @@ export type Dictionary = {
       phoneInvalid: string;
     };
   };
+
   privacy: {
     metaTitle: string;
     metaDescription: string;
@@ -242,6 +270,7 @@ export type Dictionary = {
     lastUpdated: string;
     sections: { title: string; body: string[] }[];
   };
+
   footer: {
     tagline: string;
     navTitle: string;
@@ -249,6 +278,7 @@ export type Dictionary = {
     socialTitle: string;
     placeholderNote: string;
   };
+
   chat: {
     launcherLabel: string;
     title: string;

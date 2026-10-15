@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
+import { AnimatedLogo } from "@/components/ui/AnimatedLogo";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
@@ -21,7 +21,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const links = [
     { href: `/${locale}/services`, label: dict.nav.services },
     { href: `/${locale}/portfolio`, label: dict.nav.portfolio },
-    { href: `/${locale}/pricing`, label: dict.nav.pricing },
+    { href: `/${locale}/features`, label: dict.nav.features },
     { href: `/${locale}/blog`, label: dict.nav.blog },
     { href: `/${locale}/about`, label: dict.nav.about },
     { href: `/${locale}/contact`, label: dict.nav.contact },
@@ -83,9 +83,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     >
       <Container>
         <div className="flex h-16 items-center justify-between gap-6 md:h-20">
-          <Link href={`/${locale}`} className="shrink-0" aria-label="Webora">
-            <Logo variant="light" priority />
-          </Link>
+          <AnimatedLogo locale={locale} label={dict.nav.logoLabel} priority />
 
           <nav aria-label={dict.common.menu} className="hidden lg:block">
             <ul className="flex items-center gap-1">
@@ -143,7 +141,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         <div className="fixed inset-0 z-50 bg-bg lg:hidden">
           <Container>
             <div className="flex h-16 items-center justify-between md:h-20">
-              <Logo variant="light" />
+              <AnimatedLogo locale={locale} label={dict.nav.logoLabel} />
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}

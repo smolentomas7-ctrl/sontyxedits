@@ -93,11 +93,6 @@ export default async function ServicesPage({
                     <span className="text-text-muted">{dict.services.timeline}:</span>
                     <span className="font-medium text-text">{service.timeline}</span>
                   </p>
-                  <p className="flex items-center gap-2 text-[15px]">
-                    <Tag aria-hidden="true" strokeWidth={1.5} className="size-4 text-accent" />
-                    <span className="text-text-muted">{dict.services.priceFrom}:</span>
-                    <span className="font-medium text-text">{service.price}</span>
-                  </p>
                 </div>
 
                 <div className="pt-2">
@@ -152,9 +147,11 @@ export default async function ServicesPage({
         </ul>
 
         <div className="mt-12 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href={`/${typedLocale}/pricing`}>{dict.home.pricingLink}</ButtonLink>
-          <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary">
-            {dict.common.seeDemos}
+          <ButtonLink href={`/${typedLocale}/features`} size="lg">
+            {dict.nav.features}
+          </ButtonLink>
+          <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary" size="lg">
+            {dict.common.seeWork}
           </ButtonLink>
         </div>
       </Section>

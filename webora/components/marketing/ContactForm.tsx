@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { TextField, TextArea, SelectField, CheckboxField } from "@/components/ui/Field";
 import { submitForm, isValidEmail, isValidPhone, isNonEmpty, hasMinLength } from "@/lib/forms";
@@ -13,8 +13,7 @@ type Values = {
   email: string;
   phone: string;
   company: string;
-  pkg: string;
-  budget: string;
+  projectType: string;
   message: string;
   consent: boolean;
 };
@@ -26,8 +25,7 @@ const EMPTY: Values = {
   email: "",
   phone: "",
   company: "",
-  pkg: "",
-  budget: "",
+  projectType: "",
   message: "",
   consent: false,
 };
@@ -41,21 +39,19 @@ export function ContactForm({ locale, dict }: { locale: Locale; dict: Dictionary
   const [touched, setTouched] = useState<Partial<Record<keyof Values, boolean>>>({});
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
-  // Prefill from ?package= and ?message= — used by the pricing cards, the
-  // calculator's "send as inquiry" button and the demo bars.
+  // Prefill from ?type= and ?message= — used by the feature catalogue, the
+  // individual-pricing section and the demo bars.
   useEffect(() => {
-    const pkg = searchParams.get("package") ?? "";
+    const type = searchParams.get("type") ?? "";
     const message = searchParams.get("message") ?? "";
-    const service = searchParams.get("service") ?? "";
-
-    if (!pkg && !message && !service) return;
+    if (!type && !message) return;
 
     setValues((current) => ({
       ...current,
-      pkg: dict.pricing.packages.some((p) => p.id === pkg) ? pkg : current.pkg,
+      projectType: t.projectTypes.includes(type) ? type : current.projectType,
       message: message || current.message,
     }));
-  }, [searchParams, dict.pricing.packages]);
+  }, [searchParams, t.projectTypes]);
 
   function validate(all: Values): Errors {
     const next: Errors = {};
@@ -128,6 +124,9 @@ export function ContactForm({ locale, dict }: { locale: Locale; dict: Dictionary
         <CheckCircle2 aria-hidden="true" strokeWidth={1.5} className="size-8 text-accent" />
         <h2 className="t-h3 mt-4 text-text">{t.successTitle}</h2>
         <p className="mt-3 max-w-[48ch] text-text-muted">{t.successBody}</p>
+        <p className="t-small mt-4 max-w-[48ch] rounded-lg border border-border bg-surface px-4 py-3 text-text-muted">
+          {t.successNote}
+        </p>
         <Button
           variant="secondary"
           className="mt-7"
@@ -144,11 +143,7 @@ export function ContactForm({ locale, dict }: { locale: Locale; dict: Dictionary
     );
   }
 
-  const packageOptions = dict.pricing.packages.map((pkg) => ({
-    value: pkg.id,
-    label: `${pkg.name} — ${pkg.price}`,
-  }));
-  const budgetOptions = t.budgets.map((budget) => ({ value: budget, label: budget }));
+  const projectTypeOptions = t.projectTypes.map((type) => ({ value: type, label: type }));
 
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
@@ -159,7 +154,11 @@ export function ContactForm({ locale, dict }: { locale: Locale; dict: Dictionary
           role="alert"
           className="flex gap-3 rounded-xl border border-danger/40 bg-danger/10 p-4"
         >
-          <AlertCircle aria-hidden="true" strokeWidth={1.5} className="mt-0.5 size-5 shrink-0 text-danger" />
+          <AlertCircle
+            aria-hidden="true"
+            strokeWidth={1.5}
+            className="mt-0.5 size-5 shrink-0 text-danger"
+          />
           <div>
             <p className="font-medium text-text">{t.errorTitle}</p>
             <p className="t-small mt-1 text-text-muted">{t.errorBody}</p>
@@ -208,22 +207,16 @@ export function ContactForm({ locale, dict }: { locale: Locale; dict: Dictionary
           value={values.company}
           onChange={(e) => setField("company", e.target.value)}
         />
-        <SelectField
-          label={t.packageLabel}
-          name="pkg"
-          options={packageOptions}
-          placeholder={t.packagePlaceholder}
-          value={values.pkg}
-          onChange={(e) => setField("pkg", e.target.value)}
-        />
-        <SelectField
-          label={t.budget}
-          name="budget"
-          options={budgetOptions}
-          placeholder={t.budgetPlaceholder}
-          value={values.budget}
-          onChange={(e) => setField("budget", e.target.value)}
-        />
+        <div className="sm:col-span-2">
+          <SelectField
+            label={t.projectType}
+            name="projectType"
+            options={projectTypeOptions}
+            placeholder={t.projectTypePlaceholder}
+            value={values.projectType}
+            onChange={(e) => setField("projectType", e.target.value)}
+          />
+        </div>
       </div>
 
       <TextArea
@@ -248,15 +241,14 @@ export function ContactForm({ locale, dict }: { locale: Locale; dict: Dictionary
         onBlur={() => onBlur("consent")}
       />
 
-      <Button type="submit" disabled={status === "sending"} className="mt-1 self-start">
-        {status === "sending" ? (
-          <>
-            <Loader2 aria-hidden="true" strokeWidth={1.5} className="size-4 animate-spin" />
-            {t.sending}
-          </>
-        ) : (
-          t.submit
-        )}
+      <Button
+        type="submit"
+        size="lg"
+        loading={status === "sending"}
+        loadingLabel={t.sending}
+        className="mt-1 self-start"
+      >
+        {t.submit}
       </Button>
     </form>
   );

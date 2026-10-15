@@ -4,3 +4,8 @@
 # locale via redirects(), which needs a server. A static host needs the
 # rule declared here instead.
 /   /sk/   302
+
+# /[locale]/pricing was a fixed-price package page; pricing is now quoted
+# per project. Point the old URLs at the individual-pricing section.
+/sk/pricing   /sk/#pricing   301
+/en/pricing   /en/#pricing   301

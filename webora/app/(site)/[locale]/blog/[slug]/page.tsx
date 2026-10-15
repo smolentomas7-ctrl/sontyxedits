@@ -162,7 +162,7 @@ export default async function BlogPostPage({
                 {dict.common.getQuote}
               </ButtonLink>
               <ButtonLink href={`/${typedLocale}/portfolio`} size="sm" variant="secondary">
-                {dict.common.seeDemos}
+                {dict.common.seeWork}
               </ButtonLink>
             </div>
           </Card>

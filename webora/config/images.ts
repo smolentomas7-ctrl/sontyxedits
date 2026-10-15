@@ -817,12 +817,97 @@ export const estate = {
 } satisfies Record<string, ImageSlot>;
 
 /* ============================================================
+   CLIENT WORK — M.I.Auto s.r.o. (autoservis, Ružomberok)
+   Real project. The screenshots are captures of the delivered site; the
+   photography is the client's own, reused from their asset set.
+   ============================================================ */
+
+export const miauto = {
+  /** Full-page captures of the delivered site, 1440x900 at 1.5x. */
+  shotHome: {
+    src: "/assets/miauto/miauto-shot-home.webp",
+    width: 2160,
+    height: 1350,
+    alt: "Domovská stránka webu M.I.Auto s veľkou fotografiou dielne a výzvou zavolať do servisu",
+  },
+  shotServices: {
+    src: "/assets/miauto/miauto-shot-services.webp",
+    width: 2160,
+    height: 1350,
+    alt: "Stránka Služby na webe M.I.Auto s rozpisom jednotlivých servisných úkonov",
+  },
+  shotDetail: {
+    src: "/assets/miauto/miauto-shot-detail.webp",
+    width: 2160,
+    height: 1350,
+    alt: "Detail služby Diagnostika vozidiel na webe M.I.Auto",
+  },
+  shotContact: {
+    src: "/assets/miauto/miauto-shot-contact.webp",
+    width: 2160,
+    height: 1350,
+    alt: "Kontaktná stránka webu M.I.Auto s adresou a otváracími hodinami",
+  },
+  /** Mobile capture, 390x844 at 2x. */
+  shotMobile: {
+    src: "/assets/miauto/miauto-shot-mobile.webp",
+    width: 780,
+    height: 1688,
+    alt: "Web M.I.Auto zobrazený na mobilnom telefóne",
+  },
+  /** The client's own photography. */
+  hero: {
+    src: "/assets/miauto/miauto-hero.webp",
+    width: 1200,
+    height: 800,
+    alt: "Vozidlo zdvihnuté na dvojstĺpovom zdviháku v autoservise",
+  },
+  interior: {
+    src: "/assets/miauto/miauto-about-interior.webp",
+    width: 1200,
+    height: 800,
+    alt: "Interiér servisnej dielne M.I.Auto",
+  },
+  detail1: {
+    src: "/assets/miauto/miauto-about-detail-01.webp",
+    width: 1200,
+    height: 800,
+    alt: "Detail práce mechanika v dielni",
+  },
+  detail2: {
+    src: "/assets/miauto/miauto-about-detail-02.webp",
+    width: 1200,
+    height: 800,
+    alt: "Detail servisného vybavenia",
+  },
+  serviceDiagnostika: {
+    src: "/assets/miauto/miauto-service-diagnostika.webp",
+    width: 1200,
+    height: 800,
+    alt: "Mechanik s diagnostickým tabletom v aute",
+  },
+  serviceGeometria: {
+    src: "/assets/miauto/miauto-service-geometria.webp",
+    width: 1200,
+    height: 800,
+    alt: "Meranie geometrie kolies",
+  },
+  servicePneuservis: {
+    src: "/assets/miauto/miauto-service-pneuservis.webp",
+    width: 1200,
+    height: 800,
+    alt: "Práca s pneumatikami a diskami v pneuservise",
+  },
+} satisfies Record<string, ImageSlot>;
+
+/* ============================================================
    PORTFOLIO PREVIEWS
    Each demo card on the marketing site uses the demo's own hero image,
    rendered inside a browser-chrome frame.
    ============================================================ */
 
 export const demoPreviews = {
+  miauto: miauto.shotHome,
   bistro: bistro.hero,
   shop: shop.hero,
   fitness: fitness.hero,
@@ -834,6 +919,7 @@ export const demoPreviews = {
 
 export const images = {
   brand,
+  miauto,
   marketing,
   bistro,
   shop,

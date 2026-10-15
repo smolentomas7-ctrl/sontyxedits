@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { LOCALES } from "@/content/i18n";
 import { sortedPosts } from "@/content/blog/posts";
+import { projects } from "@/content/projects";
 
 /**
  * Marketing routes in both locales. /demo/* is deliberately excluded — the
@@ -15,9 +16,10 @@ import { sortedPosts } from "@/content/blog/posts";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPaths = ["", "services", "portfolio", "pricing", "blog", "about", "contact"];
+  const staticPaths = ["", "services", "portfolio", "features", "blog", "about", "contact"];
+  const casePaths = projects.map((project) => `portfolio/${project.slug}`);
   const postPaths = sortedPosts().map((post) => `blog/${post.slug}`);
-  const allPaths = [...staticPaths, ...postPaths];
+  const allPaths = [...staticPaths, ...casePaths, ...postPaths, "legal/privacy"];
 
   const entries: MetadataRoute.Sitemap = [];
 
@@ -28,7 +30,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         url: `${siteConfig.url}/${locale}${suffix}`,
         lastModified: new Date(),
         changeFrequency: path.startsWith("blog/") ? "yearly" : "monthly",
-        priority: path === "" ? 1 : path.startsWith("blog/") ? 0.5 : 0.8,
+        priority:
+          path === ""
+            ? 1
+            : path.startsWith("blog/") || path.startsWith("legal/")
+              ? 0.5
+              : 0.8,
         alternates: {
           languages: Object.fromEntries(
             LOCALES.map((l) => [l, `${siteConfig.url}/${l}${suffix}`]),

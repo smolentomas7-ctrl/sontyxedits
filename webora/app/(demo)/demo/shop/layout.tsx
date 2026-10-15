@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
   return (
-    <DemoShell pkg="eshop">
+    <DemoShell kind="eshop">
       <CartProvider>
         <div className="min-h-screen bg-white font-[family-name:var(--font-inter)] text-[#1A1A18] antialiased">
           <ShopHeader />

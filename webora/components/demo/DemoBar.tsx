@@ -14,7 +14,21 @@ import { Wordmark } from "@/components/ui/Logo";
 
 export const DEMO_BAR_HEIGHT = 44;
 
-export function DemoBar({ pkg }: { pkg: "starter" | "business" | "eshop" }) {
+/** What the demo demonstrates. Drives the prefilled project type on contact. */
+export type DemoKind = "info" | "eshop" | "gallery";
+
+/**
+ * Must match an entry in `contact.projectTypes` in content/i18n/sk.ts —
+ * the contact form only accepts a prefill it recognises, so a typo here
+ * silently falls back to an empty select rather than breaking.
+ */
+const PROJECT_TYPE: Record<DemoKind, string> = {
+  info: "Informačný web pre firmu",
+  eshop: "E-shop",
+  gallery: "Galerijný web alebo portfólio",
+};
+
+export function DemoBar({ kind }: { kind: DemoKind }) {
   return (
     <div
       className="fixed inset-x-0 top-0 z-[90] border-b border-white/10 bg-[#0A0A0B] text-[#F4F4F5]"
@@ -38,7 +52,7 @@ export function DemoBar({ pkg }: { pkg: "starter" | "business" | "eshop" }) {
             <span className="sm:hidden">Späť</span>
           </Link>
           <Link
-            href={`/sk/contact?package=${pkg}`}
+            href={`/sk/contact?type=${encodeURIComponent(PROJECT_TYPE[kind])}`}
             className="inline-flex items-center gap-1.5 rounded-lg bg-[#5B8DFF] px-2.5 py-1.5 text-[12px] font-medium text-[#06112E] transition-colors duration-150 hover:bg-[#3B74FF]"
           >
             <span className="hidden sm:inline">Chcem takýto web</span>

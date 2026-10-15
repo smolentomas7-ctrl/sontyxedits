@@ -49,7 +49,7 @@ const PACKAGES = [
 
 export default function LensDemo() {
   return (
-    <DemoShell pkg="starter">
+    <DemoShell kind="gallery">
       <div
         id="top"
         className="min-h-screen bg-[#0B0B0C] font-[family-name:var(--font-inter)] text-white antialiased"

@@ -22,7 +22,7 @@ const NAV = [
 
 export default function FitnessDemo() {
   return (
-    <DemoShell pkg="business">
+    <DemoShell kind="info">
       <div
         id="top"
         className="min-h-screen bg-[#0C0C0E] font-[family-name:var(--font-inter)] text-white antialiased"

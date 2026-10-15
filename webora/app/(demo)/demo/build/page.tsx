@@ -62,7 +62,7 @@ const PROCESS = [
 
 export default function BuildDemo() {
   return (
-    <DemoShell pkg="business">
+    <DemoShell kind="info">
       <div
         id="top"
         className="min-h-screen bg-[#F2F2EF] font-[family-name:var(--font-inter)] text-[#1C1C1A] antialiased"

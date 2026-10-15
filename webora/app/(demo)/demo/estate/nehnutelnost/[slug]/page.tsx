@@ -48,7 +48,7 @@ export default async function PropertyPage({
   ];
 
   return (
-    <DemoShell pkg="business">
+    <DemoShell kind="info">
       <div className="min-h-screen bg-[#F7F9FB] font-[family-name:var(--font-inter)] text-[#0E2A47] antialiased">
         <div className="mx-auto max-w-[1240px] px-5 py-10 md:px-8 md:py-14">
           <Link

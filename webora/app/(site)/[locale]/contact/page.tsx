@@ -141,22 +141,27 @@ export default async function ContactPage({
           </Card>
 
           <Card interactive={false} className="flex flex-col gap-5 p-7">
-            <h2 className="t-h3 text-text">{dict.contact.faqTitle}</h2>
-            <ul className="flex flex-col gap-5">
-              {dict.contact.faq.map((item) => (
-                <li key={item.q}>
-                  <h3 className="text-[15px] font-medium text-text">{item.q}</h3>
-                  <p className="t-small mt-1.5 text-text-muted">{item.a}</p>
+            <h2 className="t-h3 text-text">{dict.contact.nextStepsTitle}</h2>
+            <ol className="flex flex-col gap-4">
+              {dict.contact.nextSteps.map((step, index) => (
+                <li key={step} className="flex items-start gap-3 text-[15px] text-text-muted">
+                  <span
+                    aria-hidden="true"
+                    className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[12px] font-bold text-accent"
+                  >
+                    {index + 1}
+                  </span>
+                  {step}
                 </li>
               ))}
-            </ul>
-            <p className="t-small text-text-muted">
-              <Link href={`/${typedLocale}/pricing`} className="text-accent hover:underline">
-                {dict.home.pricingLink}
+            </ol>
+            <p className="t-small border-t border-border pt-5 text-text-muted">
+              <Link href={`/${typedLocale}/features`} className="text-accent hover:underline">
+                {dict.nav.features}
               </Link>
               {" · "}
               <Link href={`/${typedLocale}/portfolio`} className="text-accent hover:underline">
-                {dict.common.seeDemos}
+                {dict.common.seeWork}
               </Link>
             </p>
           </Card>
