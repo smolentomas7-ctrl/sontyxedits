@@ -3,7 +3,7 @@ import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getContent, isLocale, SERVICE_SLUGS } from "@/content";
-import { ROUTES, canonicalFor, servicePath } from "@/lib/i18n";
+import { ROUTES, pageSeo, servicePath } from "@/lib/i18n";
 import { SERVICE_IMAGE } from "@/lib/service-images";
 import { Container, Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
@@ -20,16 +20,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getContent(locale);
-  return {
-    title: t.servicesPage.meta.title,
-    description: t.servicesPage.meta.description,
-    alternates: canonicalFor(locale, ROUTES.services),
-    openGraph: {
-      title: t.servicesPage.meta.title,
-      description: t.servicesPage.meta.description,
-      type: "website",
-    },
-  };
+  return pageSeo(locale, ROUTES.services, t.servicesPage.meta);
 }
 
 export default async function ServicesPage({

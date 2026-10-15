@@ -3,7 +3,7 @@ import { ExternalLink, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getContent, isLocale } from "@/content";
-import { ROUTES, canonicalFor, path } from "@/lib/i18n";
+import { ROUTES, pageSeo, path } from "@/lib/i18n";
 import { formattedAddress, mailtoHref, site } from "@/config/miauto";
 import { Container, Section } from "@/components/ui/Section";
 import { HoursTable, OpenBadge } from "@/components/ui/HoursTable";
@@ -20,12 +20,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getContent(locale);
-  return {
-    title: t.contact.meta.title,
-    description: t.contact.meta.description,
-    alternates: canonicalFor(locale, ROUTES.contact),
-    openGraph: { title: t.contact.meta.title, description: t.contact.meta.description },
-  };
+  return pageSeo(locale, ROUTES.contact, t.contact.meta);
 }
 
 export default async function ContactPage({

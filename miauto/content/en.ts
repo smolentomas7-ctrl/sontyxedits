@@ -51,9 +51,9 @@ export const en: LocaleContent = {
 
   home: {
     meta: {
-      title: "Car repair workshop in Ružomberok | M.I.Auto s.r.o.",
+      title: "Car repairs Ružomberok | M.I.Auto — vehicle service",
       description:
-        "Independent car workshop in Ružomberok. Diagnostics, ECU software, wheel alignment, tyre service, electrics, timing belts and A/C. Call +421 918 918 109.",
+        "Car workshop in Ružomberok — diagnostics, timing belts, wheel alignment, tyre service and air conditioning. Call +421 918 918 109 and tell us what it is doing.",
     },
     heroTitle: "Car workshop in Ružomberok",
     heroTitleSecond: "Diagnostics, electronics, timing systems.",
@@ -543,6 +543,7 @@ export const en: LocaleContent = {
           "We process this solely in order to reply to your enquiry and arrange a time if needed. We do not use it for marketing and do not pass it to third parties for their own purposes.",
           "The legal basis is our legitimate interest in answering an enquiry you sent us yourself, or steps taken prior to entering into a contract if we agree on a repair.",
           "A submitted form is processed by Netlify Forms, operated by Netlify, which stores the message and makes it available to us; the data sits on its infrastructure. Netlify acts as a processor here.",
+          "Netlify also forwards the text of the message by email to the workshop's mailbox, which is operated by Google (Gmail). Google is a further processor at that step.",
           "We keep submitted enquiries for 12 months after the enquiry is dealt with, then delete them. If an enquiry turns into a job, the data belonging to that job follows the retention periods for accounting and tax records. Only the owners of the workshop have access to the messages.",
         ],
       },

@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, LOCALES, type Locale } from "@/content/types";
-import { siteUrl, siteUrlIsPlaceholder } from "@/config/miauto";
+import { site, siteUrl, siteUrlIsPlaceholder } from "@/config/miauto";
 
 export { DEFAULT_LOCALE, LOCALES };
 export type { Locale };
@@ -44,13 +44,15 @@ export function otherLocale(locale: Locale): Locale {
  * hreflang alternates for a route, plus x-default pointing at the Slovak version.
  * `route` is the path WITHOUT the locale prefix, e.g. "/sluzby/pneuservis".
  *
- * Until the real domain is set as NEXT_PUBLIC_SITE_URL these come back empty, on
- * purpose. A canonical is an absolute URL or nothing, and a build that has not
- * been told its address would otherwise publish `http://localhost:3000/...` as
- * the one true URL of every page — which tells a crawler that the page it is
- * reading lives somewhere it cannot reach. No canonical at all is correct
- * instead: the crawler keeps the URL it fetched. Set the variable and every
- * canonical, hreflang and x-default appears.
+ * Every canonical here is self-referencing: the Slovak page points at itself,
+ * the English page at itself, and each lists the other as its hreflang
+ * alternate. That is what makes the pair a language cluster rather than two
+ * pages competing for the same query, and it is why neither of them canonicals
+ * to the bare domain — `/` is a redirect to `/sk/`, and a canonical that points
+ * at a redirect is a signal a crawler has to resolve against itself.
+ *
+ * They come back empty only when the build is pointed at localhost, where a
+ * canonical would name an address no crawler can reach.
  */
 export function alternates(route: string) {
   if (siteUrlIsPlaceholder) return {};
@@ -70,4 +72,37 @@ export function canonicalFor(locale: Locale, route: string) {
   if (siteUrlIsPlaceholder) return {};
   const alt = alternates(route);
   return { ...alt, canonical: `${siteUrl}/${locale}${route}` };
+}
+
+/** Open Graph locale codes; `og:locale` wants a territory, not a bare language. */
+const OG_LOCALE: Record<Locale, string> = { sk: "sk_SK", en: "en_GB" };
+
+/**
+ * The SEO half of a page's metadata: canonical, hreflang, Open Graph.
+ *
+ * It exists so the three cannot drift apart. Open Graph carries its own URL and
+ * its own title, and a page that sets one of them by hand eventually sets it to
+ * something the canonical disagrees with; here `og:url` IS the canonical, by
+ * construction, and the title is written once.
+ */
+export function pageSeo(
+  locale: Locale,
+  route: string,
+  meta: { readonly title: string; readonly description: string },
+  type: "website" | "article" = "website",
+) {
+  const canonical = siteUrlIsPlaceholder ? undefined : `${siteUrl}/${locale}${route}`;
+  return {
+    title: meta.title,
+    description: meta.description,
+    alternates: canonicalFor(locale, route),
+    openGraph: {
+      title: meta.title,
+      description: meta.description,
+      siteName: site.legalName,
+      locale: OG_LOCALE[locale],
+      type,
+      ...(canonical ? { url: canonical } : {}),
+    },
+  };
 }

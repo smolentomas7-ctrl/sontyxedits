@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AlertTriangle } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getContent, isLocale } from "@/content";
-import { ROUTES, canonicalFor } from "@/lib/i18n";
+import { ROUTES, pageSeo } from "@/lib/i18n";
 import { formattedAddress, has, mailtoHref, site } from "@/config/miauto";
 import { Container, Section } from "@/components/ui/Section";
 
@@ -14,12 +14,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getContent(locale);
-  return {
-    title: t.privacy.meta.title,
-    description: t.privacy.meta.description,
-    alternates: canonicalFor(locale, ROUTES.privacy),
-    robots: { index: true, follow: true },
-  };
+  return { ...pageSeo(locale, ROUTES.privacy, t.privacy.meta), robots: { index: true, follow: true } };
 }
 
 export default async function PrivacyPage({

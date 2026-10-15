@@ -51,9 +51,9 @@ export const sk: LocaleContent = {
 
   home: {
     meta: {
-      title: "Autoservis Ružomberok | M.I.Auto s.r.o.",
+      title: "Autoservis Ružomberok | M.I.Auto — opravy a servis vozidiel",
       description:
-        "Autoservis v Ružomberku. Diagnostika, čipovanie ECU, geometria kolies, pneuservis, elektroinštalácia, rozvody a klimatizácia. Zavolajte na +421 918 918 109.",
+        "Autoservis v Ružomberku — diagnostika, rozvody, geometria kolies, pneuservis a klimatizácia. Zavolajte na +421 918 918 109 a povedzte nám, čo vozidlo robí.",
     },
     heroTitle: "Autoservis v Ružomberku",
     heroTitleSecond: "Diagnostika, elektronika, rozvody.",
@@ -542,6 +542,7 @@ export const sk: LocaleContent = {
           "Tieto údaje spracúvame výlučne preto, aby sme vám na správu odpovedali a dohodli prípadný termín. Nepoužívame ich na marketing a neposkytujeme ich tretím stranám na ich vlastné účely.",
           "Právnym základom je náš oprávnený záujem odpovedať na dopyt, ktorý ste nám sami poslali, prípadne kroky pred uzavretím zmluvy, ak sa dohodneme na oprave.",
           "Odoslaný formulár spracúva služba Netlify Forms spoločnosti Netlify, ktorá správu uloží a sprístupní nám; dáta sú uložené na jej infraštruktúre. Netlify v tomto vystupuje ako sprostredkovateľ.",
+          "Netlify nám obsah správy zároveň preposiela e-mailom do schránky servisu, ktorú prevádzkuje Google (Gmail). Google je v tomto kroku ďalším sprostredkovateľom.",
           "Odoslané správy uchovávame 12 mesiacov od vybavenia dopytu a potom ich mažeme. Ak z dopytu vznikne zákazka, údaje k nej sa riadia lehotami pre účtovné a daňové doklady. Prístup k správam majú len majitelia servisu.",
         ],
       },

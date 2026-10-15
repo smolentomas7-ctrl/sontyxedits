@@ -3,7 +3,7 @@ import { ArrowRight, ChevronRight, Info, Phone } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getContent, isLocale, LOCALES, SERVICE_SLUGS } from "@/content";
-import { ROUTES, canonicalFor, path, servicePath } from "@/lib/i18n";
+import { ROUTES, pageSeo, path, servicePath } from "@/lib/i18n";
 import { SERVICE_IMAGE } from "@/lib/service-images";
 import { breadcrumbJsonLd } from "@/lib/jsonld";
 import { site } from "@/config/miauto";
@@ -31,16 +31,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   if (!isLocale(locale) || !isServiceSlug(slug)) return {};
   const service = getContent(locale).services[slug];
-  return {
-    title: service.meta.title,
-    description: service.meta.description,
-    alternates: canonicalFor(locale, `${ROUTES.services}/${slug}`),
-    openGraph: {
-      title: service.meta.title,
-      description: service.meta.description,
-      type: "article",
-    },
-  };
+  return pageSeo(locale, `${ROUTES.services}/${slug}`, service.meta, "article");
 }
 
 export default async function ServiceDetailPage({

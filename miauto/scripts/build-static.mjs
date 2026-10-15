@@ -15,7 +15,7 @@
  *   npm run build:static
  */
 import { execSync } from "node:child_process";
-import { existsSync, renameSync, rmSync, cpSync } from "node:fs";
+import { existsSync, readFileSync, renameSync, rmSync, cpSync } from "node:fs";
 import { join } from "node:path";
 
 const root = process.cwd();
@@ -67,20 +67,37 @@ try {
 
   console.log("\nStatic site written to out/ — this is the folder to drag into Netlify.");
 
-  if (!process.env.NEXT_PUBLIC_SITE_URL) {
+  // Same precedence as config/miauto.ts, with the default read back out of it so
+  // the domain is written down in exactly one place.
+  const fallback = /PRODUCTION_URL = "([^"]+)"/.exec(
+    readFileSync(join(root, "config", "miauto.ts"), "utf8"),
+  )?.[1];
+  const builtFor = (
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.URL ??
+    fallback ??
+    ""
+  ).replace(/\/$/, "");
+  const local = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/.test(builtFor);
+
+  console.log(`Canonical address baked into this build: ${builtFor || "(none)"}`);
+  if (local || !builtFor) {
     console.log(
       [
         "",
-        "  ⚠  NEXT_PUBLIC_SITE_URL was not set for this build.",
-        "     Canonical links, hreflang and the sitemap are therefore omitted:",
-        "     the site works and is indexable, but it does not tell search",
-        "     engines which address is the real one, and shared links have no",
-        "     preview image.",
+        "  ⚠  That is not a public address, so canonical links, hreflang, the",
+        "     sitemap and the structured-data URLs are omitted from this build.",
+        "     The pages still work and are indexable; they simply do not name a",
+        "     canonical URL.",
         "",
-        "     Build it again with the domain to get all of that:",
-        "       NEXT_PUBLIC_SITE_URL=https://www.example.sk npm run build:static",
+        "     Build it again with the real domain:",
+        "       NEXT_PUBLIC_SITE_URL=https://autoservisruzomberok.com npm run build:static",
         "",
       ].join("\n"),
+    );
+  } else {
+    console.log(
+      "  sitemap.xml, robots.txt, canonicals, hreflang and og:url all use it.\n",
     );
   }
 } finally {

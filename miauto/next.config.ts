@@ -62,8 +62,11 @@ const config: NextConfig = {
         images: { formats: ["image/avif", "image/webp"] as const },
         // redirects() and headers() need a server. In static mode the same two
         // jobs are done by public/_redirects and public/_headers.
+        // Permanent, and kept in step with public/_redirects: the Slovak page
+        // is the home page for good, so the bare domain should hand its signals
+        // to /sk rather than stay indexed as an empty redirect of its own.
         async redirects() {
-          return [{ source: "/", destination: "/sk", permanent: false }];
+          return [{ source: "/", destination: "/sk", permanent: true }];
         },
         async headers() {
           return [

@@ -213,7 +213,7 @@ a code change, and it has to be done once per site.
 | `CHAT_MODEL` | No | Overrides the model id. Default `claude-opus-5-5`. Always a **pinned** id, never a floating alias. |
 | `CHAT_DAILY_TOKEN_CAP` | No | Daily token ceiling; default 300,000. When reached, everyone drops to scripted until the next day. |
 | `CHAT_BASE_URL` | No | Points the SDK at a gateway instead of the default API. Used for testing against a stub. |
-| `NEXT_PUBLIC_SITE_URL` | Strongly recommended, before the production build | The public URL, for canonicals, `hreflang`, the sitemap and the Open Graph image URLs. It is inlined **at build time**, so setting it after a build has no effect — set it, then redeploy. A Netlify build from Git falls back to `URL`, which Netlify sets to the site's own address. With neither, `siteUrlIsPlaceholder` is true and every absolute URL is **omitted** rather than published as `http://localhost:3000` — the pages still work and still index, they just do not name a canonical. The one exception is the Open Graph image, which Next builds from `metadataBase`: it carries the localhost URL, so shared links get no preview image until the variable is set. |
+| `NEXT_PUBLIC_SITE_URL` | No | Overrides the public URL. The default is `PRODUCTION_URL` in `config/miauto.ts` (`https://autoservisruzomberok.com`), so canonicals, `hreflang`, the sitemap, `robots.txt` and the Open Graph URLs are correct in every build including the manual one. Set this only to build for a different address, e.g. staging. It is inlined **at build time**. Point it at localhost and `siteUrlIsPlaceholder` turns true, which omits every absolute URL rather than publishing an unreachable one. |
 
 Set them in **Site configuration → Environment variables**. The API key is read
 from `process.env` inside the route handler only. It is never a `NEXT_PUBLIC_`
@@ -324,6 +324,32 @@ miauto/
 │   └── __forms.html           Netlify form registration
 └── assets-originals/          unprocessed photographs — gitignored
 ```
+
+## The enquiry form
+
+It posts to Netlify Forms. `public/__forms.html` is what Netlify parses at
+deploy time to register the form — the real form is a React component that no
+build-time parser ever sees — and every input there must match a key sent by
+`lib/forms.ts` or that field is silently dropped from the submission.
+
+Three things about it are load-bearing:
+
+- **The sentinel.** `__forms.html` carries `MIAUTO_FORM_REGISTRATION_PAGE`, and
+  `lib/forms.ts` treats a response containing it as a *failed* submission. A host
+  that simply serves the file back answers 200, and without this check every
+  enquiry would be reported as sent while nothing processed it.
+- **Netlify does not email anything by itself.** It stores the submission and
+  sends mail only if a form notification exists in the site dashboard
+  (Forms → `dopyt` → Settings → Form notifications → Email notification). The
+  intended recipient is `site.formRecipient` in `config/miauto.ts`; that constant
+  documents the destination and feeds the handover text, but nothing in this
+  repository can route an email.
+- **The static build has no functions.** A submission-created function or a
+  transactional-email provider would not run on a drag-and-drop deploy, which is
+  how this site is published. Netlify Forms is the mechanism that works there.
+
+Spam handling is a honeypot field (`bot-field`, visually hidden but not
+`display: none`, which bots skip) plus a minimum fill time of 3s. No CAPTCHA.
 
 ## Accessibility and performance notes
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { MapPin, Phone } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getContent, isLocale, SERVICE_SLUGS } from "@/content";
-import { ROUTES, canonicalFor, path, servicePath } from "@/lib/i18n";
+import { ROUTES, pageSeo, path, servicePath } from "@/lib/i18n";
 import { images } from "@/config/images";
 import { formattedAddress, site } from "@/config/miauto";
 import { Container, Section } from "@/components/ui/Section";
@@ -24,12 +24,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getContent(locale);
-  return {
-    title: t.about.meta.title,
-    description: t.about.meta.description,
-    alternates: canonicalFor(locale, ROUTES.about),
-    openGraph: { title: t.about.meta.title, description: t.about.meta.description },
-  };
+  return pageSeo(locale, ROUTES.about, t.about.meta);
 }
 
 export default async function AboutPage({

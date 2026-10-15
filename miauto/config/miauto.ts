@@ -37,6 +37,23 @@ export const site = {
   email: "ivankubis96@centrum.sk",
 
   /**
+   * Where enquiries from the contact form are meant to land.
+   *
+   * Recorded here because it is a fact about the business, but note what it
+   * does and does not do: nothing in this repository can route an email. The
+   * form posts to Netlify Forms, Netlify stores the submission, and Netlify
+   * emails it onward only if a form notification naming this address exists in
+   * the site's dashboard. This constant is the single place that address is
+   * written down — the privacy text and the handover instructions read from the
+   * same value, so the three can never disagree.
+   *
+   * It is deliberately NOT `email` above: that one is published on the site as
+   * the address visitors may write to, and the two have not been confirmed to
+   * be the same mailbox.
+   */
+  formRecipient: "ivanautoservisrk@gmail.com",
+
+  /**
    * Company registration data.
    *
    * § 3a of the Slovak Commercial Code requires a company's business name,
@@ -106,33 +123,41 @@ export type DayKey = keyof Site["hours"];
 export const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 
 /**
- * Production URL. Netlify sets URL/DEPLOY_PRIME_URL on a deploy, but the final
- * domain has to be set explicitly as NEXT_PUBLIC_SITE_URL, because canonicals,
- * hreflang, the sitemap, robots.txt and the OG tags all derive from it and a
- * preview URL in those is worse than useless for search.
+ * The site's own address, which canonicals, hreflang, the sitemap, robots.txt,
+ * the Open Graph tags and the structured data are all built from.
+ *
+ * It is the live domain by default, deliberately: this value has to be correct
+ * in the drag-and-drop bundle too, and that one is built here, by hand, with no
+ * Netlify environment around it to supply anything. Hardcoding the domain the
+ * site actually answers on is what makes every build truthful by default rather
+ * than only the ones someone remembered to configure.
+ *
+ * Both overrides stay, in precedence order: NEXT_PUBLIC_SITE_URL for an
+ * explicit choice (a staging domain, or a move to a new one), then Netlify's
+ * own URL on a Git deploy. Scheme and host only, no trailing slash.
  */
+export const PRODUCTION_URL = "https://autoservisruzomberok.com";
+
 export const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ??
   process.env.URL ??
-  "http://localhost:3000"
+  PRODUCTION_URL
 ).replace(/\/$/, "");
 
 /**
- * True when nothing told the build its own address, so `siteUrl` above is the
- * local fallback.
+ * True when `siteUrl` is a local address rather than a public one.
  *
- * Everything that has to be an absolute URL — canonical, hreflang, the sitemap,
- * the Host line in robots.txt, the URLs inside the structured data — is left out
- * in that state rather than published pointing at localhost. A crawler that is
- * told the real page lives somewhere it cannot reach is worse off than one told
- * nothing, which simply keeps the URL it fetched.
- *
- * A Netlify build from Git is not in that state: Netlify sets URL to the site's
- * own address, which is enough to be truthful. Only a build run with neither
- * variable — which is what `npm run build:static` does here — is.
+ * Only reachable now by pointing NEXT_PUBLIC_SITE_URL at localhost, which is
+ * what a developer testing the production build does. In that state everything
+ * that has to be an absolute URL — canonical, hreflang, the sitemap, the Host
+ * line in robots.txt, the URLs inside the structured data — is omitted rather
+ * than published: a crawler told that the page it just fetched really lives on
+ * localhost is worse off than one told nothing, which simply keeps the URL it
+ * fetched. A normal build never takes that branch.
  */
-export const siteUrlIsPlaceholder =
-  !process.env.NEXT_PUBLIC_SITE_URL && !process.env.URL;
+export const siteUrlIsPlaceholder = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/.test(
+  siteUrl,
+);
 
 export const formattedAddress = `${site.street}, ${site.postalCode} ${site.city}`;
 export const mailtoHref = `mailto:${site.email}`;

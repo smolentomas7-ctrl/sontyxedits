@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getContent, isLocale } from "@/content";
-import { canonicalFor } from "@/lib/i18n";
+import { ROUTES, pageSeo } from "@/lib/i18n";
 import { Container, Section } from "@/components/ui/Section";
 import { CastrolPartner } from "@/components/home/CastrolPartner";
 import { Reveal } from "@/components/ui/Reveal";
@@ -19,17 +19,7 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getContent(locale);
-  return {
-    title: t.home.meta.title,
-    description: t.home.meta.description,
-    alternates: canonicalFor(locale, ""),
-    openGraph: {
-      title: t.home.meta.title,
-      description: t.home.meta.description,
-      locale: locale === "sk" ? "sk_SK" : "en_GB",
-      type: "website",
-    },
-  };
+  return pageSeo(locale, ROUTES.home, t.home.meta);
 }
 
 export default async function HomePage({

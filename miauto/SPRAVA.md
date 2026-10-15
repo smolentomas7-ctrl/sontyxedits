@@ -187,6 +187,30 @@ trvania. Nič sa nehýbe náhodne a nič si neťahá vlastnú knižnicu; animác
   Nemeria sa pri tom rozloženie stránky a nemení sa žiadna vlastnosť, ktorá by
   rozloženie prepočítala.
 
+### Vyhľadávače
+
+- **Titulok a popis** sú na každej z 24 stránok iné — žiadne dve sa neopakujú.
+  Úvodná stránka: *Autoservis Ružomberok | M.I.Auto — opravy a servis vozidiel*.
+- **Kanonický odkaz** má každá stránka sám na seba, plus `hreflang` na svoju
+  druhú jazykovú verziu a `x-default` na slovenskú. To je to, čo vyhľadávaču
+  povie, že slovenská a anglická stránka sú tá istá vec v dvoch jazykoch, a nie
+  dve stránky súťažiace o to isté slovo.
+- **Mapa stránok** `/sitemap.xml` vypisuje všetkých 24 adries, bez duplicít a bez
+  adries, ktoré presmerúvajú. `robots.txt` na ňu odkazuje a Googlebot nie je
+  nikde blokovaný.
+- **Štruktúrované údaje** typu `AutoRepair` (podtyp `AutomotiveBusiness`
+  a `LocalBusiness`): názov, adresa, telefón, e-mail, otváracie hodiny vrátane
+  obedňajšej prestávky, odkaz na mapu a mená majiteľov. **Žiadne hodnotenia,
+  recenzie ani ceny** — tie by sa museli vymyslieť. Na stránkach služieb je navyše
+  `BreadcrumbList`.
+- **Zdieľanie odkazu** (Messenger, WhatsApp, Facebook): názov, popis, adresa
+  stránky, názov webu a obrázok 1200 × 630 s logom.
+- **Úvodná adresa.** `https://autoservisruzomberok.com/` natrvalo presmeruje
+  (301) na `/sk` — tam je slovenská úvodná stránka a tam ukazuje kanonický
+  odkaz. Predtým to bolo dočasné presmerovanie (302), ktoré vyhľadávaču hovorí
+  „toto je len dočasné, hlavnú adresu si nechaj v indexe" — a hlavná adresa
+  pritom nemá vlastný obsah.
+
 ---
 
 ## 2. ČO BLOKUJE NASADENIE
@@ -211,6 +235,48 @@ ochrane osobných údajov aj v štruktúrovaných údajoch. Kým je pole prázdn
 nevykreslí sa ani jeho popis, takže na stránke nie je vidieť, že niečo chýba —
 ale chýba to.
 
+### 🔴 Zapnúť e-mailové upozornenie na dopyty z formulára
+
+**Toto je dôvod, prečo vám z formulára nechodia e-maily.** Formulár funguje —
+odoslaná správa sa uloží v Netlify — ale Netlify ju nikomu neposiela, kým mu
+nepoviete komu. Nastavuje sa to v Netlify, nie v kóde; z projektu sa to spraviť
+nedá.
+
+Postup (asi minúta):
+
+1. V Netlify otvorte stránku servisu → **Forms**.
+2. Ak uvidíte hlásenie, že formuláre nie sú zapnuté, kliknite na **Enable form
+   detection** a nasadite stránku ešte raz (potiahnuť priečinok znova stačí).
+   Netlify hľadá formuláre v nasadenom HTML; súbor `__forms.html` je v balíku
+   práve na to.
+3. V zozname formulárov sa objaví formulár **`dopyt`**. Otvorte ho.
+4. **Settings → Form notifications → Add notification → Email notification**.
+5. Do poľa s adresou napíšte **`ivanautoservisrk@gmail.com`** a uložte.
+6. Pošlite si skúšobný dopyt cez stránku Kontakt a skontrolujte schránku —
+   **aj priečinok Spam**, prvá správa od Netlify tam vie spadnúť.
+
+Čo stránka robí sama a čo nie:
+
+- Formulár kontroluje vyplnenie, tvar telefónu aj e-mailu, má pascu na roboty aj
+  kontrolu času vyplnenia a počas odosielania sa tlačidlo zamkne, takže sa
+  správa neodošle dvakrát.
+- **Nikdy nenapíše „odoslané", ak sa správa neodoslala.** Keď Netlify POST
+  neprijme, zobrazí sa chybová hláška s telefónnym číslom a vyplnené polia
+  zostanú, aby sa nič neprepísalo nadarmo.
+- Adresa `ivanautoservisrk@gmail.com` je zapísaná v `config/miauto.ts` ako
+  `formRecipient`, aby bolo v projekte zrejmé, kam dopyty patria. Samotné
+  doručenie ale zariaďuje to upozornenie v Netlify, nie kód.
+
+Správy sú aj bez e-mailu uložené v Netlify → Forms → `dopyt`, takže sa nič
+nestratilo — len o nich nikto nevedel.
+
+**Pozor na jednu vec:** na stránke je ako kontaktný e-mail uvedená adresa
+`ivankubis96@centrum.sk` (v pätičke, na stránke Kontakt a v štruktúrovaných
+údajoch). Dopyty z formulára pôjdu na `ivanautoservisrk@gmail.com`. Ak má byť na
+stránke zverejnená tá istá adresa ako tá, kam chodia dopyty, povedzte — je to
+zmena jedného riadka. Sám som ju neprepísal: zverejnená kontaktná adresa je
+údaj, ktorý sa nemení bez pokynu.
+
 ### 🔴 Súhlas oboch majiteľov so zverejnením fotografie
 
 Na stránke O servise sú portréty Mariána Hrnčiara a Ivana Kubisa. Pred spustením
@@ -218,31 +284,20 @@ Na stránke O servise sú portréty Mariána Hrnčiara a Ivana Kubisa. Pred spus
 Dokument o ochrane osobných údajov už obsahuje odsek, ktorý hovorí, že fotografie
 sú zverejnené so súhlasom a že ho možno kedykoľvek odvolať.
 
-### 🟠 Adresa webu pred zostavením
+### ✅ Adresa webu — vyriešené
 
-`NEXT_PUBLIC_SITE_URL` sa zapečie do stránok **v okamihu zostavenia**. Treba ju
-nastaviť na finálnu doménu (napr. `https://miauto.sk`) a až potom spustiť build.
+Doména `https://autoservisruzomberok.com` je zapísaná v `config/miauto.ts` ako
+`PRODUCTION_URL` a každé zostavenie ju použije, aj to potiahnuté ručne. Z nej sa
+odvodzuje kanonický odkaz, hreflang, mapa stránok, riadky `Host` a `Sitemap`
+v `robots.txt`, adresa v štruktúrovaných údajoch aj obrázok pre náhľad odkazu.
+Build na konci vypíše, s ktorou adresou bol zostavený.
 
-Priložený balík `deploy/miauto-netlify-drag-and-drop.zip` je zostavený bez nej,
-lebo doménu zatiaľ nepoznáme. **Nasadiť sa dá tak, ako je** — stránka funguje a
-vyhľadávače ju zaindexujú na tej adrese, na ktorej ju nájdu. Chýbajú len veci,
-ktoré musia byť absolútnou adresou, a tie sa radšej nevypíšu, než aby ukazovali
-na `localhost`: kanonický odkaz, hreflang, mapa stránok a riadky `Host` a
-`Sitemap` v `robots.txt`. Build na to upozorní na konci výpisu.
+Predtým bola prázdna, a to je dôvod, prečo bola mapa stránok prázdna: build
+nepoznal svoju adresu, a radšej nevypísal nič, než aby do sitemap zapísal
+`localhost`. Teraz vypíše 24 adries.
 
-Keď doménu poviete, balík prerobím za minútu a všetko sa objaví:
-
-```
-NEXT_PUBLIC_SITE_URL=https://www.miauto.sk npm run build:static
-```
-
-Pri nasadení cez Git to netreba riešiť zvlášť — Netlify si vlastnú adresu
-nastaví sám a stránka ju použije; premenná ju len prepíše na tú finálnu.
-
-Jediné, čo v balíku bez domény zostáva neúplné, je obrázok pre náhľad
-zdieľaného odkazu (`og:image`) — ten musí byť absolútny a Next ho vyrába sám, s
-adresou `localhost`. Pri zdieľaní odkazu sa teda zobrazí názov a popis, ale bez
-obrázka. Zostavenie s doménou to spraví správne.
+Ak by sa doména niekedy menila, prepíše sa ten jeden riadok v `config/miauto.ts`
+(alebo sa pri zostavení nastaví `NEXT_PUBLIC_SITE_URL`) a zostaví sa znova.
 
 ### 🟠 Právna kontrola dokumentu o ochrane osobných údajov
 
@@ -352,7 +407,13 @@ funkčná, len asistent odpovedá z pripravených odpovedí a sám to hovorí.
    odpovedí a hovorí to.
 
 ### D. Po nasadení skontrolovať
-- Formulár: odoslať skúšobný dopyt a overiť, že prišiel e-mail.
+- **Formulár: najprv zapnúť e-mailové upozornenie** (časť 2), potom odoslať
+  skúšobný dopyt a overiť, že e-mail prišiel — vrátane priečinka Spam.
+- `https://autoservisruzomberok.com/sitemap.xml` — musí vypísať 24 adries, nie
+  prázdny `<urlset>`.
+- `https://autoservisruzomberok.com/robots.txt` — musí obsahovať riadok
+  `Sitemap:`.
+- V Google Search Console pridať vlastníctvo domény a poslať sitemap.
 - Telefónne číslo na mobile: ťuknutie musí otvoriť vytáčanie.
 - Mapa na kontaktnej stránke a tlačidlo navigácie.
 - Obe jazykové verzie a prepínač medzi nimi.

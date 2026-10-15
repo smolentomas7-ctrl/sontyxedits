@@ -1,4 +1,12 @@
 # Netlify redirects, used by the static (drag-and-drop) build. The Git/CLI build
 # does the same job through redirects() in next.config.ts.
-/            /sk/        302
-/index.html  /sk/        302
+#
+# 301, not 302: the Slovak page is the home page, permanently — there is no
+# language negotiation here to keep the root undecided for. A 302 leaves the
+# bare domain indexed as a URL with no content of its own, while a 301 hands
+# everything pointing at it to /sk, which is where the canonical is.
+#
+# The target has no trailing slash, so it matches the canonical exactly and the
+# visitor lands in one hop rather than being normalised a second time.
+/            /sk         301
+/index.html  /sk         301
