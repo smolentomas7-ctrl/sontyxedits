@@ -158,7 +158,7 @@ export function BookingFlow() {
                 style={{
                   background:
                     state === "todo" ? "rgba(255,255,255,0.08)" : "#FF6B1A",
-                  color: state === "todo" ? "rgba(255,255,255,0.45)" : "#0C0C0E",
+                  color: state === "todo" ? "rgba(255,255,255,0.6)" : "#0C0C0E",
                 }}
               >
                 {state === "done" ? (
@@ -169,7 +169,7 @@ export function BookingFlow() {
               </span>
               <span
                 className="hidden text-[13px] sm:inline"
-                style={{ color: state === "todo" ? "rgba(255,255,255,0.4)" : "#FFFFFF" }}
+                style={{ color: state === "todo" ? "rgba(255,255,255,0.6)" : "#FFFFFF" }}
               >
                 {label}
               </span>
@@ -248,7 +248,7 @@ export function BookingFlow() {
                       background: selected ? "rgba(255,107,26,0.15)" : "rgba(255,255,255,0.04)",
                     }}
                   >
-                    <span className="text-[12px] text-white/50">{DAY_NAMES[day.getDay()]}</span>
+                    <span className="text-[12px] text-white/55">{DAY_NAMES[day.getDay()]}</span>
                     <span className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-white">
                       {day.getDate()}
                     </span>
@@ -349,7 +349,7 @@ export function BookingFlow() {
                   }}
                   aria-invalid={errors[field.key] ? true : undefined}
                   aria-describedby={errors[field.key] ? `book-${field.key}-error` : undefined}
-                  className="h-12 w-full rounded-lg border bg-white/6 px-4 text-[15px] text-white placeholder:text-white/35 focus:outline-none focus:ring-2 focus:ring-[#FF6B1A]/50"
+                  className="h-12 w-full rounded-lg border bg-white/6 px-4 text-[15px] text-white placeholder:text-white/55 focus:outline-none focus:ring-2 focus:ring-[#FF6B1A]/50"
                   style={{
                     borderColor: errors[field.key] ? "#F87171" : "rgba(255,255,255,0.15)",
                   }}

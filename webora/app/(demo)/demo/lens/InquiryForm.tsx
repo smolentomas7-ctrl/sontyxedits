@@ -10,9 +10,9 @@ type Errors = Partial<Record<keyof Values, string>>;
 const TYPES = ["Portrét", "Svadba", "Produkt", "Komerčné", "Iné"];
 const EMPTY: Values = { name: "", email: "", type: "", date: "", brief: "" };
 
-const labelClass = "mb-2 block text-[12px] uppercase tracking-[0.2em] text-white/50";
+const labelClass = "mb-2 block text-[12px] uppercase tracking-[0.2em] text-white/55";
 const controlClass =
-  "h-12 w-full border-b bg-transparent px-0 text-[16px] text-white placeholder:text-white/25 focus:border-white focus:outline-none";
+  "h-12 w-full border-b bg-transparent px-0 text-[16px] text-white placeholder:text-white/55 focus:border-white focus:outline-none";
 
 export function InquiryForm() {
   const [values, setValues] = useState<Values>(EMPTY);
@@ -61,7 +61,7 @@ export function InquiryForm() {
         <p className="mt-3 text-[15px] leading-relaxed text-white/60">
           Ozvem sa do dvoch dní s termínmi a cenovou ponukou.
         </p>
-        <p className="mt-4 bg-white/5 px-4 py-3 text-[13px] text-white/45">
+        <p className="mt-4 bg-white/5 px-4 py-3 text-[13px] text-white/55">
           Toto je ukážkový web — správa sa nikam neodoslala.
         </p>
         <button
@@ -170,7 +170,7 @@ export function InquiryForm() {
           onBlur={() => onBlur("brief")}
           aria-invalid={errors.brief ? true : undefined}
           aria-describedby={errors.brief ? "lf-brief-error" : undefined}
-          className="w-full resize-y border-b bg-transparent py-3 text-[16px] text-white placeholder:text-white/25 focus:border-white focus:outline-none"
+          className="w-full resize-y border-b bg-transparent py-3 text-[16px] text-white placeholder:text-white/55 focus:border-white focus:outline-none"
           style={{ borderColor: errors.brief ? "#F87171" : "rgba(255,255,255,0.2)" }}
         />
         {errors.brief ? (

@@ -182,7 +182,7 @@ export function BistroMenu() {
                 ) : (
                   <div
                     aria-hidden="true"
-                    className="flex size-[88px] shrink-0 items-center justify-center rounded-lg bg-[#EFE7DA] font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[#C4653A]"
+                    className="flex size-[88px] shrink-0 items-center justify-center rounded-lg bg-[#EFE7DA] font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[#9C512E]"
                   >
                     {item.name.charAt(0)}
                   </div>
@@ -193,9 +193,9 @@ export function BistroMenu() {
                     <h3 className="font-[family-name:var(--font-space-grotesk)] text-[17px] font-bold text-[#1F3D2F]">
                       {item.name}
                     </h3>
-                    <span className="shrink-0 font-medium text-[#C4653A]">{item.price}</span>
+                    <span className="shrink-0 font-medium text-[#9C512E]">{item.price}</span>
                   </div>
-                  <p className="mt-1 text-[14px] leading-relaxed text-[#6B7A71]">
+                  <p className="mt-1 text-[14px] leading-relaxed text-[#5C6961]">
                     {item.description}
                   </p>
                 </div>

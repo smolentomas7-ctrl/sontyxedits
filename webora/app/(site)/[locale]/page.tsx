@@ -339,7 +339,7 @@ export default async function HomePage({
       {/* ---------- 8. INDIVIDUAL PRICING ---------- */}
       <Section className="border-t border-border" ariaLabelledBy="pricing-heading">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-          <Reveal>
+          <Reveal className="min-w-0">
             <span className="t-small font-medium uppercase tracking-[0.18em] text-accent">
               {dict.pricing.eyebrow}
             </span>

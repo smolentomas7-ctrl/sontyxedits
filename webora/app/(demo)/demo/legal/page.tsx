@@ -106,7 +106,7 @@ export default function LegalDemo() {
         <DemoNav
           brand={
             <span className="font-[family-name:var(--font-space-grotesk)] text-[18px] font-medium tracking-[0.02em]">
-              Hlavatý <span className="text-[#B08D4F]">&amp;</span> Partners
+              Hlavatý <span className="text-[#896E3E]">&amp;</span> Partners
             </span>
           }
           links={NAV}
@@ -157,7 +157,7 @@ export default function LegalDemo() {
 
         {/* ---------- PRACTICE AREAS ---------- */}
         <section id="oblasti" className="mx-auto max-w-[1120px] px-5 py-20 md:px-8 md:py-28">
-          <p className="text-[12px] uppercase tracking-[0.26em] text-[#B08D4F]">Špecializácia</p>
+          <p className="text-[12px] uppercase tracking-[0.26em] text-[#896E3E]">Špecializácia</p>
           <h2 className="mt-4 font-[family-name:var(--font-space-grotesk)] text-[1.875rem] font-medium tracking-[-0.015em] md:text-[2.5rem]">
             Oblasti práva
           </h2>
@@ -167,7 +167,7 @@ export default function LegalDemo() {
               const Icon = area.icon;
               return (
                 <li key={area.name} className="bg-[#FBFAF7] p-7">
-                  <Icon aria-hidden="true" strokeWidth={1.25} className="size-6 text-[#B08D4F]" />
+                  <Icon aria-hidden="true" strokeWidth={1.25} className="size-6 text-[#896E3E]" />
                   <h3 className="mt-4 font-[family-name:var(--font-space-grotesk)] text-[18px] font-medium">
                     {area.name}
                   </h3>
@@ -181,7 +181,7 @@ export default function LegalDemo() {
         {/* ---------- TEAM ---------- */}
         <section id="tim" className="border-y border-[#E2DED4] bg-white py-20 md:py-28">
           <div className="mx-auto max-w-[1120px] px-5 md:px-8">
-            <p className="text-[12px] uppercase tracking-[0.26em] text-[#B08D4F]">Tím</p>
+            <p className="text-[12px] uppercase tracking-[0.26em] text-[#896E3E]">Tím</p>
             <h2 className="mt-4 font-[family-name:var(--font-space-grotesk)] text-[1.875rem] font-medium tracking-[-0.015em] md:text-[2.5rem]">
               Kto vás bude zastupovať
             </h2>
@@ -201,14 +201,14 @@ export default function LegalDemo() {
                   <h3 className="mt-5 font-[family-name:var(--font-space-grotesk)] text-[18px] font-medium">
                     {attorney.name}
                   </h3>
-                  <p className="text-[14px] text-[#B08D4F]">{attorney.role}</p>
+                  <p className="text-[14px] text-[#896E3E]">{attorney.role}</p>
                   <p className="mt-1 text-[14px] text-[#53606F]">{attorney.specialism}</p>
                   <p className="mt-3 text-[15px] leading-relaxed text-[#53606F]">{attorney.bio}</p>
                 </li>
               ))}
             </ul>
 
-            <p className="mt-10 text-[13px] text-[#8A94A0]">
+            <p className="mt-10 text-[13px] text-[#687380]">
               Uvedení advokáti sú vymyslené postavy pre potreby tejto ukážky.
             </p>
           </div>
@@ -230,7 +230,7 @@ export default function LegalDemo() {
             </div>
 
             <div>
-              <p className="text-[12px] uppercase tracking-[0.26em] text-[#B08D4F]">Prístup</p>
+              <p className="text-[12px] uppercase tracking-[0.26em] text-[#896E3E]">Prístup</p>
               <h2 className="mt-4 font-[family-name:var(--font-space-grotesk)] text-[1.875rem] font-medium tracking-[-0.015em] md:text-[2.5rem]">
                 Ako pracujeme
               </h2>
@@ -266,7 +266,7 @@ export default function LegalDemo() {
         {/* ---------- FAQ ---------- */}
         <section id="otazky" className="border-y border-[#E2DED4] bg-white py-20 md:py-28">
           <div className="mx-auto max-w-[840px] px-5 md:px-8">
-            <p className="text-[12px] uppercase tracking-[0.26em] text-[#B08D4F]">Otázky</p>
+            <p className="text-[12px] uppercase tracking-[0.26em] text-[#896E3E]">Otázky</p>
             <h2 className="mt-4 font-[family-name:var(--font-space-grotesk)] text-[1.875rem] font-medium tracking-[-0.015em] md:text-[2.5rem]">
               Časté otázky
             </h2>
@@ -313,7 +313,7 @@ export default function LegalDemo() {
         </section>
 
         {/* ---------- FOOTER ---------- */}
-        <footer className="bg-[#0A1422] py-10 text-[#FBFAF7]/50">
+        <footer className="bg-[#0A1422] py-10 text-[#FBFAF7]/60">
           <div className="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 text-[14px] md:flex-row md:items-center md:justify-between md:px-8">
             <p className="font-[family-name:var(--font-space-grotesk)] text-[15px] text-[#FBFAF7]">
               Hlavatý &amp; Partners

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const controlBase =
   "w-full rounded-[10px] border bg-surface px-4 text-[15px] text-text " +
-  "placeholder:text-text-muted/60 transition-colors duration-150 " +
+  "placeholder:text-text-muted/80 transition-colors duration-150 " +
   "focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/35";
 
 function Shell({

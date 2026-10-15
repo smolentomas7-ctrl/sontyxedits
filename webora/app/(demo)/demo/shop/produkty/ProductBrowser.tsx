@@ -66,7 +66,7 @@ export function ProductBrowser() {
                   type="checkbox"
                   checked={categories.includes(category.id)}
                   onChange={() => toggleCategory(category.id)}
-                  className="size-4 rounded accent-[#C2703D]"
+                  className="size-4 rounded accent-[#A15D33]"
                 />
                 <span className="text-[15px] text-[#4A4A46]">{category.label}</span>
               </label>
@@ -92,7 +92,7 @@ export function ProductBrowser() {
             step={10}
             value={maxPrice}
             onChange={(event) => setMaxPrice(Number(event.target.value))}
-            className="w-full accent-[#C2703D]"
+            className="w-full accent-[#A15D33]"
           />
         </div>
 
@@ -103,7 +103,7 @@ export function ProductBrowser() {
               setCategories([]);
               setMaxPrice(PRICE_BOUNDS.max);
             }}
-            className="mt-5 text-[14px] font-medium text-[#C2703D] hover:underline"
+            className="mt-5 text-[14px] font-medium text-[#A15D33] hover:underline"
           >
             Zrušiť filtre
           </button>
@@ -125,7 +125,7 @@ export function ProductBrowser() {
               id="sort"
               value={sort}
               onChange={(event) => setSort(event.target.value as SortKey)}
-              className="h-10 rounded-lg border border-[#E5E5E3] bg-white px-3 text-[14px] focus:outline-none focus:ring-2 focus:ring-[#C2703D]/40"
+              className="h-10 rounded-lg border border-[#E5E5E3] bg-white px-3 text-[14px] focus:outline-none focus:ring-2 focus:ring-[#A15D33]/40"
             >
               {SORTS.map((option) => (
                 <option key={option.id} value={option.id}>

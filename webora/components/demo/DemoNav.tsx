@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { DEMO_BAR_HEIGHT } from "./DemoBar";
+import { onColor, shade } from "@/lib/contrast";
 
 export type NavLink = { href: string; label: string };
 
@@ -30,6 +31,18 @@ export function DemoNav({
   fontClass?: string;
 }) {
   const [open, setOpen] = useState(false);
+
+  // The CTA sits on the accent, so its label is picked for contrast against
+  // the accent — not set to the page background, which on a light demo with a
+  // light accent (build's safety yellow) left the label unreadable.
+  const actionFg = onColor(accent);
+  // Hover darkens the accent rather than fading the whole control: `opacity`
+  // would pull the label toward the page background and lose the contrast the
+  // resting state has.
+  const actionVars = {
+    "--demo-accent": accent,
+    "--demo-accent-hover": shade(accent, -0.12),
+  } as React.CSSProperties;
 
   return (
     <header
@@ -61,8 +74,8 @@ export function DemoNav({
           {action ? (
             <a
               href={action.href}
-              className="hidden rounded-lg px-4 py-2.5 text-[14px] font-medium transition-opacity duration-150 hover:opacity-85 sm:inline-flex"
-              style={{ background: accent, color: bg }}
+              className="hidden rounded-lg bg-[var(--demo-accent)] px-4 py-2.5 text-[14px] font-medium transition-colors duration-150 hover:bg-[var(--demo-accent-hover)] sm:inline-flex"
+              style={{ ...actionVars, color: actionFg }}
             >
               {action.label}
             </a>
@@ -109,8 +122,8 @@ export function DemoNav({
                 <a
                   href={action.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-4 py-3 text-center text-[15px] font-medium"
-                  style={{ background: accent, color: bg }}
+                  className="block rounded-lg bg-[var(--demo-accent)] px-4 py-3 text-center text-[15px] font-medium"
+                  style={{ ...actionVars, color: actionFg }}
                 >
                   {action.label}
                 </a>

@@ -199,6 +199,10 @@ export function Tilt({
     Tag,
     {
       ref: rootRef,
+      // Marks the element for the validation suite, which asserts that the
+      // transform tracks the cursor and stays flat on touch and under
+      // prefers-reduced-motion.
+      "data-tilt": "",
       className: cn("relative [transform-style:preserve-3d] will-change-transform", className),
     },
     body,

@@ -44,7 +44,7 @@ const EMPTY: Values = {
 
 const labelClass = "mb-2 block text-[14px] font-medium text-[#1A1A18]";
 const controlClass =
-  "h-12 w-full rounded-lg border bg-white px-4 text-[15px] focus:outline-none focus:ring-2 focus:ring-[#C2703D]/40";
+  "h-12 w-full rounded-lg border bg-white px-4 text-[15px] focus:outline-none focus:ring-2 focus:ring-[#A15D33]/40";
 
 export default function CheckoutPage() {
   const { detailed, total, clear } = useCart();
@@ -163,7 +163,7 @@ export default function CheckoutPage() {
         <AlertTriangle
           aria-hidden="true"
           strokeWidth={1.5}
-          className="mt-0.5 size-5 shrink-0 text-[#C2703D]"
+          className="mt-0.5 size-5 shrink-0 text-[#A15D33]"
         />
         <p className="text-[15px] leading-relaxed text-[#7A5520]">
           <strong className="font-semibold">Toto je iba ukážka rozhrania.</strong> Neprebehne
@@ -249,7 +249,7 @@ export default function CheckoutPage() {
                         value={option.id}
                         checked={selected}
                         onChange={() => setField("shipping", option.id)}
-                        className="size-4 accent-[#C2703D]"
+                        className="size-4 accent-[#A15D33]"
                       />
                       <span>
                         <span className="block text-[15px] font-medium">{option.label}</span>
@@ -364,7 +364,7 @@ export default function CheckoutPage() {
                       value={option.id}
                       checked={selected}
                       onChange={() => setField("payment", option.id)}
-                      className="size-4 accent-[#C2703D]"
+                      className="size-4 accent-[#A15D33]"
                     />
                     <span className="text-[15px]">{option.label}</span>
                   </label>

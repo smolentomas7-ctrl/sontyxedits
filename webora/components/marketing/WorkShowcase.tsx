@@ -32,7 +32,7 @@ export function WorkShowcase({
       {shown.map((project, index) => {
         const isClient = project.kind === "client";
         return (
-          <Reveal as="li" key={project.slug} delay={index * 80} className="flex">
+          <Reveal as="li" key={project.slug} delay={index * 80} className="flex min-w-0">
             <Tilt
               className="flex w-full"
               max={5}

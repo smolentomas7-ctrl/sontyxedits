@@ -31,7 +31,7 @@ export default function EstateDemo() {
         <DemoNav
           brand={
             <span className="font-[family-name:var(--font-space-grotesk)] text-[19px] font-bold tracking-[-0.01em]">
-              Domov<span className="text-[#1F9D64]"> Reality</span>
+              Domov<span className="text-[#1A8152]"> Reality</span>
             </span>
           }
           links={NAV}
@@ -139,7 +139,7 @@ export default function EstateDemo() {
                   <h3 className="font-[family-name:var(--font-space-grotesk)] text-[18px] font-bold">
                     {agent.name}
                   </h3>
-                  <p className="mt-1 text-[14px] text-[#1F9D64]">{agent.role}</p>
+                  <p className="mt-1 text-[14px] text-[#1A8152]">{agent.role}</p>
                   <ul className="mt-4 flex flex-col gap-2 text-[14px] text-[#5B6977]">
                     <li className="flex items-center gap-2">
                       <Phone aria-hidden="true" strokeWidth={1.5} className="size-4 shrink-0" />
@@ -154,7 +154,7 @@ export default function EstateDemo() {
               </li>
             ))}
           </ul>
-          <p className="mt-6 text-[13px] text-[#8A98A6]">
+          <p className="mt-6 text-[13px] text-[#637383]">
             Makléri sú vymyslené postavy pre potreby tejto ukážky.
           </p>
         </section>
@@ -180,7 +180,7 @@ export default function EstateDemo() {
                     { k: "Otvorené", v: "Pondelok – Piatok, 9:00 – 18:00" },
                   ].map((row) => (
                     <div key={row.k} className="border-b border-[#EDF1F5] pb-4">
-                      <dt className="text-[13px] uppercase tracking-[0.1em] text-[#8A98A6]">
+                      <dt className="text-[13px] uppercase tracking-[0.1em] text-[#637383]">
                         {row.k}
                       </dt>
                       <dd className="mt-1">{row.v}</dd>

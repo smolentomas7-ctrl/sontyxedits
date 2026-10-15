@@ -53,8 +53,8 @@ export function ViewingForm({ propertyTitle }: { propertyTitle?: string }) {
 
   if (status === "success") {
     return (
-      <div role="status" className="rounded-xl border border-[#1F9D64]/40 bg-[#F1FAF5] p-7">
-        <CheckCircle2 aria-hidden="true" strokeWidth={1.5} className="size-8 text-[#1F9D64]" />
+      <div role="status" className="rounded-xl border border-[#1A8152]/40 bg-[#F1FAF5] p-7">
+        <CheckCircle2 aria-hidden="true" strokeWidth={1.5} className="size-8 text-[#1A8152]" />
         <h3 className="mt-4 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[#0E2A47]">
           Žiadosť o obhliadku odoslaná
         </h3>

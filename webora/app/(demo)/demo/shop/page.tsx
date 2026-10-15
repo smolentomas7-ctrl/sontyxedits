@@ -30,7 +30,7 @@ export default function ShopHome() {
           <div className="absolute inset-0 bg-gradient-to-r from-white/92 via-white/55 to-transparent" />
           <div className="absolute inset-0 flex items-center">
             <div className="mx-auto w-full max-w-[1240px] px-5 md:px-8">
-              <p className="mb-4 text-[12px] font-medium uppercase tracking-[0.24em] text-[#C2703D]">
+              <p className="mb-4 text-[12px] font-medium uppercase tracking-[0.24em] text-[#A15D33]">
                 Nová kolekcia
               </p>
               <h1 className="max-w-[14ch] font-[family-name:var(--font-space-grotesk)] text-[2.5rem] font-bold leading-[1.04] tracking-[-0.03em] text-[#1A1A18] md:text-[4rem]">
@@ -96,7 +96,7 @@ export default function ShopHome() {
             </h2>
             <Link
               href="/demo/shop/produkty"
-              className="shrink-0 text-[15px] font-medium text-[#C2703D] hover:underline"
+              className="shrink-0 text-[15px] font-medium text-[#A15D33] hover:underline"
             >
               Všetky produkty
             </Link>

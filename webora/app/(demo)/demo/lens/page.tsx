@@ -115,7 +115,7 @@ export default function LensDemo() {
               />
 
               <div>
-                <p className="text-[12px] uppercase tracking-[0.3em] text-white/40">O mne</p>
+                <p className="text-[12px] uppercase tracking-[0.3em] text-white/55">O mne</p>
                 <h2 className="mt-5 font-[family-name:var(--font-space-grotesk)] text-[1.75rem] font-medium leading-tight tracking-[-0.01em] md:text-[2.5rem]">
                   Fotím od roku 2014
                 </h2>
@@ -141,7 +141,7 @@ export default function LensDemo() {
         {/* ---------- PACKAGES ---------- */}
         <section id="balicky" className="border-t border-white/10 py-20 md:py-28">
           <div className="mx-auto max-w-[1100px] px-5 md:px-8">
-            <p className="text-[12px] uppercase tracking-[0.3em] text-white/40">Balíčky</p>
+            <p className="text-[12px] uppercase tracking-[0.3em] text-white/55">Balíčky</p>
             <h2 className="mt-5 font-[family-name:var(--font-space-grotesk)] text-[1.75rem] font-medium tracking-[-0.01em] md:text-[2.5rem]">
               Cenník
             </h2>
@@ -152,7 +152,7 @@ export default function LensDemo() {
                   <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-medium uppercase tracking-[0.06em]">
                     {pkg.name}
                   </h3>
-                  <p className="mt-2 text-[15px] text-white/50">{pkg.price}</p>
+                  <p className="mt-2 text-[15px] text-white/55">{pkg.price}</p>
                   <ul className="mt-6 flex flex-col gap-2.5">
                     {pkg.items.map((item) => (
                       <li key={item} className="text-[15px] leading-relaxed text-white/65">
@@ -164,7 +164,7 @@ export default function LensDemo() {
               ))}
             </ul>
 
-            <p className="mt-8 text-[14px] text-white/40">
+            <p className="mt-8 text-[14px] text-white/55">
               Ceny sú orientačné. Konečnú sumu potvrdím po tom, ako si upresníme rozsah.
             </p>
           </div>
@@ -175,7 +175,7 @@ export default function LensDemo() {
           <div className="mx-auto max-w-[1100px] px-5 md:px-8">
             <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
               <div>
-                <p className="text-[12px] uppercase tracking-[0.3em] text-white/40">Kontakt</p>
+                <p className="text-[12px] uppercase tracking-[0.3em] text-white/55">Kontakt</p>
                 <h2 className="mt-5 font-[family-name:var(--font-space-grotesk)] text-[1.75rem] font-medium tracking-[-0.01em] md:text-[2.5rem]">
                   Napíšte mi
                 </h2>
@@ -186,13 +186,13 @@ export default function LensDemo() {
 
                 <dl className="mt-10 flex flex-col gap-4 text-[15px] text-white/65">
                   <div>
-                    <dt className="text-[12px] uppercase tracking-[0.2em] text-white/35">
+                    <dt className="text-[12px] uppercase tracking-[0.2em] text-white/55">
                       E-mail
                     </dt>
                     <dd className="mt-1">ahoj@studiolens.example</dd>
                   </div>
                   <div>
-                    <dt className="text-[12px] uppercase tracking-[0.2em] text-white/35">
+                    <dt className="text-[12px] uppercase tracking-[0.2em] text-white/55">
                       Ateliér
                     </dt>
                     <dd className="mt-1">Mlynské nivy 4, Bratislava</dd>
@@ -207,7 +207,7 @@ export default function LensDemo() {
 
         {/* ---------- FOOTER ---------- */}
         <footer className="border-t border-white/10 py-10">
-          <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-5 text-[13px] text-white/35 md:flex-row md:items-center md:justify-between md:px-8">
+          <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-5 text-[13px] text-white/55 md:flex-row md:items-center md:justify-between md:px-8">
             <p className="font-[family-name:var(--font-space-grotesk)] uppercase tracking-[0.3em] text-white/70">
               Lens
             </p>

@@ -50,7 +50,7 @@ export function LegalFaq() {
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpen(isOpen ? null : index)}
-                className="flex w-full items-center justify-between gap-6 py-5 text-left transition-colors duration-150 hover:text-[#B08D4F]"
+                className="flex w-full items-center justify-between gap-6 py-5 text-left transition-colors duration-150 hover:text-[#896E3E]"
               >
                 <span className="font-[family-name:var(--font-space-grotesk)] text-[17px] font-medium">
                   {item.q}
@@ -58,7 +58,7 @@ export function LegalFaq() {
                 <Plus
                   aria-hidden="true"
                   strokeWidth={1.25}
-                  className="size-5 shrink-0 text-[#B08D4F] transition-transform duration-200"
+                  className="size-5 shrink-0 text-[#896E3E] transition-transform duration-200"
                   style={{ transform: isOpen ? "rotate(45deg)" : "none" }}
                 />
               </button>

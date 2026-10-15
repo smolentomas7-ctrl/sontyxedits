@@ -42,7 +42,7 @@ export function FeatureGroups({ dict }: { dict: Dictionary }) {
                   aria-hidden="true"
                   className={cn(
                     "font-[family-name:var(--font-space-grotesk)] text-[13px] font-bold tabular-nums transition-colors duration-150",
-                    isOpen ? "text-accent" : "text-text-muted/60",
+                    isOpen ? "text-accent" : "text-text-muted",
                   )}
                 >
                   {String(index + 1).padStart(2, "0")}

@@ -53,7 +53,7 @@ export default function BistroDemo() {
           bg="rgba(250,247,242,0.92)"
           fg="#1F3D2F"
           border="#E3DACB"
-          accent="#C4653A"
+          accent="#9C512E"
         />
 
         {/* ---------- HERO ---------- */}
@@ -84,7 +84,7 @@ export default function BistroDemo() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <a
                     href="#rezervacia"
-                    className="inline-flex h-12 items-center justify-center rounded-lg bg-[#C4653A] px-7 font-medium text-[#FAF7F2] transition-colors duration-150 hover:bg-[#A8522C]"
+                    className="inline-flex h-12 items-center justify-center rounded-lg bg-[#9C512E] px-7 font-medium text-[#FAF7F2] transition-colors duration-150 hover:bg-[#A8522C]"
                   >
                     Rezervovať stôl
                   </a>
@@ -115,7 +115,7 @@ export default function BistroDemo() {
             </div>
 
             <div>
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.2em] text-[#C4653A]">
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.2em] text-[#9C512E]">
                 O nás
               </p>
               <h2 className="font-[family-name:var(--font-space-grotesk)] text-[2rem] font-bold leading-tight tracking-[-0.02em] text-[#1F3D2F] md:text-[2.75rem]">
@@ -143,7 +143,7 @@ export default function BistroDemo() {
                   { k: "Menu meníme", v: "3 týždne" },
                 ].map((stat) => (
                   <div key={stat.k}>
-                    <dt className="text-[13px] text-[#7E8C84]">{stat.k}</dt>
+                    <dt className="text-[13px] text-[#616C66]">{stat.k}</dt>
                     <dd className="mt-1 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[#1F3D2F]">
                       {stat.v}
                     </dd>
@@ -158,7 +158,7 @@ export default function BistroDemo() {
         <section id="menu" className="border-y border-[#E3DACB] bg-[#F3EEE5] py-20 md:py-28">
           <div className="mx-auto max-w-[1200px] px-5 md:px-8">
             <div className="mb-12 text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.2em] text-[#C4653A]">
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.2em] text-[#9C512E]">
                 Menu
               </p>
               <h2 className="font-[family-name:var(--font-space-grotesk)] text-[2rem] font-bold tracking-[-0.02em] text-[#1F3D2F] md:text-[2.75rem]">
@@ -176,7 +176,7 @@ export default function BistroDemo() {
         {/* ---------- GALLERY ---------- */}
         <section id="galeria" className="mx-auto max-w-[1200px] px-5 py-20 md:px-8 md:py-28">
           <div className="mb-12">
-            <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.2em] text-[#C4653A]">
+            <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.2em] text-[#9C512E]">
               Galéria
             </p>
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-[2rem] font-bold tracking-[-0.02em] text-[#1F3D2F] md:text-[2.75rem]">
@@ -250,7 +250,7 @@ export default function BistroDemo() {
                 <div
                   role="img"
                   aria-label="Zástupný blok namiesto mapy"
-                  className="mt-9 flex h-52 items-center justify-center rounded-xl border border-dashed border-[#FAF7F2]/25 bg-[#FAF7F2]/5 text-center text-[14px] text-[#FAF7F2]/60"
+                  className="mt-9 flex h-52 items-center justify-center rounded-xl border border-dashed border-[#FAF7F2]/25 bg-[#FAF7F2]/5 text-center text-[14px] text-[#FAF7F2]/65"
                 >
                   <span className="px-6">
                     Tu by bola mapa.
@@ -268,7 +268,7 @@ export default function BistroDemo() {
         </section>
 
         {/* ---------- FOOTER ---------- */}
-        <footer className="bg-[#162B21] py-10 text-[#FAF7F2]/60">
+        <footer className="bg-[#162B21] py-10 text-[#FAF7F2]/65">
           <div className="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 text-[14px] md:flex-row md:items-center md:justify-between md:px-8">
             <p className="font-[family-name:var(--font-space-grotesk)] text-[16px] font-bold text-[#FAF7F2]">
               Bistro Hĺbka

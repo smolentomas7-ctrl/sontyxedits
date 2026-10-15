@@ -32,7 +32,7 @@ const EMPTY: Values = { date: "", time: "", guests: "2", name: "", phone: "", no
 const labelClass = "mb-2 block text-[14px] font-medium text-[#FAF7F2]";
 const controlClass =
   "h-12 w-full rounded-lg border bg-[#FAF7F2]/8 px-4 text-[15px] text-[#FAF7F2] " +
-  "placeholder:text-[#FAF7F2]/40 focus:outline-none focus:ring-2 focus:ring-[#E9B894]";
+  "placeholder:text-[#FAF7F2]/65 focus:outline-none focus:ring-2 focus:ring-[#E9B894]";
 
 export function ReservationForm() {
   const [values, setValues] = useState<Values>(EMPTY);
@@ -243,7 +243,7 @@ export function ReservationForm() {
 
         <div>
           <label htmlFor="res-note" className={labelClass}>
-            Poznámka <span className="font-normal text-[#FAF7F2]/55">(nepovinné)</span>
+            Poznámka <span className="font-normal text-[#FAF7F2]/65">(nepovinné)</span>
           </label>
           <textarea
             id="res-note"
@@ -251,7 +251,7 @@ export function ReservationForm() {
             placeholder="Alergie, detská stolička, oslava…"
             value={values.note}
             onChange={(e) => setField("note", e.target.value)}
-            className="w-full resize-y rounded-lg border bg-[#FAF7F2]/8 px-4 py-3 text-[15px] text-[#FAF7F2] placeholder:text-[#FAF7F2]/40 focus:outline-none focus:ring-2 focus:ring-[#E9B894]"
+            className="w-full resize-y rounded-lg border bg-[#FAF7F2]/8 px-4 py-3 text-[15px] text-[#FAF7F2] placeholder:text-[#FAF7F2]/65 focus:outline-none focus:ring-2 focus:ring-[#E9B894]"
             style={{ borderColor: "rgba(250,247,242,0.22)" }}
           />
         </div>
@@ -259,7 +259,7 @@ export function ReservationForm() {
         <button
           type="submit"
           disabled={status === "sending"}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#C4653A] px-7 font-medium text-[#FAF7F2] transition-colors duration-150 hover:bg-[#A8522C] disabled:opacity-60"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#9C512E] px-7 font-medium text-[#FAF7F2] transition-colors duration-150 hover:bg-[#A8522C] disabled:opacity-60"
         >
           {status === "sending" ? (
             <>

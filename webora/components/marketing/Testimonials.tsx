@@ -40,15 +40,15 @@ export function Testimonials({ dict }: { dict: Dictionary }) {
             .join("");
 
           return (
-            <Reveal as="li" key={item.name} delay={index * 70} className="flex">
-              <figure className="flex w-full flex-col gap-5 rounded-2xl border border-border bg-surface p-7 transition-colors duration-200 hover:border-text-muted/35">
+            <Reveal as="li" key={item.name} delay={index * 70} className="flex min-w-0">
+              <figure className="flex w-full min-w-0 flex-col gap-5 rounded-2xl border border-border bg-surface p-5 transition-colors duration-200 hover:border-text-muted/35 sm:p-7">
                 <div className="flex items-start justify-between gap-3">
                   <Quote
                     aria-hidden="true"
                     strokeWidth={1.5}
                     className="size-6 shrink-0 text-accent/70"
                   />
-                  <span className="rounded-full border border-border px-2.5 py-1 text-[11px] uppercase tracking-[0.1em] text-text-muted">
+                  <span className="shrink-0 rounded-full border border-border px-2.5 py-1 text-[11px] uppercase tracking-[0.1em] text-text-muted">
                     {dict.testimonials.badge}
                   </span>
                 </div>

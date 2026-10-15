@@ -72,7 +72,9 @@ export function Gallery() {
               aria-pressed={active}
               className="border-b pb-1 text-[13px] uppercase tracking-[0.2em] transition-colors duration-150"
               style={{
-                color: active ? "#FFFFFF" : "rgba(255,255,255,0.4)",
+                // 0.55 rather than 0.4: the inactive filters are still text
+                // a visitor has to read to choose one.
+                color: active ? "#FFFFFF" : "rgba(255,255,255,0.55)",
                 borderColor: active ? "#FFFFFF" : "transparent",
               }}
             >
@@ -113,7 +115,7 @@ export function Gallery() {
       </div>
 
       {visible.length === 0 ? (
-        <p className="mt-12 text-center text-white/45">V tejto kategórii zatiaľ nič nie je.</p>
+        <p className="mt-12 text-center text-white/55">V tejto kategórii zatiaľ nič nie je.</p>
       ) : null}
 
       <Lightbox

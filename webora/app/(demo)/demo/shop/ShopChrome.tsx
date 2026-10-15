@@ -54,7 +54,7 @@ export function ShopHeader() {
         >
           <ShoppingBag aria-hidden="true" strokeWidth={1.5} className="size-5" />
           {count > 0 ? (
-            <span className="absolute -right-1.5 -top-1.5 inline-flex min-w-5 items-center justify-center rounded-full bg-[#C2703D] px-1 text-[11px] font-bold text-white">
+            <span className="absolute -right-1.5 -top-1.5 inline-flex min-w-5 items-center justify-center rounded-full bg-[#A15D33] px-1 text-[11px] font-bold text-white">
               {count}
             </span>
           ) : null}
@@ -170,7 +170,7 @@ export function CartDrawer() {
                         type="button"
                         onClick={() => remove(line.key)}
                         aria-label={`Odstrániť ${product.name} z košíka`}
-                        className="shrink-0 text-[#9A9A94] transition-colors duration-150 hover:text-[#C2703D]"
+                        className="shrink-0 text-[#9A9A94] transition-colors duration-150 hover:text-[#A15D33]"
                       >
                         <Trash2 aria-hidden="true" strokeWidth={1.5} className="size-4" />
                       </button>

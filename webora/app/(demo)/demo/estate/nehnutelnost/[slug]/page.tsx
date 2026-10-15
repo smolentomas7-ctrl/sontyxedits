@@ -63,7 +63,7 @@ export default async function PropertyPage({
             <div>
               <span
                 className="inline-block rounded px-2.5 py-1 text-[12px] font-bold text-white"
-                style={{ background: property.deal === "predaj" ? "#17457A" : "#1F9D64" }}
+                style={{ background: property.deal === "predaj" ? "#17457A" : "#1A8152" }}
               >
                 {DEAL_LABELS[property.deal]}
               </span>
@@ -125,7 +125,7 @@ export default async function PropertyPage({
                       <Check
                         aria-hidden="true"
                         strokeWidth={2}
-                        className="mt-0.5 size-4 shrink-0 text-[#1F9D64]"
+                        className="mt-0.5 size-4 shrink-0 text-[#1A8152]"
                       />
                       {feature}
                     </li>
@@ -152,13 +152,13 @@ export default async function PropertyPage({
 
             <aside className="flex flex-col gap-8 lg:sticky lg:top-40 lg:self-start">
               <div className="rounded-xl border border-[#D9E0E8] bg-white p-6">
-                <p className="text-[13px] uppercase tracking-[0.1em] text-[#8A98A6]">
+                <p className="text-[13px] uppercase tracking-[0.1em] text-[#637383]">
                   Kontaktná osoba
                 </p>
                 <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold">
                   {agent.name}
                 </p>
-                <p className="text-[14px] text-[#1F9D64]">{agent.role}</p>
+                <p className="text-[14px] text-[#1A8152]">{agent.role}</p>
                 <p className="mt-3 text-[14px] text-[#5B6977]">{agent.phone}</p>
                 <p className="break-all text-[14px] text-[#5B6977]">{agent.email}</p>
               </div>

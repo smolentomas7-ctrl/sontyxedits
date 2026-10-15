@@ -202,7 +202,7 @@ export function ChatWidget({ locale, dict }: { locale: Locale; dict: Dictionary 
               onChange={(event) => setInput(event.target.value)}
               placeholder={dict.chat.inputPlaceholder}
               autoComplete="off"
-              className="h-10 flex-1 rounded-lg border border-border bg-bg px-3 text-[14px] text-text placeholder:text-text-muted/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+              className="h-10 flex-1 rounded-lg border border-border bg-bg px-3 text-[14px] text-text placeholder:text-text-muted/80 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
             />
             <button
               type="submit"

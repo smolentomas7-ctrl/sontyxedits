@@ -118,9 +118,9 @@ export default function FitnessDemo() {
                     <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold uppercase">
                       {item.name}
                     </h3>
-                    <span className="shrink-0 text-[13px] text-white/50">{item.level}</span>
+                    <span className="shrink-0 text-[13px] text-white/55">{item.level}</span>
                   </div>
-                  <p className="mt-2.5 text-[15px] leading-relaxed text-white/65">
+                  <p className="mt-2.5 text-[15px] leading-relaxed text-white/70">
                     {item.description}
                   </p>
                 </div>
@@ -152,7 +152,7 @@ export default function FitnessDemo() {
                       </h3>
                       <ul className="flex flex-col gap-2">
                         {slots.length === 0 ? (
-                          <li className="rounded-lg border border-dashed border-white/10 px-3 py-4 text-center text-[12px] text-white/30">
+                          <li className="rounded-lg border border-dashed border-white/10 px-3 py-4 text-center text-[12px] text-white/60">
                             Zatvorené
                           </li>
                         ) : (
@@ -164,21 +164,20 @@ export default function FitnessDemo() {
                                 className="rounded-lg border px-3 py-2.5"
                                 style={{
                                   borderColor: slot.full
-                                    ? "rgba(255,255,255,0.06)"
+                                    ? "rgba(255,255,255,0.12)"
                                     : "rgba(255,107,26,0.3)",
                                   background: slot.full
-                                    ? "rgba(255,255,255,0.02)"
+                                    ? "rgba(255,255,255,0.04)"
                                     : "rgba(255,107,26,0.08)",
-                                  opacity: slot.full ? 0.5 : 1,
                                 }}
                               >
                                 <span className="block font-[family-name:var(--font-space-grotesk)] text-[15px] font-bold">
                                   {slot.time}
                                 </span>
-                                <span className="block text-[12px] text-white/65">
+                                <span className="block text-[12px] text-white/70">
                                   {gymClass?.name}
                                 </span>
-                                <span className="mt-0.5 block text-[11px] text-white/45">
+                                <span className="mt-0.5 block text-[11px] text-white/60">
                                   {slot.full ? "Obsadené" : `${slot.free} voľných`}
                                 </span>
                               </li>
@@ -222,7 +221,7 @@ export default function FitnessDemo() {
               </li>
             ))}
           </ul>
-          <p className="mt-8 text-[13px] text-white/35">
+          <p className="mt-8 text-[13px] text-white/55">
             Tréneri sú vymyslené postavy pre potreby tejto ukážky.
           </p>
         </section>
@@ -255,7 +254,7 @@ export default function FitnessDemo() {
                   <p className="mt-3 font-[family-name:var(--font-space-grotesk)] text-4xl font-bold text-[#FF6B1A]">
                     {plan.price}
                   </p>
-                  <p className="text-[14px] text-white/50">{plan.period}</p>
+                  <p className="text-[14px] text-white/55">{plan.period}</p>
 
                   <ul className="mt-6 flex flex-1 flex-col gap-3">
                     {plan.features.map((feature) => (
@@ -294,7 +293,7 @@ export default function FitnessDemo() {
               <h2 className="font-[family-name:var(--font-space-grotesk)] text-[2rem] font-bold uppercase tracking-[-0.02em] md:text-[3rem]">
                 Rezervácia
               </h2>
-              <p className="mt-4 max-w-[44ch] text-[16px] leading-relaxed text-white/65">
+              <p className="mt-4 max-w-[44ch] text-[16px] leading-relaxed text-white/70">
                 Vyberte hodinu, dátum a čas. Rezervácia trvá menej než minútu a dá sa zrušiť do
                 štyroch hodín pred začiatkom.
               </p>
@@ -317,7 +316,7 @@ export default function FitnessDemo() {
 
         {/* ---------- FOOTER ---------- */}
         <footer className="border-t border-white/10 bg-[#0C0C0E] py-10">
-          <div className="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 text-[14px] text-white/45 md:flex-row md:items-center md:justify-between md:px-8">
+          <div className="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 text-[14px] text-white/60 md:flex-row md:items-center md:justify-between md:px-8">
             <p className="font-[family-name:var(--font-space-grotesk)] text-[16px] font-bold uppercase tracking-[0.08em] text-white">
               Pulse Studio
             </p>

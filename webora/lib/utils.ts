@@ -1,17 +1,18 @@
 import clsx, { type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-/** Conditional className helper used across the project. */
+/**
+ * Conditional className helper used across the project.
+ *
+ * twMerge, not clsx alone: a component's base classes and the `className` a
+ * caller passes often target the same property, and with plain concatenation
+ * the winner is decided by the order Tailwind happens to emit the utilities
+ * in, not by the caller's intent. That is how the header's CTA, marked
+ * `hidden sm:inline-flex`, still rendered at 320px and pushed the menu button
+ * off screen. Merging resolves the conflict in favour of the caller.
+ */
 export function cn(...inputs: ClassValue[]): string {
-  return clsx(inputs);
-}
-
-/** Formats a number as euros with no decimals, e.g. 1 240 €. */
-export function formatEur(value: number, locale: "sk" | "en"): string {
-  return new Intl.NumberFormat(locale === "sk" ? "sk-SK" : "en-IE", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 0,
-  }).format(value);
+  return twMerge(clsx(inputs));
 }
 
 /** Formats an ISO date string for display. */

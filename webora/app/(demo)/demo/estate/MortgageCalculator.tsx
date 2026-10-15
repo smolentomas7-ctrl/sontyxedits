@@ -71,7 +71,7 @@ export function MortgageCalculator({ defaultPrice = 450000 }: { defaultPrice?: n
             step={10000}
             value={price}
             onChange={(event) => setPrice(Number(event.target.value))}
-            className="w-full accent-[#1F9D64]"
+            className="w-full accent-[#1A8152]"
           />
         </div>
 
@@ -93,7 +93,7 @@ export function MortgageCalculator({ defaultPrice = 450000 }: { defaultPrice?: n
             step={5}
             value={downPercent}
             onChange={(event) => setDownPercent(Number(event.target.value))}
-            className="w-full accent-[#1F9D64]"
+            className="w-full accent-[#1A8152]"
           />
         </div>
 
@@ -114,7 +114,7 @@ export function MortgageCalculator({ defaultPrice = 450000 }: { defaultPrice?: n
               step={1}
               value={years}
               onChange={(event) => setYears(Number(event.target.value))}
-              className="w-full accent-[#1F9D64]"
+              className="w-full accent-[#1A8152]"
             />
           </div>
 
@@ -136,7 +136,7 @@ export function MortgageCalculator({ defaultPrice = 450000 }: { defaultPrice?: n
               step={0.1}
               value={rate}
               onChange={(event) => setRate(Number(event.target.value))}
-              className="w-full accent-[#1F9D64]"
+              className="w-full accent-[#1A8152]"
             />
           </div>
         </div>

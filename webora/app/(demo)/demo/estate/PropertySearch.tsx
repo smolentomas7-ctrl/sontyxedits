@@ -81,7 +81,7 @@ export function PropertySearch() {
               <Search
                 aria-hidden="true"
                 strokeWidth={1.5}
-                className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[#8A98A6]"
+                className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[#637383]"
               />
               <input
                 id="q"
@@ -156,7 +156,7 @@ export function PropertySearch() {
               step={1}
               value={minRooms}
               onChange={(event) => setMinRooms(Number(event.target.value))}
-              className="w-full accent-[#1F9D64]"
+              className="w-full accent-[#1A8152]"
             />
           </div>
 
@@ -180,7 +180,7 @@ export function PropertySearch() {
               step={25000}
               value={maxPrice}
               onChange={(event) => setMaxPrice(Number(event.target.value))}
-              className="w-full accent-[#1F9D64]"
+              className="w-full accent-[#1A8152]"
             />
           </div>
         </div>
@@ -246,7 +246,7 @@ export function PropertySearch() {
                   />
                   <span
                     className="absolute left-3 top-3 rounded px-2.5 py-1 text-[12px] font-bold text-white"
-                    style={{ background: property.deal === "predaj" ? "#17457A" : "#1F9D64" }}
+                    style={{ background: property.deal === "predaj" ? "#17457A" : "#1A8152" }}
                   >
                     {DEAL_LABELS[property.deal]}
                   </span>

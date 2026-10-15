@@ -54,7 +54,7 @@ export function ProductDetail({
                   aria-label={`Zobraziť obrázok ${index + 1} z ${product.gallery.length}`}
                   aria-current={index === activeImage}
                   className="block w-full overflow-hidden rounded-lg border-2 transition-colors duration-150"
-                  style={{ borderColor: index === activeImage ? "#C2703D" : "transparent" }}
+                  style={{ borderColor: index === activeImage ? "#A15D33" : "transparent" }}
                 >
                   <Image
                     src={image.src}
@@ -74,7 +74,7 @@ export function ProductDetail({
 
       {/* ---------- details ---------- */}
       <div>
-        <p className="text-[13px] font-medium uppercase tracking-[0.16em] text-[#C2703D]">
+        <p className="text-[13px] font-medium uppercase tracking-[0.16em] text-[#A15D33]">
           {categoryLabel}
         </p>
         <h1 className="mt-3 font-[family-name:var(--font-space-grotesk)] text-[2rem] font-bold tracking-[-0.025em] md:text-[2.5rem]">

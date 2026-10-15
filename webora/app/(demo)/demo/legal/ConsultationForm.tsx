@@ -11,7 +11,7 @@ const EMPTY: Values = { name: "", email: "", phone: "", area: "", matter: "" };
 
 const labelClass = "mb-2 block text-[13px] uppercase tracking-[0.12em] text-[#C9A96A]";
 const controlClass =
-  "h-12 w-full border bg-[#FBFAF7]/6 px-4 text-[15px] text-[#FBFAF7] placeholder:text-[#FBFAF7]/35 focus:border-[#C9A96A] focus:outline-none";
+  "h-12 w-full border bg-[#FBFAF7]/6 px-4 text-[15px] text-[#FBFAF7] placeholder:text-[#FBFAF7]/60 focus:border-[#C9A96A] focus:outline-none";
 
 export function ConsultationForm({ areas }: { areas: string[] }) {
   const [values, setValues] = useState<Values>(EMPTY);
@@ -158,7 +158,7 @@ export function ConsultationForm({ areas }: { areas: string[] }) {
             onBlur={() => onBlur("matter")}
             aria-invalid={errors.matter ? true : undefined}
             aria-describedby={errors.matter ? "cf-matter-error" : "cf-matter-hint"}
-            className="w-full resize-y border bg-[#FBFAF7]/6 px-4 py-3 text-[15px] text-[#FBFAF7] placeholder:text-[#FBFAF7]/35 focus:border-[#C9A96A] focus:outline-none"
+            className="w-full resize-y border bg-[#FBFAF7]/6 px-4 py-3 text-[15px] text-[#FBFAF7] placeholder:text-[#FBFAF7]/60 focus:border-[#C9A96A] focus:outline-none"
             style={{ borderColor: errors.matter ? "#F87171" : "rgba(251,250,247,0.2)" }}
           />
           {errors.matter ? (
@@ -166,7 +166,7 @@ export function ConsultationForm({ areas }: { areas: string[] }) {
               {errors.matter}
             </p>
           ) : (
-            <p id="cf-matter-hint" className="mt-1.5 text-[13px] text-[#FBFAF7]/45">
+            <p id="cf-matter-hint" className="mt-1.5 text-[13px] text-[#FBFAF7]/60">
               Stačí niekoľko viet. Podrobnosti preberieme na stretnutí.
             </p>
           )}
@@ -175,7 +175,7 @@ export function ConsultationForm({ areas }: { areas: string[] }) {
         <button
           type="submit"
           disabled={status === "sending"}
-          className="inline-flex h-12 items-center justify-center gap-2 bg-[#C9A96A] px-8 text-[15px] font-medium text-[#0F1B2D] transition-colors duration-150 hover:bg-[#B08D4F] disabled:opacity-60"
+          className="inline-flex h-12 items-center justify-center gap-2 bg-[#C9A96A] px-8 text-[15px] font-medium text-[#0F1B2D] transition-colors duration-150 hover:bg-[#896E3E] disabled:opacity-60"
         >
           {status === "sending" ? (
             <>

@@ -242,13 +242,13 @@ export default async function CaseStudyPage({
       {/* ---------- next + CTA ---------- */}
       <Section className="border-t border-border pb-24 md:pb-32">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-          <Reveal>
+          <Reveal className="min-w-0">
             <p className="t-small font-medium uppercase tracking-[0.12em] text-text-muted">
               {dict.caseStudy.nextProject}
             </p>
             <Link
               href={`/${typedLocale}/portfolio/${next.slug}`}
-              className="group/next mt-4 flex items-center gap-5 rounded-2xl border border-border bg-surface p-5 transition-colors duration-200 hover:border-accent/35 hover:bg-surface-hover"
+              className="group/next mt-4 flex items-center gap-4 rounded-2xl border border-border bg-surface p-4 transition-colors duration-200 hover:border-accent/35 hover:bg-surface-hover sm:gap-5 sm:p-5"
             >
               <Image
                 src={next.preview.src}
@@ -257,10 +257,10 @@ export default async function CaseStudyPage({
                 alt=""
                 loading="lazy"
                 sizes="160px"
-                className="h-20 w-32 shrink-0 rounded-lg object-cover object-top"
+                className="h-16 w-24 shrink-0 rounded-lg object-cover object-top sm:h-20 sm:w-32"
               />
               <span className="min-w-0">
-                <span className="block font-[family-name:var(--font-space-grotesk)] text-lg font-medium text-text group-hover/next:text-accent">
+                <span className="block truncate font-[family-name:var(--font-space-grotesk)] text-lg font-medium text-text group-hover/next:text-accent">
                   {next.name}
                 </span>
                 <span className="t-small block truncate text-text-muted">
@@ -275,8 +275,8 @@ export default async function CaseStudyPage({
             </Link>
           </Reveal>
 
-          <Reveal delay={80}>
-            <div className="rounded-2xl border border-accent/20 bg-accent-soft p-8">
+          <Reveal delay={80} className="min-w-0">
+            <div className="rounded-2xl border border-accent/20 bg-accent-soft p-6 sm:p-8">
               <h2 className="t-h3 text-text">{dict.caseStudy.ctaTitle}</h2>
               <p className="mt-3 text-[15px] text-text-muted">{dict.caseStudy.ctaBody}</p>
               <ButtonLink href={`/${typedLocale}/contact`} size="lg" className="mt-6">

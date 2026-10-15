@@ -92,7 +92,7 @@ export function QuoteForm() {
           Obhliadku zvyčajne dohodneme do troch pracovných dní. Cenovú ponuku dostanete do
           desiatich dní od obhliadky.
         </p>
-        <p className="mt-4 bg-[#F2F2EF] px-4 py-3 text-[13px] text-[#6B6B66]">
+        <p className="mt-4 bg-[#F2F2EF] px-4 py-3 text-[13px] text-[#646460]">
           Toto je ukážkový web — dopyt sa nikam neodoslal.
         </p>
         <button
@@ -116,7 +116,7 @@ export function QuoteForm() {
       <h3 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold uppercase tracking-[-0.01em] text-[#1C1C1A]">
         Dopyt na cenu
       </h3>
-      <p className="mt-2 text-[15px] text-[#6B6B66]">
+      <p className="mt-2 text-[15px] text-[#646460]">
         Čím viac detailov, tým presnejšia prvá odpoveď.
       </p>
 

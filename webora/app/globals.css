@@ -61,6 +61,10 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Slovak compounds such as "požiadavkám" or "zmodernizovať" are long
+       enough to overflow a 320px column on their own. Breaking the word is
+       better than a horizontal scrollbar on the whole page. */
+    overflow-wrap: break-word;
   }
 
   @media (min-width: 768px) {

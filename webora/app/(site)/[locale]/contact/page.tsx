@@ -122,7 +122,7 @@ export default async function ContactPage({
                   <li key={social.label}>
                     {isPlaceholder(social.href) ? (
                       <span>
-                        {social.label} <span className="text-text-muted/70">{social.href}</span>
+                        {social.label} <span className="text-text-muted">{social.href}</span>
                       </span>
                     ) : (
                       <a

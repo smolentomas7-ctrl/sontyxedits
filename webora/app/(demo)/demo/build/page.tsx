@@ -70,7 +70,7 @@ export default function BuildDemo() {
         <DemoNav
           brand={
             <span className="font-[family-name:var(--font-space-grotesk)] text-[20px] font-bold uppercase tracking-[0.04em]">
-              Stav<span className="text-[#C9A227]">mont</span>
+              Stav<span className="text-[#836919]">mont</span>
             </span>
           }
           links={NAV}
@@ -145,7 +145,7 @@ export default function BuildDemo() {
                   <h3 className="font-[family-name:var(--font-space-grotesk)] text-[17px] font-bold uppercase">
                     {service.name}
                   </h3>
-                  <p className="mt-2 text-[14px] leading-relaxed text-[#6B6B66]">{service.body}</p>
+                  <p className="mt-2 text-[14px] leading-relaxed text-[#646460]">{service.body}</p>
                 </div>
               </li>
             ))}
@@ -173,7 +173,7 @@ export default function BuildDemo() {
                 <h3 className="mt-4 font-[family-name:var(--font-space-grotesk)] text-xl font-bold uppercase">
                   Podkrovie, Ružinov
                 </h3>
-                <p className="mt-1.5 text-[15px] text-[#6B6B66]">
+                <p className="mt-1.5 text-[15px] text-[#646460]">
                   Z nevyužitého pôjdu spálňa s kúpeľňou. Zateplenie, nové krovné výmeny,
                   strešné okná. 9 týždňov.
                 </p>
@@ -188,14 +188,14 @@ export default function BuildDemo() {
                 <h3 className="mt-4 font-[family-name:var(--font-space-grotesk)] text-xl font-bold uppercase">
                   Kuchyňa, Petržalka
                 </h3>
-                <p className="mt-1.5 text-[15px] text-[#6B6B66]">
+                <p className="mt-1.5 text-[15px] text-[#646460]">
                   Kompletná výmena vrátane rozvodov vody a elektriky. Nová linka na mieru.
                   5 týždňov.
                 </p>
               </div>
             </div>
 
-            <p className="mt-10 border-l-4 border-[#C9A227] bg-white/60 px-5 py-4 text-[14px] text-[#5A5A55]">
+            <p className="mt-10 border-l-4 border-[#836919] bg-white/60 px-5 py-4 text-[14px] text-[#5A5A55]">
               Pre tretiu dvojicu sme nedostali zodpovedajúcu fotografiu „po“, takže ju tu
               neukazujeme. Fotka pôvodného stavu je v galérii realizácií nižšie.
             </p>
@@ -265,11 +265,11 @@ export default function BuildDemo() {
 
               <ul className="mt-8 flex flex-col gap-4 text-[16px]">
                 <li className="flex items-center gap-3">
-                  <Phone aria-hidden="true" strokeWidth={1.5} className="size-5 shrink-0 text-[#C9A227]" />
+                  <Phone aria-hidden="true" strokeWidth={1.5} className="size-5 shrink-0 text-[#836919]" />
                   <span>+421 900 000 000</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Mail aria-hidden="true" strokeWidth={1.5} className="size-5 shrink-0 text-[#C9A227]" />
+                  <Mail aria-hidden="true" strokeWidth={1.5} className="size-5 shrink-0 text-[#836919]" />
                   <span>dopyt@stavmont.example</span>
                 </li>
               </ul>
@@ -281,7 +281,7 @@ export default function BuildDemo() {
                   { k: "Záruka", v: "5 rokov" },
                 ].map((stat) => (
                   <div key={stat.k}>
-                    <dt className="text-[13px] uppercase tracking-wide text-[#6B6B66]">{stat.k}</dt>
+                    <dt className="text-[13px] uppercase tracking-wide text-[#646460]">{stat.k}</dt>
                     <dd className="mt-1 font-[family-name:var(--font-space-grotesk)] text-xl font-bold">
                       {stat.v}
                     </dd>
@@ -296,7 +296,7 @@ export default function BuildDemo() {
 
         {/* ---------- FOOTER ---------- */}
         <footer className="border-t border-[#D4D4D0] bg-[#E4E4DF] py-10">
-          <div className="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 text-[14px] text-[#6B6B66] md:flex-row md:items-center md:justify-between md:px-8">
+          <div className="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 text-[14px] text-[#646460] md:flex-row md:items-center md:justify-between md:px-8">
             <p className="font-[family-name:var(--font-space-grotesk)] text-[16px] font-bold uppercase text-[#1C1C1A]">
               Stavmont
             </p>
