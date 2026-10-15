@@ -97,8 +97,12 @@ try {
     );
   } else {
     console.log(
-      "  sitemap.xml, robots.txt, canonicals, hreflang and og:url all use it.\n",
+      "  sitemap.xml, robots.txt, canonicals, hreflang and og:url all use it.",
     );
+    // Not a warning: a page that does not name itself canonical is how this site
+    // ended up reported as a duplicate of its own redirecting root URL.
+    execSync(`node scripts/check-canonicals.mjs out ${builtFor}`, { stdio: "inherit" });
+    console.log("");
   }
 } finally {
   restore();
