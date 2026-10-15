@@ -12,3 +12,22 @@
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=(), midi=(), browsing-topics=()
   Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://www.google.com; frame-src https://www.google.com; upgrade-insecure-requests
+
+# Pin the content type of the machine-readable files.
+#
+# Netlify already serves .xml as application/xml, so this is a belt to that
+# brace — but it is a brace worth having, because `nosniff` above applies to
+# these paths too. With nosniff set, whatever type the server declares is final:
+# a browser will not look inside the file and recognise it as XML on its own. If
+# the declared type were ever text/plain, every browser would render the sitemap
+# as a bare list of URLs rather than as a document, which is indistinguishable
+# from the file being broken even though it is not.
+#
+# Declared here rather than in next.config.ts because the Next runtime already
+# sets the type itself on the server build; overriding it there would be two
+# sources for one header.
+/sitemap.xml
+  Content-Type: application/xml; charset=utf-8
+
+/robots.txt
+  Content-Type: text/plain; charset=utf-8
