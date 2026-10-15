@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Wordmark } from "@/components/ui/Logo";
+import { mailtoHref } from "@/config/site";
 
 /**
  * Fixed frame above every demo site's own header, so a visitor always knows
@@ -15,7 +16,7 @@ import { Wordmark } from "@/components/ui/Logo";
 export const DEMO_BAR_HEIGHT = 44;
 
 /** What the demo demonstrates. Drives the prefilled project type on contact. */
-export type DemoKind = "info" | "eshop" | "gallery";
+export type DemoKind = "info" | "gallery";
 
 /**
  * Must match an entry in `contact.projectTypes` in content/i18n/sk.ts —
@@ -24,7 +25,6 @@ export type DemoKind = "info" | "eshop" | "gallery";
  */
 const PROJECT_TYPE: Record<DemoKind, string> = {
   info: "Informačný web pre firmu",
-  eshop: "E-shop",
   gallery: "Galerijný web alebo portfólio",
 };
 
@@ -52,7 +52,7 @@ export function DemoBar({ kind }: { kind: DemoKind }) {
             <span className="sm:hidden">Späť</span>
           </Link>
           <Link
-            href={`/sk/contact?type=${encodeURIComponent(PROJECT_TYPE[kind])}`}
+            href={mailtoHref(`Dopyt na webovú stránku — ${PROJECT_TYPE[kind]}`)}
             className="inline-flex items-center gap-1.5 rounded-lg bg-[#5B8DFF] px-2.5 py-1.5 text-[12px] font-medium text-[#06112E] transition-colors duration-150 hover:bg-[#3B74FF]"
           >
             <span className="hidden sm:inline">Chcem takýto web</span>

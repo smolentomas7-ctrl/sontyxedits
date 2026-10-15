@@ -9,6 +9,8 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Tilt } from "@/components/ui/Tilt";
 import { BrowserFrame } from "@/components/ui/BrowserFrame";
+import { ContactButtons } from "@/components/marketing/ContactOptions";
+import { mailtoHref } from "@/config/site";
 import { getDictionary, isLocale, LOCALES, type Locale } from "@/content/i18n";
 import { projects, getProject } from "@/content/projects";
 import { buildAlternates, ogImages } from "@/lib/seo";
@@ -112,7 +114,12 @@ export default async function CaseStudyPage({
                 {isClient ? dict.common.viewExample : dict.common.openLiveDemo}
                 <ArrowUpRight aria-hidden="true" strokeWidth={1.5} className="size-4" />
               </ButtonLink>
-              <ButtonLink href={`/${typedLocale}/contact`} variant="secondary" size="lg">
+              <ButtonLink
+                href={mailtoHref(`${dict.contact.mailSubject} — ${project.categoryLabel[typedLocale]}`)}
+                external
+                variant="secondary"
+                size="lg"
+              >
                 {dict.caseStudy.ctaButton}
               </ButtonLink>
             </div>
@@ -121,7 +128,7 @@ export default async function CaseStudyPage({
           {/* ---------- hero capture ---------- */}
           <Reveal className="mt-14">
             <Tilt max={3.5} scale={1.006} depth={6} glare>
-              <BrowserFrame url={isClient ? "miauto.sk" : `webora.sk${project.href}`}>
+              <BrowserFrame url={project.domain}>
                 <Image
                   src={project.preview.src}
                   width={project.preview.width}
@@ -279,9 +286,7 @@ export default async function CaseStudyPage({
             <div className="rounded-2xl border border-accent/20 bg-accent-soft p-6 sm:p-8">
               <h2 className="t-h3 text-text">{dict.caseStudy.ctaTitle}</h2>
               <p className="mt-3 text-[15px] text-text-muted">{dict.caseStudy.ctaBody}</p>
-              <ButtonLink href={`/${typedLocale}/contact`} size="lg" className="mt-6">
-                {dict.caseStudy.ctaButton}
-              </ButtonLink>
+              <ContactButtons dict={dict} className="mt-6" />
             </div>
           </Reveal>
         </div>

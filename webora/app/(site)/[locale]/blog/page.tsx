@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
+import { mailtoHref } from "@/config/site";
 import { ButtonLink } from "@/components/ui/Button";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
 import { sortedPosts } from "@/content/blog/posts";
@@ -91,7 +92,9 @@ export default async function BlogIndexPage({
         </ul>
 
         <div className="mt-16 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href={`/${typedLocale}/contact`}>{dict.common.getQuote}</ButtonLink>
+          <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external>
+            {dict.contact.emailCta}
+          </ButtonLink>
           <ButtonLink href={`/${typedLocale}/services`} variant="secondary">
             {dict.home.servicesLink}
           </ButtonLink>

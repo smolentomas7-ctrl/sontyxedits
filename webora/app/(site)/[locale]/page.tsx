@@ -9,7 +9,7 @@ import {
   ArrowRight,
   FileText,
   Layout,
-  ShoppingCart,
+  RefreshCw,
   Check,
 } from "lucide-react";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -20,12 +20,14 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
 import { WorkShowcase } from "@/components/marketing/WorkShowcase";
 import { Testimonials } from "@/components/marketing/Testimonials";
+import { ContactOptions, ContactButtons } from "@/components/marketing/ContactOptions";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
-import { siteConfig } from "@/config/site";
+import { siteConfig, mailtoHref } from "@/config/site";
 import { buildAlternates, ogImages } from "@/lib/seo";
 
 const TRUST_ICONS = [Smartphone, Gauge, Search, GraduationCap];
-const SERVICE_ICONS = [FileText, Layout, ShoppingCart];
+/** One per service, in the order services are listed. */
+const SERVICE_ICONS = [FileText, Layout, RefreshCw];
 
 export async function generateMetadata({
   params,
@@ -76,8 +78,15 @@ export default async function HomePage({
     url: `${siteConfig.url}/${typedLocale}`,
     description: dict.meta.siteDescription,
     email: siteConfig.email,
-    telephone: siteConfig.phone,
-    address: { "@type": "PostalAddress", addressLocality: siteConfig.city },
+    // The WhatsApp number is a real line, so it belongs here as telephone.
+    telephone: siteConfig.whatsapp.display,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "sales",
+      email: siteConfig.email,
+      telephone: siteConfig.whatsapp.display,
+      availableLanguage: ["sk", "en"],
+    },
   };
 
   const faqLd = {
@@ -139,7 +148,7 @@ export default async function HomePage({
 
             <Reveal delay={210}>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <ButtonLink href={`/${typedLocale}/contact`} size="lg">
+                <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external size="lg">
                   {dict.home.heroPrimary}
                 </ButtonLink>
                 <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary" size="lg">
@@ -356,11 +365,7 @@ export default async function HomePage({
             <p className="mt-6 rounded-xl border border-border bg-surface px-5 py-4 text-[14px] leading-relaxed text-text-muted">
               {dict.pricing.note}
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href={`/${typedLocale}/contact`} size="lg">
-                {dict.pricing.ctaPrimary}
-              </ButtonLink>
-            </div>
+            <ContactButtons dict={dict} className="mt-8" />
           </Reveal>
 
           <Reveal delay={80}>
@@ -401,10 +406,9 @@ export default async function HomePage({
               {dict.home.ctaTitle}
             </h2>
             <p className="mx-auto mt-5 max-w-[52ch] text-text-muted">{dict.home.ctaBody}</p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <ButtonLink href={`/${typedLocale}/contact`} size="lg">
-                {dict.home.ctaButton}
-              </ButtonLink>
+            <ContactOptions dict={dict} className="mx-auto mt-10 max-w-[760px] text-left" />
+
+            <div className="mt-8 flex justify-center">
               <ButtonLink href={`/${typedLocale}/features`} variant="secondary" size="lg">
                 {dict.home.ctaSecondary}
               </ButtonLink>

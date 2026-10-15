@@ -1,4 +1,4 @@
-import { miauto, shop, lens } from "@/config/images";
+import { miauto, bistro, lens } from "@/config/images";
 import type { ImageSlot } from "@/config/images";
 import type { Locale } from "./i18n";
 
@@ -9,12 +9,16 @@ import type { Locale } from "./i18n";
  * capability. The UI renders a different badge for each and never implies a
  * demonstration belongs to a client.
  *
- * The other mini-sites under /demo (bistro, fitness, build, legal, estate)
- * still exist and still work, but are deliberately not listed here — the
- * portfolio is limited to three primary examples.
+ * The other mini-sites under /demo (fitness, build, legal, estate) still
+ * exist and still work, but are deliberately not listed here — the portfolio
+ * is limited to three primary examples.
+ *
+ * There is no e-commerce example: Webora does not offer e-commerce
+ * development, so showing a shop would advertise a service that is not on
+ * offer.
  */
 
-export type ProjectCategory = "informacny" | "eshop" | "galeria";
+export type ProjectCategory = "informacny" | "prevadzka" | "galeria";
 export type ProjectKind = "client" | "demo";
 
 export type Project = {
@@ -22,6 +26,8 @@ export type Project = {
   name: string;
   /** Where "Pozrieť ukážku" goes. */
   href: string;
+  /** Shown in the browser-chrome frame: the address the site itself lives at. */
+  domain: string;
   /** External link opens in a new tab; demos are internal routes. */
   external?: boolean;
   kind: ProjectKind;
@@ -49,6 +55,7 @@ export const projects: Project[] = [
     slug: "miauto",
     name: "M.I.Auto s.r.o.",
     href: "/sk/portfolio/miauto",
+    domain: "miauto.sk",
     kind: "client",
     category: "informacny",
     preview: miauto.shotHome,
@@ -88,41 +95,42 @@ export const projects: Project[] = [
   },
 
   {
-    slug: "shop",
-    name: "Nordik",
-    href: "/demo/shop",
+    slug: "bistro",
+    name: "Le Petit Bistro",
+    href: "/demo/bistro",
+    domain: "webora.sk/demo/bistro",
     kind: "demo",
-    category: "eshop",
-    preview: shop.hero,
-    gallery: [shop.hero, shop.category1, shop.product1, shop.product3],
+    category: "prevadzka",
+    preview: bistro.hero,
+    gallery: [bistro.hero, bistro.about, bistro.gallery1, bistro.gallery3],
     year: "2026",
-    categoryLabel: { sk: "E-shop", en: "E-commerce" },
+    categoryLabel: { sk: "Web pre prevádzku", en: "Venue website" },
     kindLabel: { sk: "Ukážka možností", en: "Capability demo" },
     summary: {
-      sk: "Ukážkový e-shop s bytovými doplnkami. Filtrovanie, detail produktu s variantmi a funkčný košík vrátane pokladne.",
-      en: "A demo home-goods shop. Filtering, product detail with variants, and a working cart through to checkout.",
+      sk: "Ukážka webu pre reštauráciu. Menu rozdelené na chody, galéria priestoru a formulár na rezerváciu stola.",
+      en: "A demo site for a restaurant. A menu split by course, a gallery of the room and a table booking form.",
     },
     intro: {
-      sk: "Nordik je vymyslený obchod, ktorý sme postavili preto, aby sme na niečom ukázali, ako vieme riešiť predaj online. Nie je to screenshot ani maketa — produkty sa dajú filtrovať, pridať do košíka a prejsť pokladňou.",
-      en: "Nordik is a fictional shop we built to demonstrate how we approach selling online. It is not a screenshot or a mockup — products filter, go into a cart, and pass through a checkout.",
+      sk: "Le Petit Bistro je vymyslená prevádzka. Web pre reštauráciu, kaviareň alebo penzión má inú úlohu než firemná prezentácia — návštevník prichádza s konkrétnou otázkou: čo varíte, ako to u vás vyzerá a či je voľný stôl. Stránka je postavená tak, aby na všetky tri odpovedala skôr, než sa musí niekam preklikávať.",
+      en: "Le Petit Bistro is a fictional venue. A site for a restaurant, café or guesthouse has a different job from a company presentation — the visitor arrives with a specific question: what you cook, what the room looks like, and whether there is a table free. The page is built to answer all three before anyone has to click through to another page.",
     },
     highlights: {
       sk: [
-        "Deväť produktov s kategóriami, cenovým filtrom a zoraďovaním priamo v prehliadači",
-        "Detail produktu s galériou a výberom variantu",
-        "Košík, ktorý si pamätá obsah aj po obnovení stránky",
-        "Pokladňa s výberom dopravy a platby a s overovaním polí",
+        "Menu rozdelené na chody s prepínaním medzi kategóriami bez načítania stránky",
+        "Galéria priestoru a jedál v mriežke, ktorá zvláda fotky na výšku aj na šírku",
+        "Formulár na rezerváciu stola s výberom dátumu, času a počtu osôb",
+        "Otváracie hodiny, adresa a klikateľné telefónne číslo v hlavičke aj v pätičke",
       ],
       en: [
-        "Nine products with categories, a price filter and sorting, all in the browser",
-        "Product detail with a gallery and variant selection",
-        "A cart that survives a page reload",
-        "A checkout with shipping and payment selection and field validation",
+        "A menu split by course, switching between categories without a page load",
+        "A gallery of the room and the food in a grid that handles portrait and landscape",
+        "A table booking form with date, time and party size",
+        "Opening hours, address and a tappable phone number in both the header and the footer",
       ],
     },
     capabilities: {
-      sk: ["Katalóg produktov", "Filtrovanie a zoraďovanie", "Varianty produktov", "Košík", "Rozhranie pokladne", "Responzívna mriežka"],
-      en: ["Product catalogue", "Filtering and sorting", "Product variants", "Cart", "Checkout interface", "Responsive grid"],
+      sk: ["Menu podľa kategórií", "Rezervačný formulár", "Fotogaléria", "Otváracie hodiny", "Klik na telefón", "Responzívny dizajn"],
+      en: ["Categorised menu", "Booking form", "Photo gallery", "Opening hours", "Click-to-call", "Responsive design"],
     },
   },
 
@@ -130,6 +138,7 @@ export const projects: Project[] = [
     slug: "lens",
     name: "Studio Lens",
     href: "/demo/lens",
+    domain: "webora.sk/demo/lens",
     kind: "demo",
     category: "galeria",
     preview: lens.hero,

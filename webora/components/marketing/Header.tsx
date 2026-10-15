@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { AnimatedLogo } from "@/components/ui/AnimatedLogo";
 import { ButtonLink } from "@/components/ui/Button";
+import { mailtoHref } from "@/config/site";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 import type { Dictionary, Locale } from "@/content/i18n";
@@ -23,7 +24,6 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     { href: `/${locale}/portfolio`, label: dict.nav.portfolio },
     { href: `/${locale}/features`, label: dict.nav.features },
     { href: `/${locale}/blog`, label: dict.nav.blog },
-    { href: `/${locale}/about`, label: dict.nav.about },
     { href: `/${locale}/contact`, label: dict.nav.contact },
   ];
 
@@ -117,7 +117,8 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             </Link>
 
             <ButtonLink
-              href={`/${locale}/contact`}
+              href={mailtoHref(dict.contact.mailSubject)}
+              external
               size="sm"
               className="hidden sm:inline-flex"
             >
@@ -180,7 +181,12 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
               </ul>
             </nav>
 
-            <ButtonLink href={`/${locale}/contact`} className="mt-8 w-full">
+            <ButtonLink
+              href={mailtoHref(dict.contact.mailSubject)}
+              external
+              size="lg"
+              className="mt-8 w-full"
+            >
               {dict.common.getQuote}
             </ButtonLink>
           </Container>

@@ -19,7 +19,6 @@ export type NavDict = {
   portfolio: string;
   features: string;
   blog: string;
-  about: string;
   contact: string;
   openMenu: string;
   closeMenu: string;
@@ -199,67 +198,24 @@ export type Dictionary = {
     relatedTitle: string;
   };
 
-  about: {
-    metaTitle: string;
-    metaDescription: string;
-    heroTitle: string;
-    heroSubtitle: string;
-    storyTitle: string;
-    story: string[];
-    approachTitle: string;
-    approach: { title: string; body: string }[];
-    toolsTitle: string;
-    toolsBody: string;
-    tools: string[];
-    founderTitle: string;
-    founderRole: string;
-    founderBody: string;
-    ctaTitle: string;
-    ctaBody: string;
-    ctaButton: string;
-  };
-
   contact: {
     metaTitle: string;
     metaDescription: string;
     heroTitle: string;
     heroSubtitle: string;
-    formTitle: string;
-    name: string;
-    company: string;
-    email: string;
-    phone: string;
-    projectType: string;
-    projectTypePlaceholder: string;
-    projectTypes: string[];
-    message: string;
-    messagePlaceholder: string;
-    consent: string;
-    submit: string;
-    sending: string;
-    successTitle: string;
-    successBody: string;
-    successNote: string;
-    sendAnother: string;
-    errorTitle: string;
-    errorBody: string;
-    detailsTitle: string;
+    /** Heading above the two contact options. */
+    title: string;
+    body: string;
     emailLabel: string;
-    phoneLabel: string;
-    cityLabel: string;
+    emailCta: string;
+    /** Prefilled subject line on the mail draft. */
+    mailSubject: string;
+    whatsappLabel: string;
+    whatsappCta: string;
+    whatsappNote: string;
     responseLabel: string;
-    followLabel: string;
     nextStepsTitle: string;
     nextSteps: string[];
-    errors: {
-      nameRequired: string;
-      emailRequired: string;
-      emailInvalid: string;
-      messageRequired: string;
-      messageShort: string;
-      consentRequired: string;
-      phoneInvalid: string;
-    };
   };
 
   privacy: {
@@ -275,7 +231,6 @@ export type Dictionary = {
     tagline: string;
     navTitle: string;
     contactTitle: string;
-    socialTitle: string;
     placeholderNote: string;
   };
 

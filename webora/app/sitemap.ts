@@ -16,7 +16,7 @@ import { projects } from "@/content/projects";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPaths = ["", "services", "portfolio", "features", "blog", "about", "contact"];
+  const staticPaths = ["", "services", "portfolio", "features", "blog", "contact"];
   const casePaths = projects.map((project) => `portfolio/${project.slug}`);
   const postPaths = sortedPosts().map((post) => `blog/${post.slug}`);
   const allPaths = [...staticPaths, ...casePaths, ...postPaths, "legal/privacy"];

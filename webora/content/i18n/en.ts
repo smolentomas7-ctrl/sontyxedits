@@ -13,7 +13,6 @@ export const en: Dictionary = {
     portfolio: "Portfolio",
     features: "What a site can do",
     blog: "Blog",
-    about: "About",
     contact: "Contact",
     openMenu: "Open menu",
     closeMenu: "Close menu",
@@ -23,7 +22,7 @@ export const en: Dictionary = {
   },
 
   common: {
-    getQuote: "Free consultation",
+    getQuote: "Email me",
     seeWork: "See the work",
     viewExample: "View example",
     caseStudy: "Project detail",
@@ -50,7 +49,7 @@ export const en: Dictionary = {
     heroTitleAccent: "actual customers",
     heroSubtitle:
       "I design and build websites for businesses and sole traders. Not a template with the photos swapped — a site built around what your business needs to achieve.",
-    heroPrimary: "Book a consultation",
+    heroPrimary: "Email me",
     heroSecondary: "See the work",
     heroStats: [
       { value: "3", label: "kinds of site I build" },
@@ -79,19 +78,19 @@ export const en: Dictionary = {
     workEyebrow: "Work",
     workTitle: "Three kinds of site, three examples",
     workSubtitle:
-      "One real client project and two demonstrations showing how I handle selling online and presenting photography. You can click through all three.",
+      "One real client project and two demonstrations showing how I handle a venue with a menu and bookings, and how I present photography. You can click through all three.",
     servicesEyebrow: "Services",
     servicesTitle: "What you can come to me with",
     servicesSubtitle:
-      "From a one-page presentation to an online shop. We always start with what your business actually needs, not a feature list.",
+      "From a one-page presentation to a multi-page business site. We always start with what your business actually needs, not a feature list.",
     servicesLink: "All services",
     processEyebrow: "Process",
     processTitle: "How it works",
-    processSubtitle: "Five steps from the first call to a live site.",
+    processSubtitle: "Five steps from the first message to a live site.",
     process: [
       {
-        title: "Consultation and requirements",
-        body: "We go through what you need, who you sell to and what the site has to achieve. No obligation, by phone or in person.",
+        title: "Brief and requirements",
+        body: "You tell me by email or WhatsApp what you need, who you sell to and what the site has to achieve.",
       },
       {
         title: "Proposed solution",
@@ -107,23 +106,23 @@ export const en: Dictionary = {
       },
       {
         title: "Launch",
-        body: "I deploy the site, connect your domain and show you how to run it. I stay available for the first month.",
+        body: "I deploy the site, connect your domain and show you how to change text and images. The logins stay yours.",
       },
     ],
-    ctaTitle: "Tell me what you need",
+    ctaTitle: "Thinking about a website of your own?",
     ctaBody:
-      "Send a few sentences about your business and what you expect from a website. I'll come back with a proposed approach and a price for that scope.",
-    ctaButton: "Send a message",
+      "Send me an email or message me on WhatsApp. We'll go through what you need and how it could be built.",
+    ctaButton: "Email me",
     ctaSecondary: "See what a site can do",
   },
 
   services: {
     metaTitle: "Services — Webora",
     metaDescription:
-      "Landing page, business website, online shop, redesign and maintenance. What's included, who it suits and how long it takes.",
+      "Landing page, business website and a redesign of an existing site. What's included, who it suits and how long it takes.",
     heroTitle: "Services",
     heroSubtitle:
-      "Five kinds of project. Each one lists what it covers and who it suits. I price by actual scope — there are no fixed packages.",
+      "Three kinds of project. Each one lists what it covers and who it suits. I price by actual scope — there are no fixed packages.",
     whatItIs: "What it is",
     whoItSuits: "Who it suits",
     included: "What it covers",
@@ -137,8 +136,7 @@ export const en: Dictionary = {
         who: "For tradespeople, small venues and new businesses that need a credible presence, not a large website.",
         includes: [
           "Sections assembled around your needs",
-          "Contact form with field validation",
-          "Tappable phone number and email",
+          "Tappable phone number, email and WhatsApp",
           "Phone and tablet layouts",
           "Basic search engine optimisation",
           "Deployment and domain setup",
@@ -157,23 +155,9 @@ export const en: Dictionary = {
           "Advanced search engine optimisation",
           "Analytics setup",
           "Help with copy",
-          "Training on managing content",
+          "Training on editing text and images",
         ],
         timeline: "about two to three weeks",
-      },
-      {
-        slug: "eshop",
-        name: "Online shop",
-        what: "An online shop with a product catalogue, cart and checkout. The scope always depends on what you sell and what it needs to connect to.",
-        who: "For businesses selling products that want to sell beyond a physical shop or social media.",
-        includes: [
-          "Product catalogue with categories and variants",
-          "Cart and checkout flow",
-          "Prepared for payment gateway integration",
-          "Shipping configuration",
-          "Admin area and training",
-        ],
-        timeline: "depends on scope and integrations",
       },
       {
         slug: "redesign",
@@ -189,31 +173,17 @@ export const en: Dictionary = {
         ],
         timeline: "about two to four weeks",
       },
-      {
-        slug: "care",
-        name: "Care and maintenance",
-        what: "Looking after the site after launch: updates, backups, small text and image changes, and keeping an eye on everything staying up.",
-        who: "For businesses that would rather not deal with the technical side and just get in touch when something needs changing.",
-        includes: [
-          "Regular backups",
-          "Security updates",
-          "Small content changes",
-          "Uptime monitoring",
-          "Traffic summary",
-        ],
-        timeline: "ongoing, by arrangement",
-      },
     ],
     alwaysTitle: "What's always part of it",
     alwaysSubtitle:
-      "It doesn't matter whether it's one page or an online shop — every project covers this.",
+      "It doesn't matter whether it's one page or a multi-page site — every project covers this.",
     always: [
       { title: "Responsive design", body: "Tested on phones, tablets and large screens." },
       { title: "Accessibility", body: "Keyboard operation, readable contrast, image descriptions." },
       { title: "Speed", body: "Optimised images and a minimum of unnecessary code." },
       { title: "Basic SEO", body: "Page descriptions, a sitemap and structured data." },
       { title: "Ownership", body: "Domain, hosting and code are yours. No lock-in." },
-      { title: "Training", body: "I show you how to run the site yourself." },
+      { title: "Training", body: "I show you how to change text and images yourself." },
     ],
   },
 
@@ -256,13 +226,13 @@ export const en: Dictionary = {
     eyebrow: "Capabilities",
     title: "What a website can do",
     subtitle:
-      "An overview of what I can build in. It is not a list to pick everything from — during the consultation we work out what actually makes sense for your business.",
+      "An overview of what I can build in. It is not a list to pick everything from — we work out together what actually makes sense for your business.",
     note:
       "Not every feature is automatically part of every site. The final scope always depends on the brief, and some items require third-party services or ongoing costs.",
     ctaTitle: "Not sure which of these you need?",
     ctaBody:
       "Describe what your business does and what the site should handle. I'll propose a scope that makes sense — and say what I'd leave out.",
-    ctaButton: "Describe your project",
+    ctaButton: "Email me",
     groups: [
       {
         id: "dizajn",
@@ -335,28 +305,6 @@ export const en: Dictionary = {
         ],
         caveat:
           "Depending on the integration, Google Maps may require an API key and a Google Cloud project with billing enabled. Where a plain map link is enough, I don't add the complexity.",
-      },
-      {
-        id: "eshop",
-        title: "E-commerce and products",
-        summary: "Selling directly from the site.",
-        items: [
-          "Product catalogue",
-          "Product categories",
-          "Product detail pages",
-          "Product galleries",
-          "Search and filtering",
-          "Shopping cart",
-          "Checkout interface",
-          "Payment gateway integration",
-          "Order management",
-          "Stock and inventory integration",
-          "Shipping and delivery options",
-          "Discount codes",
-          "Customer accounts",
-        ],
-        caveat:
-          "Payments, stock, order management and customer accounts require external services and a backend. The demo shop in the portfolio is a working interface, not a running store.",
       },
       {
         id: "rezervacie",
@@ -469,22 +417,20 @@ export const en: Dictionary = {
           "AI features and integrations run on external services. Expect API keys, usage fees and ongoing maintenance. I never put access keys in code that runs in the browser.",
       },
       {
-        id: "sprava",
-        title: "Site management and support",
-        summary: "What happens after launch.",
+        id: "odovzdanie",
+        title: "Handover and access",
+        summary: "What state the site is in when you get it.",
         items: [
-          "Content editing options",
-          "CMS integration",
-          "Editing products and images through an admin area",
-          "Help with hosting and domains",
-          "Deployment",
-          "Changes to an existing site",
-          "Bug fixes and maintenance",
-          "Extending the site with new features",
-          "Technical support within an agreed scope",
+          "Deployment to hosting",
+          "Domain and HTTPS setup",
+          "Handover of the source code",
+          "Handover of every login",
+          "Training on editing text and images",
+          "A content management system where you want to run the content yourself",
+          "Documentation for whoever develops it next",
         ],
         caveat:
-          "A CMS, hosting, maintenance and unlimited revisions are not automatically included in the price. We agree those separately.",
+          "I do not offer ongoing website management or content administration. The site is handed over so you can run it yourself or with anyone else — the code and the logins are yours.",
       },
     ],
   },
@@ -536,7 +482,7 @@ export const en: Dictionary = {
       },
       {
         title: "Features",
-        body: "A contact form is one thing; a booking system or a shop wired to payments is another.",
+        body: "Contact links are one thing; a booking system or a connection to an external service is another.",
       },
       {
         title: "Design",
@@ -556,9 +502,9 @@ export const en: Dictionary = {
       },
     ],
     note:
-      "The consultation comes with no obligation. We agree the price before work starts, and if the scope changes during the project I say so up front — not on the invoice.",
-    ctaPrimary: "Book a free consultation",
-    ctaSecondary: "Request an individual quote",
+      "We agree the price before work starts, and if the scope changes during the project I say so up front — not on the invoice.",
+    ctaPrimary: "Email me",
+    ctaSecondary: "Message me on WhatsApp",
   },
 
   faq: {
@@ -568,11 +514,11 @@ export const en: Dictionary = {
     items: [
       {
         q: "What does a website cost?",
-        a: "I don't publish a fixed price list, because project scopes vary so much. The price depends on the number of pages, the features needed, the design, and whether you have text and photography ready. After a short consultation I can give a specific figure for a specific scope — and that figure holds.",
+        a: "I don't publish a fixed price list, because project scopes vary so much. The price depends on the number of pages, the features needed, the design, and whether you have text and photography ready. Describe the brief and I'll send a specific figure for a specific scope — and that figure holds.",
       },
       {
         q: "How long does it take to build a website?",
-        a: "A simpler presentation is usually ready in about a week, a multi-page business site in two to three weeks. An online shop depends on the number of products and integrations. Projects most often slip not because of the build, but because of waiting for text and photos.",
+        a: "A simpler presentation is usually ready in about a week, a multi-page business site in two to three weeks. Projects most often slip not because of the build, but because of waiting for text and photos.",
       },
       {
         q: "Will the site work on a phone?",
@@ -583,12 +529,12 @@ export const en: Dictionary = {
         a: "Yes. Depending on the integration it may require an API key and a Google Cloud project with billing enabled. If a simple map link or a directions button is enough, I don't add the integration — that saves you both hassle and cost.",
       },
       {
-        q: "Can you build an online shop?",
-        a: "Yes. A catalogue, cart and checkout flow I can build — you can click through the demo in the portfolio. A payment gateway, stock and order management are a separate matter: they run on external services and need configuring and testing.",
+        q: "How do I get in touch?",
+        a: "By email at weboraeurope@gmail.com or on WhatsApp at +421 944 352 238. A few sentences about what your business does and what you expect from a site is enough. There is deliberately no form on this site — email and WhatsApp reach me directly and I reply faster.",
       },
       {
         q: "Can the site be edited later?",
-        a: "Yes. Small text and image changes you can make yourself — I'll show you how. For larger changes, get in touch. If you want to manage the content entirely yourself we can connect a CMS; we agree that up front, because it affects the price.",
+        a: "Yes. Small text and image changes you can make yourself — I'll show you how, and the code and logins are yours. If you want to run the content entirely yourself we can connect a CMS; we agree that up front, because it affects the price. I don't offer ongoing website management.",
       },
       {
         q: "Will you help with launching the site and the domain?",
@@ -596,7 +542,7 @@ export const en: Dictionary = {
       },
       {
         q: "Can more features be added in future?",
-        a: "Yes, I build sites so they can be extended. If you already know you'll eventually want bookings or a shop, say so — I'll account for it in the structure and the later extension will be cheaper.",
+        a: "Yes, I build sites so they can be extended. If you already know you'll eventually want bookings or another language version, say so — I'll account for it in the structure and the later extension will be cheaper.",
       },
       {
         q: "Who will own the website?",
@@ -623,108 +569,29 @@ export const en: Dictionary = {
     relatedTitle: "More articles",
   },
 
-  about: {
-    metaTitle: "About — Webora",
-    metaDescription:
-      "A small web studio. I take on fewer projects at a time, communicate directly, and hand sites over so clients can run them themselves.",
-    heroTitle: "About me",
-    heroSubtitle:
-      "A small studio building websites for businesses and sole traders. No account manager between you and the person actually working on your site.",
-    storyTitle: "What I'm like to work with",
-    story: [
-      "Webora is a small web studio. I don't have hundreds of projects behind me and I'm not going to pretend otherwise — instead of a long reference list, the portfolio has one real client project and two demonstrations you can click through and judge for yourself.",
-      "I deliberately take on fewer projects at a time. It means the person who answers your message is the person designing and building your site, and that you know where things stand without having to ask.",
-      "Most of my clients are not technical businesses. They are people who are good at their trade and need customers to find them. I try to communicate accordingly — without jargon, and without selling features you'll never use.",
-    ],
-    approachTitle: "How I work",
-    approach: [
-      {
-        title: "Questions first, design second",
-        body: "Before I draw anything I ask what the site has to achieve. Often it turns out a smaller scope than expected is enough.",
-      },
-      {
-        title: "One point of contact",
-        body: "You talk directly to the person doing the work. No messages relayed through a third party.",
-      },
-      {
-        title: "Price agreed up front",
-        body: "We agree the price before I start. If the scope changes I say so up front, not on the invoice.",
-      },
-      {
-        title: "I hand you the keys",
-        body: "Domain, hosting, code and logins are yours. I show you how to run the site, even if you later go elsewhere.",
-      },
-    ],
-    toolsTitle: "What I build with",
-    toolsBody:
-      "I don't use drag-and-drop site builders. I write sites as code, which means faster loading, better search rankings, and no lock-in to a platform that might raise its prices tomorrow.",
-    tools: ["Next.js", "TypeScript", "Tailwind CSS", "React", "Vercel", "Figma", "Git"],
-    founderTitle: "Who's behind it",
-    founderRole: "Founder",
-    founderBody:
-      "I design and build websites for businesses. My favourite moment is showing a client the finished site on their own phone and watching them go through it for the first time.",
-    ctaTitle: "Shall we get started?",
-    ctaBody: "Send me a few sentences about your business and what you expect from a website.",
-    ctaButton: "Send a message",
-  },
-
   contact: {
     metaTitle: "Contact — Webora",
     metaDescription:
-      "Tell me what you need. I'll reply with a proposed approach and an individual quote.",
-    heroTitle: "Let's work out what you need",
+      "Email me at weboraeurope@gmail.com or message me on WhatsApp at +421 944 352 238.",
+    heroTitle: "Tell me what you need",
     heroSubtitle:
-      "Send a few sentences about your business and what you expect from a website. You don't need a finished brief — I just need to know where to start.",
-    formTitle: "Project description",
-    name: "Full name",
-    company: "Company name",
-    email: "Email",
-    phone: "Phone",
-    projectType: "What kind of site",
-    projectTypePlaceholder: "Not sure yet",
-    projectTypes: [
-      "Informational business website",
-      "One-page presentation",
-      "Online shop",
-      "Gallery site or portfolio",
-      "Redesign of an existing site",
-      "Something else",
-    ],
-    message: "Short project description",
-    messagePlaceholder:
-      "What your business does, what the site needs to achieve, and when you'd need it.",
-    consent: "I agree to my details being used to reply to this enquiry.",
-    submit: "Send enquiry",
-    sending: "Sending…",
-    successTitle: "The form is filled in correctly",
-    successBody:
-      "This is how the confirmation would look after sending. An email from me with the next steps would follow straight after.",
-    successNote:
-      "Important: this form does not send anything yet. Submission needs to be connected to an email service — see the note in lib/forms.ts. Until then, contact me directly using the details listed.",
-    sendAnother: "Fill in again",
-    errorTitle: "The form could not be processed",
-    errorBody: "Please try again, or contact me directly at the email listed.",
-    detailsTitle: "Direct contact",
+      "A few sentences about your business and what you expect from a website. You don't need a finished brief — just enough for me to know where to start.",
+    title: "Thinking about a website of your own?",
+    body:
+      "Send me an email or message me on WhatsApp. We'll go through what you need and how it could be built.",
     emailLabel: "Email",
-    phoneLabel: "Phone",
-    cityLabel: "Based in",
+    emailCta: "Email me",
+    mailSubject: "Website enquiry",
+    whatsappLabel: "WhatsApp",
+    whatsappCta: "Message me on WhatsApp",
+    whatsappNote: "Message me on WhatsApp and tell me what kind of website you need.",
     responseLabel: "Response time",
-    followLabel: "Find me on",
     nextStepsTitle: "What happens next",
     nextSteps: [
-      "I get in touch and we pin down what the site actually needs.",
+      "I get back to you and we settle what the site actually needs.",
       "I prepare a proposed approach and a quote for that specific scope.",
       "Once you approve the quote, we agree a date and start.",
     ],
-    errors: {
-      nameRequired: "Please enter your name.",
-      emailRequired: "Please enter an email so I can reply.",
-      emailInvalid: "That doesn't look like a valid email address.",
-      messageRequired: "Please write a few sentences about what you need.",
-      messageShort: "Could you expand on that a little — at least 20 characters.",
-      consentRequired: "I can't reply without your agreement.",
-      phoneInvalid: "That phone number looks incomplete.",
-    },
   },
 
   privacy: {
@@ -746,8 +613,8 @@ export const en: Dictionary = {
       {
         title: "What I collect",
         body: [
-          "From the contact form: your name, email, and optionally phone, company name and the content of your message.",
-          "You send this voluntarily so that I can reply to your enquiry.",
+          "This site has no contact form and collects no personal data about you on its own.",
+          "You only send me data when you contact me yourself by email or on WhatsApp — at that point I have whatever you write in the message, and your email address or phone number.",
         ],
       },
       {
@@ -789,8 +656,7 @@ export const en: Dictionary = {
     tagline: "Websites for businesses and sole traders.",
     navTitle: "Pages",
     contactTitle: "Contact",
-    socialTitle: "Follow me",
-    placeholderNote: "Contact details are still placeholders. Fill them in in config/site.ts.",
+    placeholderNote: "The company number is still a placeholder. Fill it in in config/site.ts.",
   },
 
   chat: {
@@ -798,7 +664,7 @@ export const en: Dictionary = {
     title: "Automated assistant",
     subtitle: "Answers come from a program, not a person",
     automatedNotice:
-      "This is an automated assistant with pre-written answers. It is not a live person. If you need something specific, use the contact form.",
+      "This is an automated assistant with pre-written answers. It is not a live person. If you need something specific, email me or message me on WhatsApp.",
     greeting:
       "Hello. I can answer common questions about pricing, timelines and what I do. What would you like to know?",
     inputLabel: "Your question",
@@ -806,7 +672,7 @@ export const en: Dictionary = {
     send: "Send",
     close: "Close chat",
     suggestionsLabel: "Suggested questions",
-    goToContact: "Go to the contact form",
+    goToContact: "Go to contact",
     botName: "Assistant",
     youName: "You",
   },

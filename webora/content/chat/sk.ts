@@ -11,13 +11,13 @@ import type { ChatScript } from "./types";
  */
 export const chatSk: ChatScript = {
   /** Chips shown under the greeting. */
-  initialSuggestions: ["pricing", "delivery", "included", "start"],
+  initialSuggestions: ["pricing", "delivery", "included", "contact"],
 
   fallback: {
     id: "fallback",
     answer:
-      "Na toto neviem odpovedať — mám pripravené odpovede len na bežné otázky. Napíšte mi cez kontaktný formulár a ozvem sa vám, zvyčajne do 24 hodín.",
-    followUps: ["pricing", "delivery", "included"],
+      "Na toto neviem odpovedať — mám pripravené odpovede len na bežné otázky. Napíšte mi e-mail na weboraeurope@gmail.com alebo cez WhatsApp a ozvem sa vám, zvyčajne do 24 hodín.",
+    followUps: ["contact", "pricing", "delivery"],
     offerContact: true,
   },
 
@@ -30,8 +30,8 @@ export const chatSk: ChatScript = {
         "drahé", "drahe", "rozpočet", "rozpocet", "eur", "€", "platiť", "platit", "faktúra",
       ],
       answer:
-        "Pevný cenník nemám. Každý web má iný rozsah, iné funkcie a iné podklady, takže cenu počítam individuálne podľa toho, čo konkrétne potrebujete. Po krátkej konzultácii dostanete ponuku s pevnou cenou a termínom — aby ste vedeli, na čom ste, ešte pred začiatkom prác. Od čoho sa cena odvíja, som rozpísal v sekcii Cena na domovskej stránke.",
-      followUps: ["included", "delivery", "eshop"],
+        "Pevný cenník nemám. Každý web má iný rozsah, iné funkcie a iné podklady, takže cenu počítam individuálne podľa toho, čo konkrétne potrebujete. Keď mi opíšete zadanie, pošlem ponuku s pevnou cenou a termínom — aby ste vedeli, na čom ste, ešte pred začiatkom prác. Od čoho sa cena odvíja, som rozpísal v sekcii Cena na domovskej stránke.",
+      followUps: ["included", "delivery", "contact"],
       offerContact: true,
     },
 
@@ -56,8 +56,8 @@ export const chatSk: ChatScript = {
         "zahrnuté", "zahrnute", "patrí", "patri", "rozsah",
       ],
       answer:
-        "V každom projekte je responzívny dizajn pre mobil aj desktop, základná optimalizácia pre vyhľadávače, kontaktný formulár, nasadenie na hosting a prepojenie domény. Na záver vás zaškolím, aby ste si vedeli meniť texty a obrázky sami. Doména, hosting aj kód ostávajú vaše. Čo všetko sa dá doplniť, nájdete v sekcii Čo web môže vedieť.",
-      followUps: ["pricing", "care", "start"],
+        "V každom projekte je responzívny dizajn pre mobil aj desktop, základná optimalizácia pre vyhľadávače, kontaktné odkazy, nasadenie na hosting a prepojenie domény. Na záver vás zaškolím, aby ste si vedeli meniť texty a obrázky sami. Doména, hosting aj kód ostávajú vaše. Čo všetko sa dá doplniť, nájdete v sekcii Čo web môže vedieť.",
+      followUps: ["pricing", "contact", "start"],
       offerContact: true,
     },
 
@@ -69,21 +69,8 @@ export const chatSk: ChatScript = {
         "prvý krok", "prvy krok", "ako to prebieha", "spolupráca", "spolupraca",
       ],
       answer:
-        "Napíšete mi cez formulár pár viet o svojej firme. Ozvem sa do 24 hodín a dohodneme krátky hovor, kde si prejdeme, čo potrebujete. Potom pošlem cenovú ponuku s pevnou cenou a termínom. Konzultácia aj ponuka sú zadarmo a nezáväzné.",
-      followUps: ["delivery", "pricing"],
-      offerContact: true,
-    },
-
-    eshop: {
-      id: "eshop",
-      label: "Robíte e-shopy?",
-      keywords: [
-        "eshop", "e-shop", "obchod", "predaj", "produkty", "košík", "kosik",
-        "platobná", "platobna", "brána", "brana", "objednávky", "objednavky",
-      ],
-      answer:
-        "Áno. Staviam e-shopy s katalógom produktov, variantmi, košíkom, dopravou a platobnou bránou, vrátane administrácie na správu objednávok. Cenu určujem podľa rozsahu — napíšte mi, koľko produktov plánujete predávať a či potrebujete napojenie na sklad alebo účtovníctvo. Funkčnú ukážku si môžete prejsť v portfóliu, demo Nordik.",
-      followUps: ["pricing", "delivery", "start"],
+        "Napíšete mi e-mail alebo správu cez WhatsApp — stačí pár viet o svojej firme a o tom, čo od webu čakáte. Ozvem sa do 24 hodín a doladíme, čo presne web potrebuje. Potom pošlem cenovú ponuku s pevnou cenou a termínom.",
+      followUps: ["contact", "delivery", "pricing"],
       offerContact: true,
     },
 
@@ -95,21 +82,21 @@ export const chatSk: ChatScript = {
         "obnoviť", "obnovit", "zmodernizovať", "zmodernizovat", "vylepšiť", "vylepsit",
       ],
       answer:
-        "Áno. Prejdem existujúci web, zachovám obsah aj pozície vo vyhľadávaní, nastavím presmerovania a dám stránke nový vizuál. Cena závisí od toho, koľko obsahu web má a čo z neho treba prepísať — poviem ju po tom, ako sa na web pozriem. Pošlite mi odkaz a napíšem, čo by som menil.",
-      followUps: ["pricing", "delivery", "start"],
+        "Áno. Prejdem existujúci web, zachovám obsah aj pozície vo vyhľadávaní, nastavím presmerovania a dám stránke nový vizuál. Cena závisí od toho, koľko obsahu web má a čo z neho treba prepísať — poviem ju po tom, ako sa na web pozriem. Pošlite mi odkaz e-mailom a napíšem, čo by som menil.",
+      followUps: ["pricing", "delivery", "contact"],
       offerContact: true,
     },
 
-    care: {
-      id: "care",
-      label: "Čo po spustení?",
+    contact: {
+      id: "contact",
+      label: "Ako ťa kontaktujem?",
       keywords: [
-        "údržba", "udrzba", "správa", "sprava", "po spustení", "po spusteni",
-        "podpora", "zálohy", "zalohy", "aktualizácie", "aktualizacie", "mesačne", "mesacne",
+        "kontakt", "e-mail", "email", "mail", "whatsapp", "napísať", "napisat",
+        "ozvať", "ozvat", "telefón", "telefon", "číslo", "cislo", "formulár", "formular",
       ],
       answer:
-        "Prvý mesiac po spustení opravím zadarmo čokoľvek, čo nefunguje tak, ako sme sa dohodli. Potom si môžete objednať mesačnú správu — zálohy, aktualizácie, drobné zmeny textov a dohľad nad dostupnosťou. Cenu dohodneme podľa toho, čo má správa pokrývať, a povinná nie je.",
-      followUps: ["included", "start"],
+        "Dvoma spôsobmi: e-mailom na weboraeurope@gmail.com alebo cez WhatsApp na +421 944 352 238. Formulár na webe zámerne nemám — obe cesty idú priamo mne a odpoviem rýchlejšie. Stačí pár viet o tom, čo vaša firma robí a akú stránku potrebujete.",
+      followUps: ["start", "pricing", "delivery"],
       offerContact: true,
     },
 
@@ -121,8 +108,8 @@ export const chatSk: ChatScript = {
         "prístupy", "pristupy", "zdrojový kód", "zdrojovy kod", "viazanosť", "viazanost",
       ],
       answer:
-        "Vám. Doména, hosting aj zdrojový kód sú vaše a kedykoľvek si ich môžete zobrať so sebou. Nepoužívam uzavreté systémy a neúčtujem poplatok za vydanie prístupov.",
-      followUps: ["care", "included"],
+        "Vám. Doména, hosting aj zdrojový kód sú vaše a kedykoľvek si ich môžete zobrať so sebou. Nepoužívam uzavreté systémy a neúčtujem poplatok za vydanie prístupov. Priebežnú správu webu neponúkam práve preto, aby ste na mne neviseli.",
+      followUps: ["included", "contact"],
       offerContact: false,
     },
   },

@@ -49,7 +49,7 @@ export function WorkShowcase({
                     : "border-border hover:border-text-muted/40",
                 )}
               >
-                <BrowserFrame url={`webora.sk${project.href}`}>
+                <BrowserFrame url={project.domain}>
                   <div className="relative aspect-[16/10] overflow-hidden bg-bg">
                     <Image
                       src={project.preview.src}

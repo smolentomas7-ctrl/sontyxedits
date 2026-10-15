@@ -8,13 +8,13 @@ import type { ChatScript } from "./types";
  * project, so no answer here may imply a fixed rate card.
  */
 export const chatEn: ChatScript = {
-  initialSuggestions: ["pricing", "delivery", "included", "start"],
+  initialSuggestions: ["pricing", "delivery", "included", "contact"],
 
   fallback: {
     id: "fallback",
     answer:
-      "I can't answer that one — I only have prepared answers for common questions. Send me a message through the contact form and I'll reply, usually within 24 hours.",
-    followUps: ["pricing", "delivery", "included"],
+      "I can't answer that one — I only have prepared answers for common questions. Email me at weboraeurope@gmail.com or message me on WhatsApp and I'll reply, usually within 24 hours.",
+    followUps: ["contact", "pricing", "delivery"],
     offerContact: true,
   },
 
@@ -27,8 +27,8 @@ export const chatEn: ChatScript = {
         "cheap", "quote", "eur", "€", "pay", "invoice", "rate",
       ],
       answer:
-        "There's no fixed rate card. Every site has a different scope, different features and different source material, so I price each one to what you actually need. After a short consultation you get a quote with a fixed price and a date, so you know where you stand before any work starts. What the price depends on is set out in the Pricing section on the home page.",
-      followUps: ["included", "delivery", "eshop"],
+        "There's no fixed rate card. Every site has a different scope, different features and different source material, so I price each one to what you actually need. Describe the brief and you get a quote with a fixed price and a date, so you know where you stand before any work starts. What the price depends on is set out in the Pricing section on the home page.",
+      followUps: ["included", "delivery", "contact"],
       offerContact: true,
     },
 
@@ -53,8 +53,8 @@ export const chatEn: ChatScript = {
         "comes with", "covered", "scope",
       ],
       answer:
-        "Every project includes a responsive design for phones and desktops, basic search engine optimisation, a contact form, deployment to hosting and domain setup. At the end I train you so you can change text and images yourself. The domain, hosting and code all stay yours. Everything that can be added on top is listed under What a site can do.",
-      followUps: ["pricing", "care", "start"],
+        "Every project includes a responsive design for phones and desktops, basic search engine optimisation, contact links, deployment to hosting and domain setup. At the end I train you so you can change text and images yourself. The domain, hosting and code all stay yours. Everything that can be added on top is listed under What a site can do.",
+      followUps: ["pricing", "contact", "start"],
       offerContact: true,
     },
 
@@ -66,21 +66,8 @@ export const chatEn: ChatScript = {
         "how does it work", "next step",
       ],
       answer:
-        "You send me a few sentences about your business through the form. I reply within 24 hours and we arrange a short call to go through what you need. Then I send a quote with a fixed price and a date. The consultation and the quote are free and come with no obligation.",
-      followUps: ["delivery", "pricing"],
-      offerContact: true,
-    },
-
-    eshop: {
-      id: "eshop",
-      label: "Do you build online shops?",
-      keywords: [
-        "eshop", "e-shop", "shop", "store", "ecommerce", "e-commerce", "sell",
-        "products", "cart", "checkout", "payment", "orders",
-      ],
-      answer:
-        "Yes. I build online shops with a product catalogue, variants, a cart, shipping and a payment gateway, including an admin area for managing orders. Pricing depends on scope — tell me roughly how many products you plan to sell and whether you need stock or accounting integrations. You can walk through a working one in the portfolio, the Nordik demo.",
-      followUps: ["pricing", "delivery", "start"],
+        "You send me an email or a WhatsApp message — a few sentences about your business and what you expect from a site is enough. I reply within 24 hours and we settle what the site actually needs. Then I send a quote with a fixed price and a date.",
+      followUps: ["contact", "delivery", "pricing"],
       offerContact: true,
     },
 
@@ -92,21 +79,21 @@ export const chatEn: ChatScript = {
         "modernize", "update my website", "improve",
       ],
       answer:
-        "Yes. I review the existing site, keep the content and your search rankings, set up redirects and give the site a new look. The price depends on how much content there is and how much of it needs rewriting — I quote it once I've looked at the site. Send me the link and I'll tell you what I'd change.",
-      followUps: ["pricing", "delivery", "start"],
+        "Yes. I review the existing site, keep the content and your search rankings, set up redirects and give the site a new look. The price depends on how much content there is and how much of it needs rewriting — I quote it once I've looked at the site. Email me the link and I'll tell you what I'd change.",
+      followUps: ["pricing", "delivery", "contact"],
       offerContact: true,
     },
 
-    care: {
-      id: "care",
-      label: "What happens after launch?",
+    contact: {
+      id: "contact",
+      label: "How do I get in touch?",
       keywords: [
-        "after launch", "maintenance", "support", "care", "backups", "updates",
-        "monthly", "ongoing", "look after",
+        "contact", "email", "e-mail", "mail", "whatsapp", "reach", "get in touch",
+        "phone", "number", "call", "message you", "form",
       ],
       answer:
-        "For the first month after launch I fix anything that doesn't work as agreed, free of charge. After that you can take a monthly care plan — backups, updates, small text changes and uptime monitoring. The price depends on what the plan needs to cover, and it's optional.",
-      followUps: ["included", "start"],
+        "Two ways: by email at weboraeurope@gmail.com, or on WhatsApp at +421 944 352 238. There is deliberately no form on this site — both routes reach me directly and I reply faster. A few sentences about what your business does and what kind of site you need is enough.",
+      followUps: ["start", "pricing", "delivery"],
       offerContact: true,
     },
 
@@ -118,8 +105,8 @@ export const chatEn: ChatScript = {
         "lock in", "take it with me",
       ],
       answer:
-        "You do. The domain, hosting and source code are yours and you can take them with you at any time. I don't use closed systems and I don't charge a fee to hand over your logins.",
-      followUps: ["care", "included"],
+        "You do. The domain, hosting and source code are yours and you can take them with you at any time. I don't use closed systems and I don't charge a fee to hand over your logins. I don't offer ongoing website management, precisely so you aren't tied to me.",
+      followUps: ["included", "contact"],
       offerContact: false,
     },
   },

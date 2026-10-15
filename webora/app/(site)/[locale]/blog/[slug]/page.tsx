@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { ButtonLink } from "@/components/ui/Button";
 import { getDictionary, isLocale, LOCALES, type Locale } from "@/content/i18n";
 import { getPost, sortedPosts, type Block } from "@/content/blog/posts";
-import { siteConfig } from "@/config/site";
+import { siteConfig, mailtoHref } from "@/config/site";
 import { buildAlternates, canonicalUrl } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
 
@@ -158,8 +158,8 @@ export default async function BlogPostPage({
             </p>
             <p className="t-small t-prose text-text-muted">{dict.blog.authorBio}</p>
             <div className="mt-3 flex flex-wrap gap-3">
-              <ButtonLink href={`/${typedLocale}/contact`} size="sm">
-                {dict.common.getQuote}
+              <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external size="sm">
+                {dict.contact.emailCta}
               </ButtonLink>
               <ButtonLink href={`/${typedLocale}/portfolio`} size="sm" variant="secondary">
                 {dict.common.seeWork}

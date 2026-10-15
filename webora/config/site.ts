@@ -1,12 +1,17 @@
 /**
  * Single source of truth for brand and contact data.
  *
- * The bracketed values below are PLACEHOLDERS. They render literally on the
- * page so they are impossible to miss before launch. Replace every one of them
- * with real data, then search the repo for "[" to confirm none are left.
+ * There are exactly two ways to reach Webora: e-mail and WhatsApp. The site
+ * has no contact form, so these values are the only route a visitor has —
+ * no component may hardcode them, and nothing else may be presented as a
+ * contact channel.
  *
- * No component may hardcode contact details — read them from here.
+ * Bracketed values are PLACEHOLDERS. They render literally so they are
+ * impossible to miss before launch.
  */
+
+/** Digits only, international format — what wa.me expects in its path. */
+const WHATSAPP_E164 = "421944352238";
 
 export const siteConfig = {
   name: "Webora",
@@ -15,25 +20,24 @@ export const siteConfig = {
     en: "Websites for small businesses",
   },
 
-  /** Public-facing contact details. */
-  email: "[EMAIL]",
-  phone: "[TELEFÓN]",
-  city: "[MESTO]",
-  companyId: "[IČO]",
+  /** Primary contact. */
+  email: "weboraeurope@gmail.com",
 
-  /** Founder name, shown on the About page. */
-  founder: "[MENO]",
-
-  /** Typical first-response time, shown on the contact page. */
-  responseTime: {
-    sk: "Odpovedáme do 24 hodín počas pracovných dní.",
-    en: "We reply within 24 hours on business days.",
+  /** Secondary contact. */
+  whatsapp: {
+    /** Human-readable, with spaces. */
+    display: "+421 944 352 238",
+    /** wa.me takes no "+" and no spaces, or the link resolves to nothing. */
+    href: `https://wa.me/${WHATSAPP_E164}`,
   },
 
-  social: {
-    instagram: "[URL]",
-    facebook: "[URL]",
-    linkedin: "[URL]",
+  /** Shown in the footer's legal line. */
+  companyId: "[IČO]",
+
+  /** Typical first-response time. */
+  responseTime: {
+    sk: "Odpovedám do 24 hodín počas pracovných dní.",
+    en: "I reply within 24 hours on business days.",
   },
 
   /**
@@ -48,4 +52,10 @@ export type SiteConfig = typeof siteConfig;
 /** True for values that are still unfilled placeholders. */
 export function isPlaceholder(value: string): boolean {
   return value.startsWith("[") && value.endsWith("]");
+}
+
+/** `mailto:` with a subject, so the draft arrives already labelled. */
+export function mailtoHref(subject?: string): string {
+  const to = `mailto:${siteConfig.email}`;
+  return subject ? `${to}?subject=${encodeURIComponent(subject)}` : to;
 }

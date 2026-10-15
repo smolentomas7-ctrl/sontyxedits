@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
+import { mailtoHref } from "@/config/site";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
 import { buildAlternates, ogImages } from "@/lib/seo";
 import { cn } from "@/lib/utils";
@@ -96,7 +97,10 @@ export default async function ServicesPage({
                 </div>
 
                 <div className="pt-2">
-                  <ButtonLink href={`/${typedLocale}/contact?service=${service.slug}`}>
+                  <ButtonLink
+                    href={mailtoHref(`${dict.contact.mailSubject} — ${service.name}`)}
+                    external
+                  >
                     {dict.services.cta}
                   </ButtonLink>
                 </div>
@@ -147,12 +151,13 @@ export default async function ServicesPage({
         </ul>
 
         <div className="mt-12 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href={`/${typedLocale}/features`} size="lg">
+          <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external size="lg">
+            {dict.contact.emailCta}
+          </ButtonLink>
+          <ButtonLink href={`/${typedLocale}/features`} variant="secondary" size="lg">
             {dict.nav.features}
           </ButtonLink>
-          <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary" size="lg">
-            {dict.common.seeWork}
-          </ButtonLink>
+
         </div>
       </Section>
     </>

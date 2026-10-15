@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { ContactButtons } from "@/components/marketing/ContactOptions";
 import { FeatureGroups } from "@/components/marketing/FeatureGroups";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
 import { buildAlternates, ogImages } from "@/lib/seo";
@@ -68,14 +69,7 @@ export default async function FeaturesPage({
               {dict.features.ctaTitle}
             </h2>
             <p className="mx-auto mt-5 max-w-[54ch] text-text-muted">{dict.features.ctaBody}</p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <ButtonLink href={`/${typedLocale}/contact`} size="lg">
-                {dict.features.ctaButton}
-              </ButtonLink>
-              <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary" size="lg">
-                {dict.common.seeWork}
-              </ButtonLink>
-            </div>
+            <ContactButtons dict={dict} className="mt-8 items-center justify-center" />
           </div>
         </Reveal>
       </Section>

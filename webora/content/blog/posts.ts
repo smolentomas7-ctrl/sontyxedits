@@ -77,11 +77,11 @@ export const posts: Post[] = [
         },
         {
           type: "h3",
-          text: "5 000 € a viac: e-shopy a riešenia na mieru",
+          text: "5 000 € a viac: rozsiahle weby a riešenia na mieru",
         },
         {
           type: "p",
-          text: "E-shop s desiatkami produktov, napojením na účtovníctvo a sklad, alebo web s rezervačným systémom. Cena rastie s počtom integrácií, nie s počtom stránok.",
+          text: "Web s desiatkami stránok, rezervačným systémom alebo napojením na externé systémy, prípadne vo viacerých jazykových verziách. Cena rastie s počtom integrácií, nie s počtom stránok.",
         },
         { type: "h2", text: "Z čoho sa cena skladá" },
         {
@@ -140,10 +140,10 @@ export const posts: Post[] = [
           type: "p",
           text: "More pages, a blog, a structure thought through for search engines, help with the copy, sometimes a photo shoot. In this bracket the site stops being a business card and starts being a tool that brings in enquiries.",
         },
-        { type: "h3", text: "€5,000 and up: online shops and bespoke builds" },
+        { type: "h3", text: "€5,000 and up: large sites and bespoke builds" },
         {
           type: "p",
-          text: "A shop with dozens of products wired into your accounting and stock, or a site with a booking system. The price rises with the number of integrations, not the number of pages.",
+          text: "A site with dozens of pages, a booking system or connections to external systems, possibly in several language versions. The price rises with the number of integrations, not the number of pages.",
         },
         { type: "h2", text: "What makes up the price" },
         {

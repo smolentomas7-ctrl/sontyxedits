@@ -13,7 +13,6 @@ export const sk: Dictionary = {
     portfolio: "Portfólio",
     features: "Čo web môže vedieť",
     blog: "Blog",
-    about: "O mne",
     contact: "Kontakt",
     openMenu: "Otvoriť menu",
     closeMenu: "Zavrieť menu",
@@ -23,7 +22,7 @@ export const sk: Dictionary = {
   },
 
   common: {
-    getQuote: "Nezáväzná konzultácia",
+    getQuote: "Napísať e-mail",
     seeWork: "Pozrieť práce",
     viewExample: "Pozrieť ukážku",
     caseStudy: "Detail projektu",
@@ -50,7 +49,7 @@ export const sk: Dictionary = {
     heroTitleAccent: "privedú zákazníkov",
     heroSubtitle:
       "Navrhujem a programujem weby pre firmy a živnostníkov. Nie šablónu s vymenenými fotkami — stránku postavenú okolo toho, čo má vaša firma dosiahnuť.",
-    heroPrimary: "Dohodnúť si konzultáciu",
+    heroPrimary: "Napísať e-mail",
     heroSecondary: "Pozrieť ukážky prác",
     heroStats: [
       { value: "3", label: "typy webov, ktoré staviam" },
@@ -79,19 +78,19 @@ export const sk: Dictionary = {
     workEyebrow: "Práce",
     workTitle: "Tri typy webov, tri ukážky",
     workSubtitle:
-      "Jeden reálny klientsky projekt a dve ukážky, na ktorých vidíte, ako riešim predaj online a prezentáciu fotografií. Všetky tri si viete prekliknúť.",
+      "Jeden reálny klientsky projekt a dve ukážky, na ktorých vidíte, ako riešim prezentáciu prevádzky a prezentáciu fotografií. Všetky tri si viete prekliknúť.",
     servicesEyebrow: "Služby",
     servicesTitle: "S čím za mnou viete prísť",
     servicesSubtitle:
-      "Od jednostránkovej prezentácie po e-shop. Vždy začíname tým, čo vaša firma naozaj potrebuje, nie zoznamom funkcií.",
+      "Od jednostránkovej prezentácie po viacstránkový firemný web. Vždy začíname tým, čo vaša firma naozaj potrebuje, nie zoznamom funkcií.",
     servicesLink: "Všetky služby",
     processEyebrow: "Postup",
     processTitle: "Ako to prebieha",
-    processSubtitle: "Päť krokov od prvého telefonátu po spustený web.",
+    processSubtitle: "Päť krokov od prvej správy po spustený web.",
     process: [
       {
-        title: "Konzultácia a požiadavky",
-        body: "Prejdeme si, čo potrebujete, komu predávate a čo má web dosiahnuť. Nezáväzne, telefonicky alebo osobne.",
+        title: "Zadanie a požiadavky",
+        body: "Napíšete mi e-mailom alebo cez WhatsApp, čo potrebujete, komu predávate a čo má web dosiahnuť.",
       },
       {
         title: "Návrh riešenia",
@@ -107,23 +106,23 @@ export const sk: Dictionary = {
       },
       {
         title: "Spustenie webu",
-        body: "Nasadím web, prepojím doménu a ukážem vám, ako si ho spravovať. Prvý mesiac som k dispozícii.",
+        body: "Nasadím web, prepojím doménu a ukážem vám, ako si meniť texty a obrázky. Prístupy ostávajú vám.",
       },
     ],
-    ctaTitle: "Povedzte mi, čo potrebujete",
+    ctaTitle: "Máte záujem o vlastnú webovú stránku?",
     ctaBody:
-      "Napíšte pár viet o svojej firme a o tom, čo od webu čakáte. Ozvem sa s návrhom riešenia a cenou na konkrétny rozsah.",
-    ctaButton: "Napísať správu",
+      "Napíšte mi e-mail alebo ma kontaktujte cez WhatsApp. Spoločne si prejdeme vaše požiadavky a možnosti realizácie.",
+    ctaButton: "Napísať e-mail",
     ctaSecondary: "Pozrieť, čo web môže vedieť",
   },
 
   services: {
     metaTitle: "Služby — Webora",
     metaDescription:
-      "Jednostránkový web, firemná stránka, e-shop, redizajn a správa. Čo je v cene, pre koho sa to hodí a ako dlho to trvá.",
+      "Jednostránkový web, firemná stránka a redizajn existujúceho webu. Čo je v cene, pre koho sa to hodí a ako dlho to trvá.",
     heroTitle: "Služby",
     heroSubtitle:
-      "Päť druhov projektov. Pri každom nájdete, čo obsahuje a pre koho sa hodí. Cenu stanovujem podľa konkrétneho rozsahu — nemám fixné balíky.",
+      "Tri druhy projektov. Pri každom nájdete, čo obsahuje a pre koho sa hodí. Cenu stanovujem podľa konkrétneho rozsahu — nemám fixné balíky.",
     whatItIs: "Čo to je",
     whoItSuits: "Pre koho sa hodí",
     included: "Čo obsahuje",
@@ -137,8 +136,7 @@ export const sk: Dictionary = {
         who: "Pre remeselníkov, malé prevádzky a začínajúce firmy, ktoré potrebujú dôveryhodnú prezentáciu, nie rozsiahly web.",
         includes: [
           "Sekcie poskladané podľa vašej potreby",
-          "Kontaktný formulár s overovaním polí",
-          "Klikateľné telefónne číslo a e-mail",
+          "Klikateľné telefónne číslo, e-mail a WhatsApp",
           "Prispôsobenie pre mobil a tablet",
           "Základná optimalizácia pre vyhľadávače",
           "Nasadenie a prepojenie domény",
@@ -157,23 +155,9 @@ export const sk: Dictionary = {
           "Rozšírená optimalizácia pre vyhľadávače",
           "Napojenie na analytiku",
           "Pomoc s textami",
-          "Školenie na správu obsahu",
+          "Zaškolenie na úpravu textov a obrázkov",
         ],
         timeline: "zhruba dva až tri týždne",
-      },
-      {
-        slug: "eshop",
-        name: "E-shop",
-        what: "Internetový obchod s katalógom produktov, košíkom a objednávkovým procesom. Rozsah sa vždy odvíja od toho, čo predávate a na čo sa to má napojiť.",
-        who: "Pre firmy, ktoré predávajú produkty a chcú predávať aj mimo kamennej predajne alebo sociálnych sietí.",
-        includes: [
-          "Katalóg produktov s kategóriami a variantmi",
-          "Košík a objednávkový proces",
-          "Príprava na napojenie platobnej brány",
-          "Nastavenie dopravy",
-          "Administrácia a zaškolenie",
-        ],
-        timeline: "podľa rozsahu a počtu napojení",
       },
       {
         slug: "redesign",
@@ -189,38 +173,24 @@ export const sk: Dictionary = {
         ],
         timeline: "zhruba dva až štyri týždne",
       },
-      {
-        slug: "care",
-        name: "Správa a údržba",
-        what: "Starostlivosť o web po spustení: aktualizácie, zálohy, drobné zmeny textov a obrázkov a dohľad nad tým, že všetko beží.",
-        who: "Pre firmy, ktoré nechcú riešiť technickú stránku a radšej sa ozvú, keď treba niečo zmeniť.",
-        includes: [
-          "Pravidelné zálohy",
-          "Bezpečnostné aktualizácie",
-          "Drobné obsahové zmeny",
-          "Sledovanie dostupnosti",
-          "Prehľad návštevnosti",
-        ],
-        timeline: "priebežne podľa dohody",
-      },
     ],
     alwaysTitle: "Čo je vždy súčasťou",
     alwaysSubtitle:
-      "Nezáleží na tom, či ide o jednu stránku alebo o e-shop — toto rieši každý projekt.",
+      "Nezáleží na tom, či ide o jednu stránku alebo o viacstránkový web — toto rieši každý projekt.",
     always: [
       { title: "Responzívny dizajn", body: "Odskúšané na mobile, tablete aj na veľkej obrazovke." },
       { title: "Prístupnosť", body: "Ovládanie klávesnicou, čitateľné kontrasty, popisy obrázkov." },
       { title: "Rýchlosť", body: "Optimalizované obrázky a minimum zbytočného kódu." },
       { title: "Základné SEO", body: "Popisy stránok, mapa stránky a štruktúrované dáta." },
       { title: "Vlastníctvo", body: "Doména, hosting aj kód sú vaše. Bez viazanosti." },
-      { title: "Zaškolenie", body: "Ukážem vám, ako si web spravovať sami." },
+      { title: "Zaškolenie", body: "Ukážem vám, ako si meniť texty a obrázky sami." },
     ],
   },
 
   portfolio: {
     metaTitle: "Portfólio — ukážky webových stránok | Webora",
     metaDescription:
-      "Tri typy webov: reálny klientsky projekt pre autoservis, ukážkový e-shop a galerijný web pre fotografa.",
+      "Tri typy webov: reálny klientsky projekt pre autoservis, ukážka webu pre prevádzku s menu a rezerváciami a galerijný web pre fotografa.",
     heroTitle: "Portfólio",
     heroSubtitle:
       "Tri weby, tri odlišné úlohy. Jeden je reálny projekt pre klienta, dva sú ukážky, ktoré som postavil, aby bolo vidieť, čo viem riešiť.",
@@ -254,17 +224,17 @@ export const sk: Dictionary = {
   features: {
     metaTitle: "Čo web môže vedieť — Webora",
     metaDescription:
-      "Prehľad funkcií, ktoré viem do webu zapracovať — od formulárov a máp cez e-shop a rezervácie po SEO, viacjazyčnosť a integrácie.",
+      "Prehľad funkcií, ktoré viem do webu zapracovať — od kontaktných odkazov a máp cez rezervácie a galérie po SEO, viacjazyčnosť a integrácie.",
     eyebrow: "Možnosti",
     title: "Čo všetko web môže vedieť",
     subtitle:
-      "Prehľad toho, čo viem do webu zapracovať. Nie je to zoznam, z ktorého si treba vybrať všetko — pri konzultácii prejdeme, čo má pre vašu firmu zmysel.",
+      "Prehľad toho, čo viem do webu zapracovať. Nie je to zoznam, z ktorého si treba vybrať všetko — prejdeme spolu, čo má pre vašu firmu zmysel.",
     note:
       "Nie každá funkcia je automaticky súčasťou každého webu. Výsledný rozsah vždy závisí od zadania a niektoré položky si vyžadujú služby tretích strán alebo priebežné náklady.",
     ctaTitle: "Neviete, čo z toho potrebujete?",
     ctaBody:
       "Opíšte mi, čo vaša firma robí a čo by mal web zvládnuť. Navrhnem rozsah, ktorý dáva zmysel, a poviem, čo by som naopak vynechal.",
-    ctaButton: "Opísať svoj projekt",
+    ctaButton: "Napísať e-mail",
     groups: [
       {
         id: "dizajn",
@@ -289,7 +259,6 @@ export const sk: Dictionary = {
         summary: "Stránky, ktoré vysvetlia, čo robíte a prečo práve vy.",
         items: [
           "Domovská stránka a predstavenie firmy",
-          "Sekcia o nás",
           "Služby a ich popisy",
           "Prezentácia produktov a služieb",
           "Kontaktné stránky",
@@ -337,28 +306,6 @@ export const sk: Dictionary = {
         ],
         caveat:
           "Google Maps môže podľa typu integrácie vyžadovať API kľúč a projekt v Google Cloud s aktívnou fakturáciou. Tam, kde stačí odkaz na mapu, zbytočnú integráciu nepridávam.",
-      },
-      {
-        id: "eshop",
-        title: "E-shopy a produkty",
-        summary: "Predaj priamo z webu.",
-        items: [
-          "Katalóg produktov",
-          "Kategórie produktov",
-          "Stránky detailu produktu",
-          "Galérie produktov",
-          "Vyhľadávanie a filtrovanie",
-          "Nákupný košík",
-          "Rozhranie pokladne",
-          "Napojenie na platobnú bránu",
-          "Správa objednávok",
-          "Napojenie na skladové zásoby",
-          "Možnosti dopravy a doručenia",
-          "Zľavové kódy",
-          "Zákaznícke účty",
-        ],
-        caveat:
-          "Platby, sklad, správa objednávok a zákaznícke účty si vyžadujú externé služby a backend. Ukážkový e-shop v portfóliu je funkčné rozhranie, nie prevádzkovaný obchod.",
       },
       {
         id: "rezervacie",
@@ -471,22 +418,20 @@ export const sk: Dictionary = {
           "AI funkcie a integrácie bežia na externých službách. Rátajte s API kľúčmi, poplatkami za používanie a priebežnou údržbou. Prístupové kľúče nikdy neukladám do kódu, ktorý beží v prehliadači.",
       },
       {
-        id: "sprava",
-        title: "Správa webu a technická podpora",
-        summary: "Čo sa deje po spustení.",
+        id: "odovzdanie",
+        title: "Odovzdanie a prístupy",
+        summary: "V akom stave web dostanete do rúk.",
         items: [
-          "Možnosti úpravy obsahu",
-          "Napojenie na redakčný systém",
-          "Úprava produktov a obrázkov cez administráciu",
-          "Pomoc s hostingom a doménou",
-          "Nasadenie webu",
-          "Úpravy existujúceho webu",
-          "Opravy chýb a údržba",
-          "Rozširovanie o ďalšie funkcie",
-          "Technická podpora v dohodnutom rozsahu",
+          "Nasadenie webu na hosting",
+          "Prepojenie domény a HTTPS",
+          "Odovzdanie zdrojového kódu",
+          "Odovzdanie všetkých prístupov",
+          "Zaškolenie na úpravu textov a obrázkov",
+          "Napojenie na redakčný systém, keď chcete obsah spravovať sami",
+          "Podklady a dokumentácia k ďalšiemu rozvoju",
         ],
         caveat:
-          "Redakčný systém, hosting, údržba ani neobmedzené úpravy nie sú automaticky súčasťou ceny. Dohodneme sa na nich samostatne.",
+          "Priebežnú správu webu ani obsahovú administráciu neponúkam. Web odovzdávam tak, aby ste ho vedeli spravovať sami alebo s kýmkoľvek ďalším — kód aj prístupy sú vaše.",
       },
     ],
   },
@@ -538,7 +483,7 @@ export const sk: Dictionary = {
       },
       {
         title: "Funkcie",
-        body: "Formulár je niečo iné než rezervačný systém alebo e-shop s napojením na platby.",
+        body: "Kontaktné odkazy sú niečo iné než rezervačný systém alebo napojenie na externú službu.",
       },
       {
         title: "Dizajn",
@@ -558,9 +503,9 @@ export const sk: Dictionary = {
       },
     ],
     note:
-      "Konzultácia je nezáväzná. Cenu dohodneme pred začiatkom prác a ak sa počas projektu rozsah zmení, poviem to dopredu — nie až na faktúre.",
-    ctaPrimary: "Dohodnúť si nezáväznú konzultáciu",
-    ctaSecondary: "Získať individuálnu cenovú ponuku",
+      "Cenu dohodneme pred začiatkom prác a ak sa počas projektu rozsah zmení, poviem to dopredu — nie až na faktúre.",
+    ctaPrimary: "Napísať e-mail",
+    ctaSecondary: "Napíš mi na WhatsApp",
   },
 
   faq: {
@@ -570,11 +515,11 @@ export const sk: Dictionary = {
     items: [
       {
         q: "Koľko stojí tvorba webovej stránky?",
-        a: "Nemám fixný cenník, pretože rozsah projektov sa veľmi líši. Cena sa odvíja od počtu stránok, potrebných funkcií, dizajnu a od toho, či máte pripravené texty a fotografie. Po krátkej konzultácii viem dať konkrétnu sumu na konkrétny rozsah — a tá platí.",
+        a: "Nemám fixný cenník, pretože rozsah projektov sa veľmi líši. Cena sa odvíja od počtu stránok, potrebných funkcií, dizajnu a od toho, či máte pripravené texty a fotografie. Keď mi opíšete zadanie, pošlem konkrétnu sumu na konkrétny rozsah — a tá platí.",
       },
       {
         q: "Ako dlho trvá vytvorenie webu?",
-        a: "Jednoduchšia prezentácia býva hotová zhruba za týždeň, viacstránkový firemný web za dva až tri týždne. E-shop závisí od počtu produktov a napojení. Projekty sa najčastejšie predlžujú nie kvôli programovaniu, ale kvôli čakaniu na texty a fotky.",
+        a: "Jednoduchšia prezentácia býva hotová zhruba za týždeň, viacstránkový firemný web za dva až tri týždne. Projekty sa najčastejšie predlžujú nie kvôli programovaniu, ale kvôli čakaniu na texty a fotky.",
       },
       {
         q: "Bude web fungovať na mobile?",
@@ -585,12 +530,12 @@ export const sk: Dictionary = {
         a: "Áno. Podľa typu integrácie to môže vyžadovať API kľúč a projekt v Google Cloud s aktívnou fakturáciou. Ak stačí jednoduchý odkaz na mapu alebo tlačidlo na otvorenie trasy, zbytočnú integráciu nepridávam a ušetríte si starosti aj náklady.",
       },
       {
-        q: "Je možné vytvoriť e-shop?",
-        a: "Áno. Katalóg, košík a objednávkový proces viem postaviť — ukážku si môžete prekliknúť v portfóliu. Platobná brána, sklad a správa objednávok sú samostatná téma: bežia na externých službách a treba ich nastaviť a otestovať.",
+        q: "Ako sa s tebou dá spojiť?",
+        a: "E-mailom na weboraeurope@gmail.com alebo cez WhatsApp na +421 944 352 238. Stačí pár viet o tom, čo vaša firma robí a čo od webu čakáte. Formulár na webe zámerne nemám — e-mail aj WhatsApp idú priamo mne a odpoviem rýchlejšie.",
       },
       {
         q: "Dá sa web neskôr upravovať?",
-        a: "Áno. Drobné zmeny textov a obrázkov zvládnete sami — ukážem vám ako. Pri väčších zmenách sa viete ozvať. Ak chcete obsah spravovať úplne sami, vieme web napojiť na redakčný systém; dohodneme sa na tom vopred, pretože to ovplyvňuje cenu.",
+        a: "Áno. Drobné zmeny textov a obrázkov zvládnete sami — ukážem vám ako, a kód aj prístupy sú vaše. Ak chcete obsah spravovať úplne sami, vieme web napojiť na redakčný systém; dohodneme sa na tom vopred, pretože to ovplyvňuje cenu. Priebežnú správu webu neponúkam.",
       },
       {
         q: "Pomôžeš mi so spustením webu a doménou?",
@@ -598,7 +543,7 @@ export const sk: Dictionary = {
       },
       {
         q: "Je možné pridať ďalšie funkcie v budúcnosti?",
-        a: "Áno, web staviam tak, aby sa dal rozširovať. Ak už pri zadaní viete, že časom budete chcieť napríklad rezervácie alebo e-shop, povedzte to — zohľadním to v štruktúre a neskoršie rozšírenie bude lacnejšie.",
+        a: "Áno, web staviam tak, aby sa dal rozširovať. Ak už pri zadaní viete, že časom budete chcieť napríklad rezervácie alebo ďalšiu jazykovú verziu, povedzte to — zohľadním to v štruktúre a neskoršie rozšírenie bude lacnejšie.",
       },
       {
         q: "Komu bude web patriť?",
@@ -625,108 +570,30 @@ export const sk: Dictionary = {
     relatedTitle: "Ďalšie články",
   },
 
-  about: {
-    metaTitle: "O mne — Webora",
-    metaDescription:
-      "Malé webové štúdio. Pracujem na menšom počte projektov naraz, komunikujem priamo a weby odovzdávam tak, aby ich klient vedel spravovať.",
-    heroTitle: "O mne",
-    heroSubtitle:
-      "Malé štúdio, ktoré stavia weby pre firmy a živnostníkov. Žiadny account manažér medzi vami a človekom, ktorý na vašom webe naozaj robí.",
-    storyTitle: "Ako to u mňa vyzerá",
-    story: [
-      "Webora je malé webové štúdio. Nemám za sebou stovky projektov a nebudem predstierať, že áno — namiesto dlhého zoznamu referencií nájdete v portfóliu jeden reálny klientsky projekt a dve ukážky, ktoré si viete celé prekliknúť a posúdiť sami.",
-      "Pracujem zámerne na menšom počte projektov naraz. Znamená to, že na vašu správu odpovie ten istý človek, ktorý web navrhuje a programuje, a že viete, v akom je stave, bez toho, aby ste sa museli pýtať.",
-      "Väčšina klientov nie sú technické firmy. Sú to ľudia, ktorí vedia svoje remeslo a potrebujú, aby ich zákazníci našli. Snažím sa podľa toho aj komunikovať — bez žargónu a bez toho, aby som predával funkcie, ktoré nevyužijete.",
-    ],
-    approachTitle: "Ako pracujem",
-    approach: [
-      {
-        title: "Najprv otázky, potom návrh",
-        body: "Kým začnem kresliť, pýtam sa, čo má web dosiahnuť. Často sa ukáže, že stačí menší rozsah, než klient čakal.",
-      },
-      {
-        title: "Jeden kontakt",
-        body: "Komunikujete priamo s človekom, ktorý na projekte robí. Bez prekladania správ cez tretiu osobu.",
-      },
-      {
-        title: "Cena dohodnutá dopredu",
-        body: "Cenu dohodneme pred začiatkom. Ak sa rozsah zmení, poviem to dopredu, nie až na faktúre.",
-      },
-      {
-        title: "Odovzdám vám kľúče",
-        body: "Doména, hosting, kód aj prístupy sú vaše. Ukážem vám, ako si web spravovať, aj keby ste odišli k niekomu inému.",
-      },
-    ],
-    toolsTitle: "Čím staviam",
-    toolsBody:
-      "Nepoužívam drag-and-drop stavače stránok. Weby píšem ako kód, čo znamená rýchlejšie načítanie, lepšie pozície vo vyhľadávaní a žiadnu viazanosť na platformu, ktorá môže zajtra zdvihnúť ceny.",
-    tools: ["Next.js", "TypeScript", "Tailwind CSS", "React", "Vercel", "Figma", "Git"],
-    founderTitle: "Kto za tým stojí",
-    founderRole: "Zakladateľ",
-    founderBody:
-      "Navrhujem a programujem weby pre firmy. Baví ma moment, keď klientovi ukážem hotovú stránku na jeho vlastnom telefóne a on si ju prvýkrát prejde.",
-    ctaTitle: "Pustíme sa do toho?",
-    ctaBody: "Napíšte mi pár viet o svojej firme a o tom, čo od webu čakáte.",
-    ctaButton: "Napísať správu",
-  },
-
   contact: {
     metaTitle: "Kontakt — Webora",
     metaDescription:
-      "Napíšte mi, čo potrebujete. Ozvem sa s návrhom riešenia a individuálnou cenovou ponukou.",
+      "Napíšte mi e-mail na weboraeurope@gmail.com alebo ma kontaktujte cez WhatsApp na +421 944 352 238.",
     heroTitle: "Povedzme si, čo potrebujete",
     heroSubtitle:
       "Napíšte pár viet o svojej firme a o tom, čo od webu čakáte. Nemusíte mať pripravené zadanie — stačí, keď viem, kde začať.",
-    formTitle: "Popis projektu",
-    name: "Meno a priezvisko",
-    company: "Názov firmy",
-    email: "E-mail",
-    phone: "Telefón",
-    projectType: "O aký web ide",
-    projectTypePlaceholder: "Zatiaľ neviem",
-    projectTypes: [
-      "Informačný web pre firmu",
-      "Jednostránková prezentácia",
-      "E-shop",
-      "Galerijný web alebo portfólio",
-      "Redizajn existujúceho webu",
-      "Niečo iné",
-    ],
-    message: "Krátky popis projektu",
-    messagePlaceholder:
-      "Čím sa vaša firma zaoberá, čo má web dosiahnuť a dokedy by ste ho potrebovali.",
-    consent: "Súhlasím so spracovaním údajov z tohto formulára na účely odpovede na môj dopyt.",
-    submit: "Odoslať dopyt",
-    sending: "Odosiela sa…",
-    successTitle: "Formulár je vyplnený správne",
-    successBody:
-      "Takto by vyzerala odpoveď po odoslaní. Hneď po nej by nasledoval môj e-mail s ďalšími krokmi.",
-    successNote:
-      "Dôležité: tento formulár zatiaľ nikam neodosiela. Odosielanie treba napojiť na e-mailovú službu — pozrite poznámku v lib/forms.ts. Dovtedy ma kontaktujte priamo na uvedených údajoch.",
-    sendAnother: "Vyplniť znova",
-    errorTitle: "Formulár sa nepodarilo spracovať",
-    errorBody: "Skúste to prosím znova, alebo ma kontaktujte priamo na uvedenom e-maile.",
-    detailsTitle: "Priamy kontakt",
+    title: "Máte záujem o vlastnú webovú stránku?",
+    body:
+      "Napíšte mi e-mail alebo ma kontaktujte cez WhatsApp. Spoločne si prejdeme vaše požiadavky a možnosti realizácie.",
     emailLabel: "E-mail",
-    phoneLabel: "Telefón",
-    cityLabel: "Pôsobím v",
+    emailCta: "Napísať e-mail",
+    mailSubject: "Dopyt na webovú stránku",
+    whatsappLabel: "WhatsApp",
+    whatsappCta: "Napíš mi na WhatsApp",
+    whatsappNote:
+      "Kontaktuj ma cez WhatsApp a napíš mi, akú webovú stránku potrebuješ.",
     responseLabel: "Odozva",
-    followLabel: "Nájdete ma na",
     nextStepsTitle: "Čo bude nasledovať",
     nextSteps: [
       "Ozvem sa a doladíme, čo presne web potrebuje.",
       "Pripravím návrh riešenia a cenovú ponuku na konkrétny rozsah.",
       "Keď ponuku odsúhlasíte, dohodneme termín a začíname.",
     ],
-    errors: {
-      nameRequired: "Zadajte prosím svoje meno.",
-      emailRequired: "Zadajte prosím e-mail, aby som vám vedel odpovedať.",
-      emailInvalid: "Toto nevyzerá ako platná e-mailová adresa.",
-      messageRequired: "Napíšte mi prosím pár viet o tom, čo potrebujete.",
-      messageShort: "Skúste to prosím trochu rozpísať — aspoň 20 znakov.",
-      consentRequired: "Bez súhlasu vám nemôžem odpovedať.",
-      phoneInvalid: "Telefónne číslo vyzerá neúplne.",
-    },
   },
 
   privacy: {
@@ -742,14 +609,14 @@ export const sk: Dictionary = {
         title: "Kto spracúva vaše údaje",
         body: [
           "Prevádzkovateľom tohto webu je [NÁZOV FIRMY], so sídlom [ADRESA], IČO [IČO].",
-          "V otázkach ochrany údajov ma kontaktujte na [EMAIL].",
+          "V otázkach ochrany údajov ma kontaktujte na weboraeurope@gmail.com.",
         ],
       },
       {
         title: "Aké údaje zbieram",
         body: [
-          "Z kontaktného formulára: meno, e-mail, prípadne telefón, názov firmy a obsah vašej správy.",
-          "Tieto údaje mi posielate dobrovoľne, aby som vedel odpovedať na váš dopyt.",
+          "Tento web nemá kontaktný formulár a sám o sebe o vás nezbiera žiadne osobné údaje.",
+          "Údaje mi posielate až vtedy, keď ma sami oslovíte e-mailom alebo cez WhatsApp — vtedy mám to, čo mi v správe napíšete, a vašu e-mailovú adresu alebo telefónne číslo.",
         ],
       },
       {
@@ -769,6 +636,7 @@ export const sk: Dictionary = {
         title: "Komu ich odovzdávam",
         body: [
           "Doplňte zoznam spracovateľov, ktorých reálne používate — napríklad poskytovateľa hostingu, e-mailovej schránky alebo nástroja na analytiku.",
+          "Ak ma kontaktujete cez WhatsApp, komunikácia prebieha v aplikácii WhatsApp a riadi sa aj jej vlastnými podmienkami.",
         ],
       },
       {
@@ -791,9 +659,8 @@ export const sk: Dictionary = {
     tagline: "Webové stránky pre firmy a živnostníkov.",
     navTitle: "Stránky",
     contactTitle: "Kontakt",
-    socialTitle: "Sledujte ma",
     placeholderNote:
-      "Kontaktné údaje sú zatiaľ zástupné. Doplňte ich v súbore config/site.ts.",
+      "IČO je zatiaľ zástupné. Doplňte ho v súbore config/site.ts.",
   },
 
   chat: {
@@ -801,7 +668,7 @@ export const sk: Dictionary = {
     title: "Automatický asistent",
     subtitle: "Odpovedá program, nie človek",
     automatedNotice:
-      "Toto je automatický asistent s vopred pripravenými odpoveďami. Nie je to živá osoba. Ak potrebujete niečo konkrétne, napíšte cez kontaktný formulár.",
+      "Toto je automatický asistent s vopred pripravenými odpoveďami. Nie je to živá osoba. Ak potrebujete niečo konkrétne, napíšte mi e-mail alebo cez WhatsApp.",
     greeting:
       "Dobrý deň. Viem odpovedať na bežné otázky o cenách, termínoch a tom, čo robím. Na čo sa chcete opýtať?",
     inputLabel: "Vaša otázka",
@@ -809,7 +676,7 @@ export const sk: Dictionary = {
     send: "Odoslať",
     close: "Zavrieť chat",
     suggestionsLabel: "Návrhy otázok",
-    goToContact: "Prejsť na kontaktný formulár",
+    goToContact: "Prejsť na kontakt",
     botName: "Asistent",
     youName: "Vy",
   },

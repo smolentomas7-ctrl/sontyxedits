@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
 import { WorkShowcase } from "@/components/marketing/WorkShowcase";
+import { mailtoHref } from "@/config/site";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
 import { buildAlternates, ogImages } from "@/lib/seo";
 
@@ -57,8 +58,8 @@ export default async function PortfolioPage({
         <WorkShowcase locale={typedLocale} dict={dict} />
 
         <div className="mt-16 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href={`/${typedLocale}/contact`} size="lg">
-            {dict.common.getQuote}
+          <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external size="lg">
+            {dict.contact.emailCta}
           </ButtonLink>
           <ButtonLink href={`/${typedLocale}/features`} variant="secondary" size="lg">
             {dict.home.ctaSecondary}

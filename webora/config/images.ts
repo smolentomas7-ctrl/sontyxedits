@@ -39,13 +39,12 @@ export const brand = {
     alt: "Webora",
   },
   /** 1.2 Founder portrait — About page. */
-  founder: {
-    src: "/assets/brand/webora-founder.jpg",
-    width: 896,
-    height: 1200,
-    alt: "Zakladateľ Webora pri pracovnom stole v ateliéri",
-  },
   /** 1.3 Studio photo — open-plan workspace. */
+  /**
+   * Workspace photography. Both slots are defined and ready but currently
+   * unplaced: the About page that used them was removed, and the contact area
+   * is deliberately kept to the two contact options with no decoration.
+   */
   studio1: {
     src: "/assets/brand/webora-studio-01.jpg",
     width: 1200,
@@ -207,156 +206,6 @@ export const bistro = {
 
 /* ============================================================
    GROUP 4 — DEMO: SHOP
-   ============================================================ */
-
-export const shop = {
-  /** 4.4 Hero banner. Supplied as 16:9, cropped wider by CSS. */
-  hero: {
-    src: "/assets/shop/shop-hero.jpg",
-    width: 1376,
-    height: 768,
-    alt: "Minimalistický obývací priestor s doplnkami do domácnosti",
-  },
-  /** 4.1 Product 1 — ceramic vase, plus 4.2 extra angles. */
-  product1: {
-    src: "/assets/shop/shop-product-01.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Biela keramická váza",
-  },
-  product1g1: {
-    src: "/assets/shop/shop-product-01-gallery-01.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Keramická váza na podstavci",
-  },
-  product1g2: {
-    src: "/assets/shop/shop-product-01-gallery-02.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Keramická váza pri pohľade zhora",
-  },
-  product1g3: {
-    src: "/assets/shop/shop-product-01-gallery-03.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Detail povrchu keramickej vázy",
-  },
-  /** 4.1 Product 2 — oak stool, plus 4.2 extra angles. */
-  product2: {
-    src: "/assets/shop/shop-product-02.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Dubová stolička s okrúhlym sedadlom",
-  },
-  product2g1: {
-    src: "/assets/shop/shop-product-02-gallery-01.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Dubová stolička z profilu",
-  },
-  product2g2: {
-    src: "/assets/shop/shop-product-02-gallery-02.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Detail kresby dubového dreva",
-  },
-  /** 4.1 Product 3 — linen cushion, plus 4.2 extra angles. */
-  product3: {
-    src: "/assets/shop/shop-product-03.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Ľanový dekoračný vankúš",
-  },
-  product3g1: {
-    src: "/assets/shop/shop-product-03-gallery-01.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Ľanový vankúš na stoličke",
-  },
-  product3g2: {
-    src: "/assets/shop/shop-product-03-gallery-02.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Detail rohu a švu ľanového vankúša",
-  },
-  product3g3: {
-    src: "/assets/shop/shop-product-03-gallery-03.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Detail štruktúry ľanovej tkaniny",
-  },
-  /** 4.1 Products 4–8, single shot each. */
-  product4: {
-    src: "/assets/shop/shop-product-04.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Mosadzná stolová lampa",
-  },
-  product5: {
-    src: "/assets/shop/shop-product-05.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Keramické misky naukladané na sebe",
-  },
-  product6: {
-    src: "/assets/shop/shop-product-06.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Sklenená karafa s dreveným uzáverom",
-  },
-  product7: {
-    src: "/assets/shop/shop-product-07.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Sviečka s geometrickým tvarom",
-  },
-  product8: {
-    src: "/assets/shop/shop-product-08.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Nástenné hodiny z dreva a mosadze",
-  },
-  /**
-   * 4.1 Product 9 — a taller dark stool. Supplied as an extra angle for the
-   * oak stool, but it is a different piece of furniture, so it is sold as its
-   * own product rather than shown in the oak stool's gallery.
-   */
-  product9: {
-    src: "/assets/shop/shop-product-02-gallery-03.jpg",
-    width: 1024,
-    height: 1024,
-    alt: "Vysoká stolička s tmavým sedlovým sedadlom",
-  },
-  /** 4.3 Category tiles, 4:5. */
-  category1: {
-    src: "/assets/shop/shop-category-01.jpg",
-    width: 896,
-    height: 1200,
-    alt: "Obývacia izba s keramikou na policiach",
-  },
-  category2: {
-    src: "/assets/shop/shop-category-02.jpg",
-    width: 896,
-    height: 1200,
-    alt: "Posteľ s ľanovou bielizňou",
-  },
-  category3: {
-    src: "/assets/shop/shop-category-03.jpg",
-    width: 896,
-    height: 1200,
-    alt: "Kuchynský ostrov s riadom",
-  },
-  category4: {
-    src: "/assets/shop/shop-category-04.jpg",
-    width: 896,
-    height: 1200,
-    alt: "Pracovný stôl s doplnkami",
-  },
-} satisfies Record<string, ImageSlot>;
-
-/* ============================================================
-   GROUP 5 — DEMO: FITNESS
    ============================================================ */
 
 export const fitness = {
@@ -909,7 +758,6 @@ export const miauto = {
 export const demoPreviews = {
   miauto: miauto.shotHome,
   bistro: bistro.hero,
-  shop: shop.hero,
   fitness: fitness.hero,
   build: build.hero,
   legal: legal.hero,
@@ -922,7 +770,6 @@ export const images = {
   miauto,
   marketing,
   bistro,
-  shop,
   fitness,
   build,
   legal,
