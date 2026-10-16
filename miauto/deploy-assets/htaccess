@@ -1,0 +1,83 @@
+# ============================================================================
+#  M.I.Auto s.r.o. — Apache configuration for traditional hosting
+#
+#  This file replaces two Netlify-only files that do nothing on this server:
+#  _redirects (which sent / to /sk) and _headers (the security headers).
+#  Without it the site still loads, but the root address has no page and the
+#  security headers are gone.
+#
+#  Upload it to the same directory as index.html. Its name begins with a dot,
+#  so WebFTP may hide it — switch on "show hidden files" to see it.
+# ============================================================================
+
+# ── the entry point ─────────────────────────────────────────────────────────
+# A directory is served by the index.html inside it. This is what makes /sk/
+# and /sk/sluzby/pneuservis/ work without a single rewrite rule.
+DirectoryIndex index.html
+
+# Never list a directory's contents when it has no index file.
+Options -Indexes
+
+# ── the page that is served when nothing matches ────────────────────────────
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # ── https ────────────────────────────────────────────────────────────────
+  # A certificate is installed, so http is a redirect to https. Both conditions
+  # are needed: on hosting that terminates TLS at a proxy, %{HTTPS} is off even
+  # for a request that arrived encrypted, and testing it alone loops forever.
+  # If the site ever redirects endlessly, these four lines are the first thing
+  # to delete.
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # ── the home page ────────────────────────────────────────────────────────
+  # The Slovak page is the home page, permanently. index.html in this directory
+  # does the same thing in plain HTML if mod_rewrite is ever unavailable.
+  RewriteRule ^$ /sk/ [L,R=301]
+</IfModule>
+
+# ── security headers ────────────────────────────────────────────────────────
+# The same set the Netlify deployment sends. The policy allows no script,
+# style, frame or connection to any host that is not named here;
+# www.google.com is the embedded map and the check the contact page makes
+# before mounting it. 'unsafe-inline' for scripts is required because the app
+# emits an inline bootstrap on every page.
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=(), midi=(), browsing-topics=()"
+  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://www.google.com; frame-src https://www.google.com; upgrade-insecure-requests"
+
+  # Hashed asset filenames change whenever their contents do, so they can be
+  # cached indefinitely. Pages cannot: they keep their name across deploys.
+  <FilesMatch "\.(js|css|woff2|avif|webp|jpg|jpeg|png|svg|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html|xml|txt|webmanifest)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# ── content types the server may not know ───────────────────────────────────
+<IfModule mod_mime.c>
+  AddType image/avif                 .avif
+  AddType image/webp                 .webp
+  AddType font/woff2                 .woff2
+  AddType application/manifest+json  .webmanifest
+  AddType image/svg+xml              .svg
+  AddDefaultCharset UTF-8
+</IfModule>
+
+# ── compression ─────────────────────────────────────────────────────────────
+# Images and fonts are already compressed; running deflate over them again
+# costs CPU and saves nothing.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml image/svg+xml
+</IfModule>

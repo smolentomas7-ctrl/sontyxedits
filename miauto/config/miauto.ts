@@ -138,6 +138,21 @@ export const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as co
  */
 export const PRODUCTION_URL = "https://autoservisruzomberok.com";
 
+/**
+ * Whether every page URL ends in a slash.
+ *
+ * Off for Netlify, which serves `out/sk.html` at `/sk` by itself. On for
+ * traditional Apache-style hosting, which does not: there `trailingSlash` makes
+ * the export write `out/sk/index.html`, and `DirectoryIndex` — a feature every
+ * Apache has, with no rewrite rules involved — serves it at `/sk/`.
+ *
+ * It has to reach the canonical URLs too. A page served at `/sk/` whose
+ * canonical says `/sk` names a URL that mod_dir answers with a redirect, and a
+ * canonical pointing at a redirect is a signal a crawler has to resolve against
+ * itself. One flag, one answer, everywhere.
+ */
+export const TRAILING_SLASH = process.env.NEXT_PUBLIC_TRAILING_SLASH === "1";
+
 export const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ??
   process.env.URL ??

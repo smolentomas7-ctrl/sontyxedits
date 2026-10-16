@@ -1,0 +1,4 @@
+# Build output for HostCreators. Regenerate with:
+#   cd miauto && npm run build:hostcreators
+hostcreators-deploy/
+hostcreators-deploy.zip

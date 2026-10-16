@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, LOCALES, type Locale } from "@/content/types";
-import { site, siteUrl, siteUrlIsPlaceholder } from "@/config/miauto";
+import { TRAILING_SLASH, site, siteUrl, siteUrlIsPlaceholder } from "@/config/miauto";
 
 export { DEFAULT_LOCALE, LOCALES };
 export type { Locale };
@@ -41,6 +41,17 @@ export function otherLocale(locale: Locale): Locale {
 }
 
 /**
+ * The absolute, canonical URL of a page — the single source every canonical,
+ * hreflang entry, og:url and sitemap line is built from.
+ *
+ * `route` is the path without the locale prefix, e.g. "/sluzby/pneuservis".
+ */
+export function pageUrl(locale: Locale, route: string): string {
+  const path = `/${locale}${route}`;
+  return `${siteUrl}${TRAILING_SLASH ? `${path}/` : path}`;
+}
+
+/**
  * hreflang alternates for a route, plus x-default pointing at the Slovak version.
  * `route` is the path WITHOUT the locale prefix, e.g. "/sluzby/pneuservis".
  *
@@ -58,11 +69,11 @@ export function alternates(route: string) {
   if (siteUrlIsPlaceholder) return {};
   const languages: Record<string, string> = {};
   for (const locale of LOCALES) {
-    languages[locale] = `${siteUrl}/${locale}${route}`;
+    languages[locale] = pageUrl(locale, route);
   }
-  languages["x-default"] = `${siteUrl}/${DEFAULT_LOCALE}${route}`;
+  languages["x-default"] = pageUrl(DEFAULT_LOCALE, route);
   return {
-    canonical: `${siteUrl}/${DEFAULT_LOCALE}${route}`,
+    canonical: pageUrl(DEFAULT_LOCALE, route),
     languages,
   };
 }
@@ -71,7 +82,7 @@ export function alternates(route: string) {
 export function canonicalFor(locale: Locale, route: string) {
   if (siteUrlIsPlaceholder) return {};
   const alt = alternates(route);
-  return { ...alt, canonical: `${siteUrl}/${locale}${route}` };
+  return { ...alt, canonical: pageUrl(locale, route) };
 }
 
 /** Open Graph locale codes; `og:locale` wants a territory, not a bare language. */
@@ -91,7 +102,7 @@ export function pageSeo(
   meta: { readonly title: string; readonly description: string },
   type: "website" | "article" = "website",
 ) {
-  const canonical = siteUrlIsPlaceholder ? undefined : `${siteUrl}/${locale}${route}`;
+  const canonical = siteUrlIsPlaceholder ? undefined : pageUrl(locale, route);
   return {
     title: meta.title,
     description: meta.description,

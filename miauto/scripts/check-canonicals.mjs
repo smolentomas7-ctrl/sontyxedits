@@ -31,9 +31,16 @@ function walk(dir) {
   });
 }
 
-/** out/sk.html -> /sk ;  out/sk/sluzby/x.html -> /sk/sluzby/x */
+/**
+ * The URL a file is served at, in either export layout:
+ *   sk.html            -> /sk      (Netlify serves the flat file at that path)
+ *   sk/index.html      -> /sk/     (Apache serves a directory's index)
+ *   index.html         -> /
+ */
 function urlPathOf(file) {
   const rel = relative(outDir, file).split(sep).join("/");
+  if (rel === "index.html") return "/";
+  if (rel.endsWith("/index.html")) return "/" + rel.slice(0, -"index.html".length);
   return "/" + rel.replace(/\.html$/, "");
 }
 
@@ -42,11 +49,17 @@ const pages = walk(outDir).filter(
 );
 
 const problems = [];
+let checked = 0;
 for (const file of pages) {
   const html = readFileSync(file, "utf8");
   const head = html.split("</head>", 1)[0];
+
+  // A page that asks not to be indexed is not expected to name itself
+  // canonical — the root redirect stub is one.
+  if (/<meta name="robots"[^>]*noindex/.test(head)) continue;
   const found = [...head.matchAll(/<link rel="canonical" href="([^"]+)"/g)].map((m) => m[1]);
   const expected = `${siteUrl}${urlPathOf(file)}`;
+  checked += 1;
 
   if (found.length === 0) problems.push(`${urlPathOf(file)} — no canonical`);
   else if (found.length > 1) problems.push(`${urlPathOf(file)} — ${found.length} canonicals`);
@@ -56,10 +69,10 @@ for (const file of pages) {
 }
 
 if (problems.length > 0) {
-  console.error(`\n  ✖ canonical check failed on ${problems.length} of ${pages.length} pages:\n`);
+  console.error(`\n  ✖ canonical check failed on ${problems.length} of ${checked} pages:\n`);
   for (const p of problems) console.error(`      ${p}`);
   console.error("\n  Nothing is deployable without these. Build aborted.\n");
   process.exit(1);
 }
 
-console.log(`  ✓ ${pages.length} pages, each declaring itself canonical under ${siteUrl}`);
+console.log(`  ✓ ${checked} pages, each declaring itself canonical under ${siteUrl}`);

@@ -50,6 +50,9 @@ const PERMISSIONS =
 
 const config: NextConfig = {
   reactStrictMode: true,
+  // Apache serves a directory's index.html natively; it does not serve sk.html
+  // at /sk. See TRAILING_SLASH in config/miauto.ts.
+  trailingSlash: process.env.NEXT_PUBLIC_TRAILING_SLASH === "1",
   ...(STATIC
     ? {
         output: "export" as const,

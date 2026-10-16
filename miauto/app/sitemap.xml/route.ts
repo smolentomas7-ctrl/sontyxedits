@@ -1,6 +1,6 @@
 import { LOCALES, SERVICE_SLUGS } from "@/content/types";
-import { ROUTES } from "@/lib/i18n";
-import { siteUrl, siteUrlIsPlaceholder } from "@/config/miauto";
+import { ROUTES, pageUrl } from "@/lib/i18n";
+import { siteUrlIsPlaceholder } from "@/config/miauto";
 
 /**
  * /sitemap.xml, written out by hand rather than through Next's `sitemap.ts`
@@ -61,7 +61,7 @@ export function GET(): Response {
   // truthful to put in one.
   const urls = siteUrlIsPlaceholder
     ? []
-    : LOCALES.flatMap((locale) => ROUTE_PATHS.map((route) => `${siteUrl}/${locale}${route}`));
+    : LOCALES.flatMap((locale) => ROUTE_PATHS.map((route) => pageUrl(locale, route)));
 
   const body = [
     '<?xml version="1.0" encoding="UTF-8"?>',
