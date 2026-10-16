@@ -5,12 +5,48 @@ description: "Master skill for the M.I.Auto s.r.o. automotive service website (R
 
 # miauto-web — master skill
 
-Two jobs in one skill:
+## 0. What this skill is for
 
-1. **M.I.Auto website** (`miauto/` in this repository). This is the default. The
-   project is already built; work on it directly and follow the facts and rules below.
-2. **New website briefs** for any other client. Run the creative interview in part 6
-   before generating anything.
+This skill **prepares production prompts for Claude Code**. When the user asks for a
+website change, the output is a ready-to-paste Claude Code prompt that follows the
+format in part 0.1. It is not a place to start coding by default. The skill gives
+Claude Code the facts, rules and verification steps, so the prompt is complete on its
+own.
+
+Two kinds of request:
+
+1. **M.I.Auto website** (`miauto/` in this repository). The default. The project is
+   already built. Turn the request into a Claude Code prompt that uses the facts and
+   rules below.
+2. **New website briefs** for any other client. Run the creative interview in part 10
+   first. Its final creative brief then becomes the input for the Claude Code prompt.
+
+### 0.1 Prompt format
+
+Every production prompt for Claude Code contains these sections, in this order:
+
+1. **Goal**: one or two sentences on the outcome, in plain language.
+2. **Context**: the relevant facts from part 2, and the state from `SPRAVA.md`.
+   Only what this task needs.
+3. **Scope**: files or areas that may change. Name what must NOT change.
+4. **Constraints**: the hard rules from part 1 that apply to this task.
+5. **Steps**: numbered, concrete actions. Include the commands to run.
+6. **Verification**: the checks from part 8 that apply, plus the task-specific checks.
+   Build output must be inspected, not only the source.
+7. **Deliverables**: commit to `claude/miauto-website-build-7e1gr6`, changed files
+   listed, deploy steps if a package is produced.
+8. **Report format**: Slovak report with what changed, what was verified, what was
+   not verified and why, and the exact manual steps left for the client.
+
+Rules for writing the prompt:
+
+- Write it in English, so Claude Code reads it cleanly. The client-facing text inside
+  the site stays in Slovak and English as the project requires.
+- Do not put secrets, API keys or passwords in the prompt.
+- Do not put any model identifier into the prompt output, commit messages or repository
+  files.
+- If a fact is missing (for example an IČO), the prompt says the item stays missing. It
+  must not ask Claude Code to invent it.
 
 Working language with the client: **Slovak**. Reports to the client are in Slovak.
 Code, comments and commit messages stay in English.
