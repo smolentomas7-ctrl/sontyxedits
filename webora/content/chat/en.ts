@@ -40,7 +40,7 @@ export const chatEn: ChatScript = {
         "days", "delivery", "turnaround", "ready",
       ],
       answer:
-        "A one-page site usually takes about a week, a multi-page business site two to three weeks. An online shop depends on how many products and integrations there are. The date is agreed along with the price. What usually delays a project is waiting for text and photos — if you have those ready, it runs to plan.",
+        "A one-page site usually takes about a week, a multi-page business site one to two weeks. An online shop depends on how many products and integrations there are. The date is agreed along with the price. What usually delays a project is waiting for text and photos — if you have those ready, it runs to plan.",
       followUps: ["start", "included", "pricing"],
       offerContact: true,
     },

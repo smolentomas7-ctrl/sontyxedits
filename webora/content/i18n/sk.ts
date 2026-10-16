@@ -53,7 +53,7 @@ export const sk: Dictionary = {
     heroSecondary: "Pozrieť ukážky prác",
     heroStats: [
       { value: "3", label: "typy webov, ktoré staviam" },
-      { value: "2–3", label: "týždne bežné dodanie" },
+      { value: "1–2", label: "týždne bežné dodanie" },
       { value: "100 %", label: "kód a prístupy ostávajú vám" },
     ],
     trustTitle: "Čo dostanete v každom projekte",
@@ -157,7 +157,7 @@ export const sk: Dictionary = {
           "Pomoc s textami",
           "Zaškolenie na úpravu textov a obrázkov",
         ],
-        timeline: "zhruba dva až tri týždne",
+        timeline: "zhruba jeden až dva týždne",
       },
       {
         slug: "redesign",
@@ -171,7 +171,7 @@ export const sk: Dictionary = {
           "Presmerovania, aby ste neprišli o pozície vo vyhľadávaní",
           "Porovnanie rýchlosti pred a po",
         ],
-        timeline: "zhruba dva až štyri týždne",
+        timeline: "zhruba jeden až dva týždne",
       },
     ],
     alwaysTitle: "Čo je vždy súčasťou",
@@ -498,7 +498,7 @@ export const sk: Dictionary = {
       },
       {
         q: "Ako dlho trvá vytvorenie webu?",
-        a: "Jednoduchšia prezentácia býva hotová zhruba za týždeň, viacstránkový firemný web za dva až tri týždne. Projekty sa najčastejšie predlžujú nie kvôli programovaniu, ale kvôli čakaniu na texty a fotky.",
+        a: "Jednoduchšia prezentácia býva hotová zhruba za týždeň, viacstránkový firemný web za jeden až dva týždne. Projekty sa najčastejšie predlžujú nie kvôli programovaniu, ale kvôli čakaniu na texty a fotky.",
       },
       {
         q: "Bude web fungovať na mobile?",

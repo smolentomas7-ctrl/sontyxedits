@@ -53,7 +53,7 @@ export const en: Dictionary = {
     heroSecondary: "See the work",
     heroStats: [
       { value: "3", label: "kinds of site I build" },
-      { value: "2–3", label: "weeks typical delivery" },
+      { value: "1–2", label: "weeks typical delivery" },
       { value: "100%", label: "code and logins stay yours" },
     ],
     trustTitle: "What every project includes",
@@ -157,7 +157,7 @@ export const en: Dictionary = {
           "Help with copy",
           "Training on editing text and images",
         ],
-        timeline: "about two to three weeks",
+        timeline: "about one to two weeks",
       },
       {
         slug: "redesign",
@@ -171,7 +171,7 @@ export const en: Dictionary = {
           "Redirects so you keep your search rankings",
           "Before and after speed comparison",
         ],
-        timeline: "about two to four weeks",
+        timeline: "about one to two weeks",
       },
     ],
     alwaysTitle: "What's always part of it",
@@ -497,7 +497,7 @@ export const en: Dictionary = {
       },
       {
         q: "How long does it take to build a website?",
-        a: "A simpler presentation is usually ready in about a week, a multi-page business site in two to three weeks. Projects most often slip not because of the build, but because of waiting for text and photos.",
+        a: "A simpler presentation is usually ready in about a week, a multi-page business site in one to two weeks. Projects most often slip not because of the build, but because of waiting for text and photos.",
       },
       {
         q: "Will the site work on a phone?",

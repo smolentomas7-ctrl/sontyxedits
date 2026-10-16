@@ -43,7 +43,7 @@ export const chatSk: ChatScript = {
         "týždeň", "tyzden", "dni", "dodanie", "stihnete",
       ],
       answer:
-        "Jednostránkový web zvládnem zvyčajne do týždňa, viacstránkovú firemnú stránku za dva až tri týždne. E-shop závisí od počtu produktov a napojení. Konkrétny termín dohodneme spolu s cenou. Projekty sa najčastejšie predlžujú kvôli čakaniu na texty a fotky — ak ich máte pripravené, ide to podľa plánu.",
+        "Jednostránkový web zvládnem zvyčajne do týždňa, viacstránkovú firemnú stránku za jeden až dva týždne. E-shop závisí od počtu produktov a napojení. Konkrétny termín dohodneme spolu s cenou. Projekty sa najčastejšie predlžujú kvôli čakaniu na texty a fotky — ak ich máte pripravené, ide to podľa plánu.",
       followUps: ["start", "included", "pricing"],
       offerContact: true,
     },

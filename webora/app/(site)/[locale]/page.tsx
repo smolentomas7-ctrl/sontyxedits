@@ -19,6 +19,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
+import { Parallax } from "@/components/ui/Parallax";
 import { WorkShowcase } from "@/components/marketing/WorkShowcase";
 import { Testimonials } from "@/components/marketing/Testimonials";
 import { ContactOptions, ContactButtons } from "@/components/marketing/ContactOptions";
@@ -64,11 +65,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function HomePage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const typedLocale: Locale = locale;
@@ -117,95 +114,99 @@ export default async function HomePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
-      {/* ---------- 1. HERO ---------- */}
-      <section className="relative overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 flex items-start justify-center"
-        >
+      {/* ---------- 1. HERO ----------
+          Full-bleed photograph with the text set on it, bottom-left, the way
+          the M.I.Auto build does it. The section slides up under the fixed,
+          transparent header so the photo reaches the top edge. */}
+      <section
+        data-parallax-area=""
+        className="relative isolate -mt-16 flex min-h-[86svh] items-end overflow-hidden pb-14 pt-32 md:-mt-20 md:min-h-[92svh] md:pb-24 md:pt-40"
+      >
+        <div className="absolute inset-0 -z-10 bg-bg">
+          {/* Not wrapped in Reveal: it is the largest element in the first
+              viewport, so it paints immediately. */}
+          <Parallax className="absolute inset-0" shift={8} tilt={0.6}>
+            <Image
+              src={marketing.hero.src}
+              alt={typedLocale === "sk" ? marketing.hero.alt : HERO_ALT_EN}
+              fill
+              priority
+              sizes="100vw"
+              className="hero-image object-cover brightness-[1.35] saturate-[1.1]"
+            />
+          </Parallax>
+          {/* Two scrims, as on M.I.Auto: the vertical one gives the text block
+              solid ground, the horizontal one (tablet and up) keeps the
+              headline column dark while the monitor on the right stays lit.
+              On phones the text covers the whole photo, so it gets an even
+              extra layer instead. */}
+          <div aria-hidden="true" className="absolute inset-0 bg-bg/55 md:hidden" />
           <div
-            className="hero-glow mt-[-14rem] size-[48rem] rounded-full opacity-80 blur-[130px]"
+            aria-hidden="true"
+            className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(circle, rgba(91,141,255,0.24) 0%, rgba(91,141,255,0.07) 42%, transparent 70%)",
+                "linear-gradient(to top, var(--bg) 3%, color-mix(in srgb, var(--bg) 72%, transparent) 28%, color-mix(in srgb, var(--bg) 22%, transparent) 60%, color-mix(in srgb, var(--bg) 10%, transparent) 100%)",
+            }}
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 hidden md:block"
+            style={{
+              background:
+                "linear-gradient(to right, color-mix(in srgb, var(--bg) 88%, transparent) 0%, color-mix(in srgb, var(--bg) 62%, transparent) 34%, color-mix(in srgb, var(--bg) 12%, transparent) 60%, transparent 80%)",
             }}
           />
         </div>
 
         <Container>
-          <div className="grid items-center gap-12 py-20 md:py-28 lg:grid-cols-[1.08fr_1fr] lg:gap-14 lg:py-32">
-            <div className="flex min-w-0 flex-col items-start gap-7">
-              <Reveal>
-                <span className="t-small inline-flex rounded-full border border-border bg-surface/70 px-3.5 py-1.5 font-semibold uppercase tracking-[0.14em] text-accent backdrop-blur-sm">
-                  {dict.home.heroEyebrow}
-                </span>
-              </Reveal>
+          <div className="flex flex-col items-start">
+            <Reveal>
+              <span className="t-small inline-flex rounded-full border border-white/15 bg-bg/50 px-3.5 py-1.5 font-semibold uppercase tracking-[0.14em] text-accent backdrop-blur-sm">
+                {dict.home.heroEyebrow}
+              </span>
+            </Reveal>
 
-              <Reveal delay={70}>
-                <h1 className="t-display max-w-[16ch] text-balance text-text">
-                  {dict.home.heroTitle}{" "}
-                  <span className="text-accent">{dict.home.heroTitleAccent}</span>
-                </h1>
-              </Reveal>
+            <Reveal delay={70}>
+              <h1 className="t-display mt-6 max-w-[16ch] text-balance text-text">
+                {dict.home.heroTitle}{" "}
+                <span className="text-accent">{dict.home.heroTitleAccent}</span>
+              </h1>
+            </Reveal>
 
-              <Reveal delay={140}>
-                <p className="t-lead max-w-[46ch] text-text-muted">{dict.home.heroSubtitle}</p>
-              </Reveal>
+            <Reveal delay={140}>
+              <p className="t-lead mt-7 max-w-[46ch] text-text/85">{dict.home.heroSubtitle}</p>
+            </Reveal>
 
-              <Reveal delay={210}>
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <ButtonLink
-                    href={siteConfig.whatsapp.href}
-                    external
-                    target="_blank"
-                    size="lg"
-                  >
-                    <WhatsAppIcon className="size-[18px]" />
-                    {dict.home.heroPrimary}
-                  </ButtonLink>
-                  <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary" size="lg">
-                    {dict.home.heroSecondary}
-                  </ButtonLink>
-                </div>
-              </Reveal>
+            <Reveal delay={210}>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <ButtonLink href={siteConfig.whatsapp.href} external target="_blank" size="lg">
+                  <WhatsAppIcon className="size-[18px]" />
+                  {dict.home.heroPrimary}
+                </ButtonLink>
+                <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary" size="lg">
+                  {dict.home.heroSecondary}
+                </ButtonLink>
+              </div>
+            </Reveal>
 
-              <Reveal delay={280}>
-                <dl className="mt-4 flex flex-wrap gap-x-12 gap-y-6">
-                  {dict.home.heroStats.map((stat) => (
-                    <div key={stat.label}>
-                      <dt className="sr-only">{stat.label}</dt>
-                      <dd>
-                        <span className="block font-display text-3xl font-bold tracking-[-0.035em] text-text">
-                          {stat.value}
-                        </span>
-                        <span className="t-small mt-1 block max-w-[20ch] text-text-muted">
-                          {stat.label}
-                        </span>
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </Reveal>
-            </div>
-
-            {/* Hero image. Not wrapped in Reveal: it is the largest element in
-                the first viewport, so it must paint immediately. The frame
-                crops the wide original towards the monitor, which sits at the
-                centre of the shot. */}
-            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-3xl border border-border bg-surface shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)] sm:aspect-[16/9] lg:aspect-[5/4]">
-              <Image
-                src={marketing.hero.src}
-                alt={typedLocale === "sk" ? marketing.hero.alt : HERO_ALT_EN}
-                fill
-                priority
-                sizes="(min-width: 1200px) 530px, (min-width: 1024px) 46vw, 100vw"
-                className="object-cover object-[50%_58%]"
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/[0.06]"
-              />
-            </div>
+            <Reveal delay={280}>
+              <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-5">
+                {dict.home.heroStats.map((stat) => (
+                  <div key={stat.label}>
+                    <dt className="sr-only">{stat.label}</dt>
+                    <dd>
+                      <span className="block font-display text-[1.75rem] font-bold tracking-[-0.035em] text-text">
+                        {stat.value}
+                      </span>
+                      <span className="t-small mt-0.5 block max-w-[20ch] text-text-muted">
+                        {stat.label}
+                      </span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
           </div>
         </Container>
       </section>
@@ -221,9 +222,7 @@ export default async function HomePage({
             return (
               <Reveal as="li" key={item.title} delay={index * 60} className="flex flex-col gap-3">
                 <Icon aria-hidden="true" strokeWidth={1.5} className="size-6 text-accent" />
-                <h3 className="font-display text-[17px] font-semibold text-text">
-                  {item.title}
-                </h3>
+                <h3 className="font-display text-[17px] font-semibold text-text">{item.title}</h3>
                 <p className="t-small text-text-muted">{item.body}</p>
               </Reveal>
             );
@@ -355,9 +354,7 @@ export default async function HomePage({
               </div>
 
               <div className="pb-2 md:mt-5">
-                <h3 className="font-display text-[17px] font-semibold text-text">
-                  {step.title}
-                </h3>
+                <h3 className="font-display text-[17px] font-semibold text-text">{step.title}</h3>
                 <p className="mt-2 text-[15px] text-text-muted">{step.body}</p>
               </div>
             </Reveal>

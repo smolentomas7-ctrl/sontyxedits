@@ -219,6 +219,43 @@
   animation: webora-drift 22s ease-in-out infinite;
 }
 
+/* ---------- hero photo + cursor parallax (as on the M.I.Auto build) ---------- */
+
+/* Narrow screens crop the wide frame hard; keep the monitor in shot. */
+.hero-image {
+  object-position: var(--hero-focus, 54% 58%);
+}
+@media (min-width: 768px) {
+  .hero-image {
+    --hero-focus: 50% 55%;
+  }
+}
+
+.parallax {
+  perspective: 1100px;
+  transform-style: preserve-3d;
+}
+.parallax-layer {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transform:
+    translate3d(
+      calc(var(--parallax-x, 0) * var(--parallax-shift, 6px)),
+      calc(var(--parallax-y, 0) * var(--parallax-shift, 6px)),
+      0
+    )
+    rotateY(calc(var(--parallax-x, 0) * var(--parallax-tilt, 0.9deg)))
+    rotateX(calc(var(--parallax-y, 0) * var(--parallax-tilt, -0.9deg)))
+    scale(var(--parallax-scale, 1.035));
+  transform-origin: center;
+}
+@media (hover: none), (pointer: coarse) {
+  .parallax-layer {
+    transform: none;
+  }
+}
+
 /* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -242,6 +279,10 @@
 
   .hero-glow {
     animation: none;
+  }
+
+  .parallax-layer {
+    transform: none !important;
   }
 }
 
