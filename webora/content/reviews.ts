@@ -121,8 +121,10 @@ export const REVIEWS: Review[] = [
   },
   {
     // Real client: M.I. Autoservis (the M.I.Auto site in this repo).
-    // AWAITING APPROVAL: the text below is a draft sent to Ivan Kubis for
-    // sign-off. Delete `awaitingApproval` only once he has approved it.
+    // DRAFT WORDING: `text` was written by Webora and sent to Ivan Kubis for
+    // sign-off. The owner chose to publish it before that confirmation came
+    // back (2026-10-16). If Ivan changes anything, replace `text` with his
+    // version; if he declines, set `awaitingApproval: true` to hide the card.
     id: "sk-miauto",
     lang: "sk",
     name: "Ivan Kubis",
@@ -133,7 +135,6 @@ export const REVIEWS: Review[] = [
     text: "Chceli sme stránku, kde zákazník hneď vidí, čo robíme a kde nás nájde. Webora to vzala od začiatku do konca, pýtali sa na veci, ktoré by mi samému nenapadli, a na mobile to konečne vyzerá tak, ako má. Ozývajú sa nám ľudia, ktorí nás našli cez web.",
     photo: reviewPhotos.skMiauto,
     sample: false,
-    awaitingApproval: true,
   },
 ];
 
