@@ -66,15 +66,16 @@ export const brand = {
 
 export const marketing = {
   /**
-   * 2.0 Homepage hero — a dark desk setup with a single monitor, supplied by
-   * the owner. Wide 1.91:1 frame; the monitor sits just right of centre, so
-   * the hero crops towards it (see object-position in the home page).
+   * 2.0 Homepage hero — a desk at night with code on the screens, supplied by
+   * the owner (3840x2160 original, exported at 2560 wide). The laptop fills
+   * the left, behind the headline; the notebook and sketchbook sit right, so
+   * the hero crops towards the right (see .hero-image in globals.css).
    */
   hero: {
     src: "/assets/marketing/webora-hero.webp",
-    width: 736,
-    height: 385,
-    alt: "Tmavý pracovný stôl s monitorom, klávesnicou a notebookom v nočnom svetle",
+    width: 2560,
+    height: 1440,
+    alt: "Nočný pracovný stôl s monitormi plnými kódu, notebookom a skicárom v modrom a červenom svetle",
   },
   /** 2.1 Abstract dark hero texture. Defined but currently unplaced. */
   heroTexture: {

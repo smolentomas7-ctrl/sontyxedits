@@ -223,11 +223,11 @@
 
 /* Narrow screens crop the wide frame hard; keep the monitor in shot. */
 .hero-image {
-  object-position: var(--hero-focus, 54% 58%);
+  object-position: var(--hero-focus, 72% 50%);
 }
 @media (min-width: 768px) {
   .hero-image {
-    --hero-focus: 50% 55%;
+    --hero-focus: 60% 50%;
   }
 }
 

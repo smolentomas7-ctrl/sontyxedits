@@ -31,7 +31,8 @@ import { buildAlternates, ogImages } from "@/lib/seo";
 
 const TRUST_ICONS = [Smartphone, Gauge, Search, GraduationCap];
 /** config/images.ts keeps alt text in Slovak, the default locale. */
-const HERO_ALT_EN = "A dark desk with a monitor, keyboard and laptop lit at night";
+const HERO_ALT_EN =
+  "A desk at night with code on the monitors, a laptop and a sketchbook in blue and red light";
 /** One per service, in the order services are listed. */
 const SERVICE_ICONS = [FileText, Layout, RefreshCw];
 
@@ -132,7 +133,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               fill
               priority
               sizes="100vw"
-              className="hero-image object-cover brightness-[1.35] saturate-[1.1]"
+              className="hero-image object-cover"
             />
           </Parallax>
           {/* Two scrims, as on M.I.Auto: the vertical one gives the text block
@@ -146,7 +147,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(to top, var(--bg) 3%, color-mix(in srgb, var(--bg) 72%, transparent) 28%, color-mix(in srgb, var(--bg) 22%, transparent) 60%, color-mix(in srgb, var(--bg) 10%, transparent) 100%)",
+                "linear-gradient(to top, var(--bg) 3%, color-mix(in srgb, var(--bg) 72%, transparent) 28%, color-mix(in srgb, var(--bg) 18%, transparent) 62%, color-mix(in srgb, var(--bg) 60%, transparent) 100%)",
             }}
           />
           <div
