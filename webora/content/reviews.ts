@@ -20,6 +20,8 @@ import { reviews as reviewPhotos, type ImageSlot } from "@/config/images";
  *
  * A real client's card must carry the client's own words. Until they arrive,
  * leave `text` empty: entries without text are kept here but not rendered.
+ * A draft the client has not yet approved sets `awaitingApproval: true`,
+ * which also keeps the card off the site; delete that line once they have.
  *
  * Reviews are written in the reviewer's own language and are shown as-is in
  * both site locales, so they are kept here rather than in the dictionaries.
@@ -44,6 +46,8 @@ export type Review = {
   photo?: ImageSlot;
   /** True while the entry is demonstration content. */
   sample: boolean;
+  /** Draft text the client has not approved yet. Not rendered while true. */
+  awaitingApproval?: boolean;
 };
 
 /** Country names in the country's own language, matching each review. */
@@ -116,20 +120,24 @@ export const REVIEWS: Review[] = [
     sample: true,
   },
   {
-    // Real client (the M.I.Auto site in this repo). Awaiting their own
-    // wording: fill in `name`, `position` and `text` with what they approved.
-    // Hidden until `text` is set.
+    // Real client: M.I. Autoservis (the M.I.Auto site in this repo).
+    // AWAITING APPROVAL: the text below is a draft sent to Ivan Kubis for
+    // sign-off. Delete `awaitingApproval` only once he has approved it.
     id: "sk-miauto",
     lang: "sk",
-    name: "",
+    name: "Ivan Kubis",
     country: "SK",
-    company: "M.I.Auto s.r.o.",
-    position: "",
+    company: "M.I. Autoservis s.r.o., Ružomberok",
+    position: "Spolumajiteľ",
     rating: 5,
-    text: "",
+    text: "Chceli sme stránku, kde zákazník hneď vidí, čo robíme a kde nás nájde. Webora to vzala od začiatku do konca, pýtali sa na veci, ktoré by mi samému nenapadli, a na mobile to konečne vyzerá tak, ako má. Ozývajú sa nám ľudia, ktorí nás našli cez web.",
+    photo: reviewPhotos.skMiauto,
     sample: false,
+    awaitingApproval: true,
   },
 ];
 
-/** Reviews ready to show: every entry that has the reviewer's name and words. */
-export const PUBLISHED_REVIEWS = REVIEWS.filter((review) => review.name && review.text.trim());
+/** Reviews ready to show: named, with text, and not waiting on the client's approval. */
+export const PUBLISHED_REVIEWS = REVIEWS.filter(
+  (review) => review.name && review.text.trim() && !review.awaitingApproval,
+);

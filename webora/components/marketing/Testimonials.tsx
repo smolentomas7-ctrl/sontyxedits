@@ -81,7 +81,7 @@ function ReviewCard({ review, dict }: { review: Review; dict: Dictionary }) {
             src={review.photo.src}
             width={review.photo.width}
             height={review.photo.height}
-            alt={t.photoAlt.replace("{name}", review.name)}
+            alt={review.photo.alt || t.photoAlt.replace("{name}", review.name)}
             sizes="56px"
             className="size-12 shrink-0 rounded-full sm:size-14 bg-surface-hover object-cover object-center ring-1 ring-white/10"
           />

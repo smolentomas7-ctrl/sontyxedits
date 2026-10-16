@@ -136,6 +136,13 @@ export const reviews = {
   cz01: { src: "/assets/reviews/reviewer-cz-01.webp", width: 256, height: 256, alt: "" },
   en01: { src: "/assets/reviews/reviewer-en-01.webp", width: 256, height: 256, alt: "" },
   en02: { src: "/assets/reviews/reviewer-en-02.webp", width: 256, height: 256, alt: "" },
+  /** Company logo, supplied by the owner; a logo carries its own alt text. */
+  skMiauto: {
+    src: "/assets/reviews/reviewer-sk-miauto.webp",
+    width: 256,
+    height: 256,
+    alt: "Logo M.I. Autoservis",
+  },
 } satisfies Record<string, ImageSlot>;
 
 /* ============================================================
