@@ -92,7 +92,7 @@ export const chatEn: ChatScript = {
         "phone", "number", "call", "message you", "form",
       ],
       answer:
-        "Two ways: by email at weboraeurope@gmail.com, or on WhatsApp at +421 944 352 238. There is deliberately no form on this site — both routes reach me directly and I reply faster. A few sentences about what your business does and what kind of site you need is enough.",
+        "Two ways: by email at weboraeurope@gmail.com, or on WhatsApp at +421 918 757 493. There is deliberately no form on this site — both routes reach me directly and I reply faster. A few sentences about what your business does and what kind of site you need is enough.",
       followUps: ["start", "pricing", "delivery"],
       offerContact: true,
     },

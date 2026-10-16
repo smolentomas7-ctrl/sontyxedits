@@ -440,9 +440,6 @@ export const sk: Dictionary = {
     eyebrow: "Referencie",
     title: "Dôvera firiem. Weby, ktoré vyniknú.",
     subtitle: "Premyslený dizajn, moderné technológie a weby postavené okolo vášho podnikania.",
-    disclaimer:
-      "Recenzie označené „Ukážka“ sú zástupný obsah: mená, firmy, pozície aj texty sú vymyslené, nejde o skutočné referencie. Postupne ich nahrádzam reálnymi ohlasmi so súhlasom klientov.",
-    badge: "Ukážka",
     ratingLabel: "Hodnotenie {n} z 5",
     photoAlt: "Profilová fotografia: {name}",
   },
@@ -510,7 +507,7 @@ export const sk: Dictionary = {
       },
       {
         q: "Ako sa s tebou dá spojiť?",
-        a: "E-mailom na weboraeurope@gmail.com alebo cez WhatsApp na +421 944 352 238. Stačí pár viet o tom, čo vaša firma robí a čo od webu čakáte. Formulár na webe zámerne nemám — e-mail aj WhatsApp idú priamo mne a odpoviem rýchlejšie.",
+        a: "E-mailom na weboraeurope@gmail.com alebo cez WhatsApp na +421 918 757 493. Stačí pár viet o tom, čo vaša firma robí a čo od webu čakáte. Formulár na webe zámerne nemám — e-mail aj WhatsApp idú priamo mne a odpoviem rýchlejšie.",
       },
       {
         q: "Dá sa web neskôr upravovať?",
@@ -552,7 +549,7 @@ export const sk: Dictionary = {
   contact: {
     metaTitle: "Kontakt — Webora",
     metaDescription:
-      "Napíšte mi e-mail na weboraeurope@gmail.com alebo ma kontaktujte cez WhatsApp na +421 944 352 238.",
+      "Napíšte mi e-mail na weboraeurope@gmail.com alebo ma kontaktujte cez WhatsApp na +421 918 757 493.",
     heroTitle: "Povedzme si, čo potrebujete",
     heroSubtitle:
       "Napíšte pár viet o svojej firme a o tom, čo od webu čakáte. Nemusíte mať pripravené zadanie — stačí, keď viem, kde začať.",

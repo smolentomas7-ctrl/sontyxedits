@@ -1,27 +1,21 @@
 import { reviews as reviewPhotos, type ImageSlot } from "@/config/images";
 
 /**
- * Homepage reviews — SAMPLE CONTENT.
+ * Homepage reviews.
  *
- * Every entry below is demonstration content written to show how the section
- * will look. The people, companies and positions are placeholders, not
- * Webora clients, and the page labels them as samples. Nothing here may be
- * presented as a verified or real testimonial.
+ * Only genuine reviews are shown on the site: entries with `sample: true` are
+ * never rendered (see PUBLISHED_REVIEWS at the bottom).
  *
- * The "Ukážka" label is per review: a card with `sample: true` carries it,
- * a card with `sample: false` renders with no label at all. The note above
- * the grid only shows while at least one visible card is a sample, so it
- * disappears on its own once every sample has been replaced.
+ * The five `sample` entries are invented placeholders — the people,
+ * companies and positions do not exist. They are kept here only as slots to
+ * be replaced by real reviews: edit an entry in place with what the client
+ * approved (`name`, `company`, `position`, `text`), swap its photo in
+ * config/images.ts (`reviews` group) or drop `photo` to show initials, and
+ * set `sample: false`. It then appears on the site with no label.
  *
- * To publish a genuine review, edit its entry in place: replace `name`,
- * `company`, `position` and `text` with what the client approved, swap the
- * photo in config/images.ts (`reviews` group) or drop `photo` to show the
- * client's initials, and set `sample: false`.
- *
- * A real client's card must carry the client's own words. Until they arrive,
- * leave `text` empty: entries without text are kept here but not rendered.
- * A draft the client has not yet approved sets `awaitingApproval: true`,
- * which also keeps the card off the site; delete that line once they have.
+ * A real client's card must carry the client's own words. A draft the client
+ * has not approved yet sets `awaitingApproval: true`, which also keeps the
+ * card off the site.
  *
  * Reviews are written in the reviewer's own language and are shown as-is in
  * both site locales, so they are kept here rather than in the dictionaries.
@@ -44,7 +38,7 @@ export type Review = {
   text: string;
   /** Portrait; without one the card shows the reviewer's initials. */
   photo?: ImageSlot;
-  /** True while the entry is demonstration content. */
+  /** True for an invented placeholder. Placeholders are never rendered. */
   sample: boolean;
   /** Draft text the client has not approved yet. Not rendered while true. */
   awaitingApproval?: boolean;
@@ -138,7 +132,7 @@ export const REVIEWS: Review[] = [
   },
 ];
 
-/** Reviews ready to show: named, with text, and not waiting on the client's approval. */
+/** Reviews shown on the site: genuine, named, with text, and approved. */
 export const PUBLISHED_REVIEWS = REVIEWS.filter(
-  (review) => review.name && review.text.trim() && !review.awaitingApproval,
+  (review) => !review.sample && review.name && review.text.trim() && !review.awaitingApproval,
 );

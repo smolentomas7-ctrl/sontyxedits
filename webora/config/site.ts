@@ -11,7 +11,7 @@
  */
 
 /** Digits only, international format — what wa.me expects in its path. */
-const WHATSAPP_E164 = "421944352238";
+const WHATSAPP_E164 = "421918757493";
 
 export const siteConfig = {
   name: "Webora",
@@ -26,7 +26,7 @@ export const siteConfig = {
   /** Primary contact — the hero and every CTA band lead with it. */
   whatsapp: {
     /** Human-readable, with spaces. */
-    display: "+421 944 352 238",
+    display: "+421 918 757 493",
     /** wa.me takes no "+" and no spaces, or the link resolves to nothing. */
     href: `https://wa.me/${WHATSAPP_E164}`,
   },

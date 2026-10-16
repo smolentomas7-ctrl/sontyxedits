@@ -439,9 +439,6 @@ export const en: Dictionary = {
     eyebrow: "Reviews",
     title: "Trusted by businesses. Designed to stand out.",
     subtitle: "Thoughtful design, modern technology, and websites built around your business.",
-    disclaimer:
-      "Reviews marked “Sample” are placeholder content: the names, companies, positions and text are made up, not real testimonials. I'm replacing them with genuine feedback as clients agree to it.",
-    badge: "Sample",
     ratingLabel: "Rated {n} out of 5",
     photoAlt: "Profile photo: {name}",
   },
@@ -509,7 +506,7 @@ export const en: Dictionary = {
       },
       {
         q: "How do I get in touch?",
-        a: "By email at weboraeurope@gmail.com or on WhatsApp at +421 944 352 238. A few sentences about what your business does and what you expect from a site is enough. There is deliberately no form on this site — email and WhatsApp reach me directly and I reply faster.",
+        a: "By email at weboraeurope@gmail.com or on WhatsApp at +421 918 757 493. A few sentences about what your business does and what you expect from a site is enough. There is deliberately no form on this site — email and WhatsApp reach me directly and I reply faster.",
       },
       {
         q: "Can the site be edited later?",
@@ -551,7 +548,7 @@ export const en: Dictionary = {
   contact: {
     metaTitle: "Contact — Webora",
     metaDescription:
-      "Email me at weboraeurope@gmail.com or message me on WhatsApp at +421 944 352 238.",
+      "Email me at weboraeurope@gmail.com or message me on WhatsApp at +421 918 757 493.",
     heroTitle: "Tell me what you need",
     heroSubtitle:
       "A few sentences about your business and what you expect from a website. You don't need a finished brief — just enough for me to know where to start.",

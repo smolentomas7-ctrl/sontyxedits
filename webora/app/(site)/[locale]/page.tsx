@@ -22,6 +22,7 @@ import { Accordion } from "@/components/ui/Accordion";
 import { Parallax } from "@/components/ui/Parallax";
 import { WorkShowcase } from "@/components/marketing/WorkShowcase";
 import { Testimonials } from "@/components/marketing/Testimonials";
+import { PUBLISHED_REVIEWS } from "@/content/reviews";
 import { ContactOptions, ContactButtons } from "@/components/marketing/ContactOptions";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
@@ -363,17 +364,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </ol>
       </Section>
 
-      {/* ---------- 7. TESTIMONIALS (demonstration content) ---------- */}
-      <Section className="border-t border-border" ariaLabelledBy="testimonials-heading">
-        <SectionHeading
-          id="testimonials-heading"
-          eyebrow={dict.testimonials.eyebrow}
-          title={dict.testimonials.title}
-          subtitle={dict.testimonials.subtitle}
-          className="mb-10"
-        />
-        <Testimonials dict={dict} />
-      </Section>
+      {/* ---------- 7. TESTIMONIALS (genuine reviews only; hidden while there are none) ---------- */}
+      {PUBLISHED_REVIEWS.length > 0 ? (
+        <Section className="border-t border-border" ariaLabelledBy="testimonials-heading">
+          <SectionHeading
+            id="testimonials-heading"
+            eyebrow={dict.testimonials.eyebrow}
+            title={dict.testimonials.title}
+            subtitle={dict.testimonials.subtitle}
+            className="mb-10"
+          />
+          <Testimonials dict={dict} />
+        </Section>
+      ) : null}
 
       {/* ---------- 8. INDIVIDUAL PRICING ---------- */}
       <Section className="border-t border-border" ariaLabelledBy="pricing-heading">

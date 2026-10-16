@@ -95,7 +95,7 @@ export const chatSk: ChatScript = {
         "ozvať", "ozvat", "telefón", "telefon", "číslo", "cislo", "formulár", "formular",
       ],
       answer:
-        "Dvoma spôsobmi: e-mailom na weboraeurope@gmail.com alebo cez WhatsApp na +421 944 352 238. Formulár na webe zámerne nemám — obe cesty idú priamo mne a odpoviem rýchlejšie. Stačí pár viet o tom, čo vaša firma robí a akú stránku potrebujete.",
+        "Dvoma spôsobmi: e-mailom na weboraeurope@gmail.com alebo cez WhatsApp na +421 918 757 493. Formulár na webe zámerne nemám — obe cesty idú priamo mne a odpoviem rýchlejšie. Stačí pár viet o tom, čo vaša firma robí a akú stránku potrebujete.",
       followUps: ["start", "pricing", "delivery"],
       offerContact: true,
     },

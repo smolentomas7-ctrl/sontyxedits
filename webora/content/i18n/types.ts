@@ -158,10 +158,6 @@ export type Dictionary = {
     eyebrow: string;
     title: string;
     subtitle: string;
-    /** Shown above the cards while any review is still sample content. */
-    disclaimer: string;
-    /** Per-card label on sample reviews. */
-    badge: string;
     /** Accessible name of the star row, e.g. "Hodnotenie 5 z 5". `{n}` is the rating. */
     ratingLabel: string;
     /** Avatar alt text; `{name}` is replaced with the reviewer's name. */
