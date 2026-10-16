@@ -4,8 +4,9 @@ import { Info } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { WorkShowcase } from "@/components/marketing/WorkShowcase";
-import { mailtoHref } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
 import { buildAlternates, ogImages } from "@/lib/seo";
 
@@ -58,8 +59,9 @@ export default async function PortfolioPage({
         <WorkShowcase locale={typedLocale} dict={dict} />
 
         <div className="mt-16 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external size="lg">
-            {dict.contact.emailCta}
+          <ButtonLink href={siteConfig.whatsapp.href} external target="_blank" size="lg">
+            <WhatsAppIcon className="size-4" />
+            {dict.contact.whatsappCta}
           </ButtonLink>
           <ButtonLink href={`/${typedLocale}/features`} variant="secondary" size="lg">
             {dict.home.ctaSecondary}

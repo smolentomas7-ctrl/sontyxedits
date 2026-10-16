@@ -17,6 +17,22 @@
   --accent-soft: rgba(91, 141, 255, 0.14);
   --focus: #5b8dff;
   --danger: #f87171;
+
+  /* ---------- typography ---------- */
+  --font-stack:
+    var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, system-ui,
+    sans-serif;
+  /* Weights: regular for reading, medium for UI labels, semibold for headings
+     and controls, bold only for the hero headline and figures. */
+  --fw-body: 400;
+  --fw-ui: 500;
+  --fw-heading: 600;
+  --fw-display: 700;
+  /* Tracking tightens as size grows, the way Apple sets SF Pro Display. */
+  --tracking-display: -0.045em;
+  --tracking-h1: -0.04em;
+  --tracking-h2: -0.032em;
+  --tracking-h3: -0.022em;
 }
 
 @theme inline {
@@ -31,8 +47,11 @@
   --color-accent-soft: var(--accent-soft);
   --color-danger: var(--danger);
 
-  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* One family, Apple-style. Inter is self-hosted by next/font; the system
+     stack behind it (SF Pro on Apple devices, Segoe UI on Windows) only shows
+     if Inter fails to load. */
+  --font-display: var(--font-stack);
+  --font-sans: var(--font-stack);
 }
 
 /* Base element styles MUST live in @layer base. Unlayered CSS outranks
@@ -56,8 +75,9 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-stack);
     font-size: 16px;
+    font-weight: var(--fw-body);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -79,11 +99,11 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    font-family: var(--font-stack);
+    letter-spacing: var(--tracking-h3);
+    line-height: 1.12;
     margin: 0;
-    font-weight: 500;
+    font-weight: var(--fw-heading);
   }
 
   p {
@@ -126,32 +146,38 @@
 
 /* ---------- type scale ---------- */
 
+/* Homepage hero headline — the one place that goes bold and very tight. */
+.t-display {
+  font-size: clamp(2.5rem, 1.5rem + 2.9vw, 4.125rem);
+  font-weight: var(--fw-display);
+  letter-spacing: var(--tracking-display);
+  line-height: 1.02;
+}
 .t-h1 {
-  font-size: 40px;
-  font-weight: 700;
+  font-size: clamp(2.5rem, 1.75rem + 3vw, 4.25rem);
+  font-weight: var(--fw-display);
+  letter-spacing: var(--tracking-h1);
+  line-height: 1.05;
 }
 .t-h2 {
-  font-size: 30px;
-  font-weight: 500;
+  font-size: clamp(1.875rem, 1.45rem + 1.7vw, 3rem);
+  font-weight: var(--fw-heading);
+  letter-spacing: var(--tracking-h2);
+  line-height: 1.08;
 }
 .t-h3 {
-  font-size: 22px;
-  font-weight: 500;
+  font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.625rem);
+  font-weight: var(--fw-heading);
+  letter-spacing: var(--tracking-h3);
+  line-height: 1.2;
+}
+.t-lead {
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  line-height: 1.55;
+  letter-spacing: -0.011em;
 }
 .t-small {
   font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  .t-h1 {
-    font-size: 72px;
-  }
-  .t-h2 {
-    font-size: 48px;
-  }
-  .t-h3 {
-    font-size: 28px;
-  }
 }
 
 .t-prose {
@@ -235,6 +261,7 @@
 .prose-webora h2 {
   color: var(--text);
   font-size: 30px;
+  letter-spacing: var(--tracking-h2);
   margin-top: 2.2em;
   margin-bottom: -0.4em;
 }

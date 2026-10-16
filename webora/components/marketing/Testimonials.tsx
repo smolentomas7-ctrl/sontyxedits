@@ -1,83 +1,129 @@
-import { AlertTriangle, Quote } from "lucide-react";
+import Image from "next/image";
+import { Info, Star } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
+import { Flag } from "@/components/ui/Flag";
+import { REVIEWS, COUNTRY_NAMES, type Review } from "@/content/reviews";
 import type { Dictionary } from "@/content/i18n";
+import { cn } from "@/lib/utils";
 
 /**
- * Demonstration testimonials.
+ * Customer reviews.
  *
- * These are invented, and the UI says so three times over: a disclaimer panel
- * above the cards, a per-card badge, and fictional company names. Avatars are
- * initials rather than photographs — putting a real face on an invented quote
- * would misrepresent a real person, and a stock portrait would imply a real
- * customer that does not exist.
+ * Content lives in content/reviews.ts; this component only lays it out. While
+ * any entry is marked `sample`, a short note above the grid and a label on the
+ * card say so, so placeholder reviewers are never passed off as real clients.
+ * Both disappear on their own once every entry is genuine.
  *
- * Replacing this with genuine feedback means swapping `dict.testimonials.items`
- * and deleting the disclaimer and badge.
+ * Five cards: three across, then two wider ones on large screens, two columns
+ * on tablets (the last card spans both), one column on phones.
  */
 export function Testimonials({ dict }: { dict: Dictionary }) {
+  const t = dict.testimonials;
+  const anySample = REVIEWS.some((review) => review.sample);
+
   return (
     <>
-      <Reveal>
-        <p
-          role="note"
-          className="mb-10 flex gap-3 rounded-xl border border-[#F59E0B]/35 bg-[#F59E0B]/10 px-5 py-4 text-[14px] leading-relaxed text-text"
-        >
-          <AlertTriangle
-            aria-hidden="true"
-            strokeWidth={1.5}
-            className="mt-0.5 size-5 shrink-0 text-[#F59E0B]"
-          />
-          {dict.testimonials.disclaimer}
-        </p>
-      </Reveal>
+      {anySample ? (
+        <Reveal>
+          <p
+            role="note"
+            className="mb-10 flex max-w-[78ch] gap-3 rounded-xl border border-border bg-surface/60 px-5 py-4 text-[14px] leading-relaxed text-text-muted"
+          >
+            <Info aria-hidden="true" strokeWidth={1.75} className="mt-0.5 size-[18px] shrink-0" />
+            {t.disclaimer}
+          </p>
+        </Reveal>
+      ) : null}
 
-      <ul className="grid gap-6 md:grid-cols-3">
-        {dict.testimonials.items.map((item, index) => {
-          const initials = item.name
-            .split(" ")
-            .map((part) => part.charAt(0))
-            .slice(0, 2)
-            .join("");
-
-          return (
-            <Reveal as="li" key={item.name} delay={index * 70} className="flex min-w-0">
-              <figure className="flex w-full min-w-0 flex-col gap-5 rounded-2xl border border-border bg-surface p-5 transition-colors duration-200 hover:border-text-muted/35 sm:p-7">
-                <div className="flex items-start justify-between gap-3">
-                  <Quote
-                    aria-hidden="true"
-                    strokeWidth={1.5}
-                    className="size-6 shrink-0 text-accent/70"
-                  />
-                  <span className="shrink-0 rounded-full border border-border px-2.5 py-1 text-[11px] uppercase tracking-[0.1em] text-text-muted">
-                    {dict.testimonials.badge}
-                  </span>
-                </div>
-
-                <blockquote className="flex-1 text-[15px] leading-relaxed text-text-muted">
-                  {item.text}
-                </blockquote>
-
-                <figcaption className="flex items-center gap-3 border-t border-border pt-5">
-                  <span
-                    aria-hidden="true"
-                    className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft font-[family-name:var(--font-space-grotesk)] text-[13px] font-bold text-accent"
-                  >
-                    {initials}
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block truncate text-[15px] font-medium text-text">
-                      {item.name}
-                    </span>
-                    <span className="block truncate text-[13px] text-text-muted">
-                      {item.role}, {item.company}
-                    </span>
-                  </span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          );
-        })}
+      <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-6">
+        {REVIEWS.map((review, index) => (
+          <Reveal
+            as="li"
+            key={review.id}
+            delay={index * 60}
+            className={cn(
+              "flex min-w-0",
+              index < 3 ? "lg:col-span-2" : "lg:col-span-3",
+              index === REVIEWS.length - 1 && "md:col-span-2 lg:col-span-3",
+            )}
+          >
+            <ReviewCard review={review} dict={dict} />
+          </Reveal>
+        ))}
       </ul>
     </>
+  );
+}
+
+function ReviewCard({ review, dict }: { review: Review; dict: Dictionary }) {
+  const t = dict.testimonials;
+
+  return (
+    <figure
+      className={cn(
+        "flex w-full min-w-0 flex-col gap-5 rounded-2xl border border-border bg-surface p-5 break-normal sm:p-7",
+        "shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_12px_32px_-24px_rgba(0,0,0,0.9)]",
+        "transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        "hover:-translate-y-1 hover:border-text-muted/30",
+        "hover:shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_22px_44px_-26px_rgba(0,0,0,1)]",
+        "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+      )}
+    >
+      <figcaption className="flex items-start gap-3.5 sm:gap-4">
+        <Image
+          src={review.photo.src}
+          width={review.photo.width}
+          height={review.photo.height}
+          alt={t.photoAlt.replace("{name}", review.name)}
+          sizes="56px"
+          className="size-12 shrink-0 rounded-full sm:size-14 bg-surface-hover object-cover object-center ring-1 ring-white/10"
+        />
+
+        <span className="flex min-w-0 flex-1 flex-col gap-1">
+          <span className="text-[16px] font-semibold leading-tight tracking-[-0.01em] text-text">
+            {review.name}
+          </span>
+
+          <span className="flex min-w-0 items-start gap-2 text-[13.5px] leading-snug text-text-muted">
+            <Flag country={review.country} className="mt-[2px]" />
+            <span className="min-w-0">
+              {COUNTRY_NAMES[review.country]}
+              <span aria-hidden="true" className="px-1.5 text-text-muted/60">
+                ·
+              </span>
+              <span className="text-text/85">{review.company}</span>
+            </span>
+          </span>
+
+          <span className="text-[13.5px] text-text-muted">{review.position}</span>
+        </span>
+      </figcaption>
+
+      <div className="flex items-center justify-between gap-3">
+        <span
+          role="img"
+          aria-label={t.ratingLabel.replace("{n}", String(review.rating))}
+          className="flex gap-1 text-[#F5B83D]"
+        >
+          {Array.from({ length: 5 }, (_, i) => (
+            <Star
+              key={i}
+              aria-hidden="true"
+              strokeWidth={0}
+              className={cn("size-4 fill-current", i >= review.rating && "opacity-25")}
+            />
+          ))}
+        </span>
+        {review.sample ? (
+          <span className="shrink-0 rounded-full border border-border px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em] text-text-muted">
+            {t.badge}
+          </span>
+        ) : null}
+      </div>
+
+      <blockquote lang={review.lang} className="text-[15.5px] leading-[1.65] text-text/85">
+        <p>{review.lang === "en" ? `“${review.text}”` : `„${review.text}“`}</p>
+      </blockquote>
+    </figure>
   );
 }

@@ -65,7 +65,18 @@ export const brand = {
    ============================================================ */
 
 export const marketing = {
-  /** 2.1 Abstract dark hero texture, sits behind the homepage headline. */
+  /**
+   * 2.0 Homepage hero — a dark desk setup with a single monitor, supplied by
+   * the owner. Wide 1.91:1 frame; the monitor sits just right of centre, so
+   * the hero crops towards it (see object-position in the home page).
+   */
+  hero: {
+    src: "/assets/marketing/webora-hero.webp",
+    width: 736,
+    height: 385,
+    alt: "Tmavý pracovný stôl s monitorom, klávesnicou a notebookom v nočnom svetle",
+  },
+  /** 2.1 Abstract dark hero texture. Defined but currently unplaced. */
   heroTexture: {
     src: "/assets/marketing/hero-texture.jpg",
     width: 1376,
@@ -107,6 +118,23 @@ export const marketing = {
     height: 768,
     alt: "Ilustrácia rýchlosti načítania webovej stránky",
   },
+} satisfies Record<string, ImageSlot>;
+
+/* ============================================================
+   GROUP 2b — REVIEWS
+   Profile photos supplied by the owner for the five sample reviews in
+   content/reviews.ts. Each is a 256x256 head-and-shoulders crop of the
+   original portrait, so the circular avatar is sharp at 3x and the face sits
+   in the centre of the circle. To swap a photo, replace the file and keep the
+   name, or point `src` at a new one.
+   ============================================================ */
+
+export const reviews = {
+  sk01: { src: "/assets/reviews/reviewer-sk-01.webp", width: 256, height: 256, alt: "" },
+  sk02: { src: "/assets/reviews/reviewer-sk-02.webp", width: 256, height: 256, alt: "" },
+  cz01: { src: "/assets/reviews/reviewer-cz-01.webp", width: 256, height: 256, alt: "" },
+  en01: { src: "/assets/reviews/reviewer-en-01.webp", width: 256, height: 256, alt: "" },
+  en02: { src: "/assets/reviews/reviewer-en-02.webp", width: 256, height: 256, alt: "" },
 } satisfies Record<string, ImageSlot>;
 
 /* ============================================================
@@ -769,6 +797,7 @@ export const images = {
   brand,
   miauto,
   marketing,
+  reviews,
   bistro,
   fitness,
   build,

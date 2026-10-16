@@ -20,10 +20,10 @@ export const siteConfig = {
     en: "Websites for small businesses",
   },
 
-  /** Primary contact. */
+  /** Secondary contact. */
   email: "weboraeurope@gmail.com",
 
-  /** Secondary contact. */
+  /** Primary contact — the hero and every CTA band lead with it. */
   whatsapp: {
     /** Human-readable, with spaces. */
     display: "+421 944 352 238",

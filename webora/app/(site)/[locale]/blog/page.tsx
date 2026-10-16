@@ -6,8 +6,9 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
-import { mailtoHref } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { ButtonLink } from "@/components/ui/Button";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
 import { sortedPosts } from "@/content/blog/posts";
 import { buildAlternates, ogImages } from "@/lib/seo";
@@ -75,7 +76,7 @@ export default async function BlogIndexPage({
                     <span className="t-small font-medium uppercase tracking-[0.14em] text-accent">
                       {post.category[typedLocale]}
                     </span>
-                    <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-medium leading-snug text-text">
+                    <h2 className="font-display text-xl font-semibold leading-snug text-text">
                       {post.title[typedLocale]}
                     </h2>
                     <p className="t-small flex-1 text-text-muted">{post.excerpt[typedLocale]}</p>
@@ -92,8 +93,9 @@ export default async function BlogIndexPage({
         </ul>
 
         <div className="mt-16 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external>
-            {dict.contact.emailCta}
+          <ButtonLink href={siteConfig.whatsapp.href} external target="_blank">
+            <WhatsAppIcon className="size-4" />
+            {dict.contact.whatsappCta}
           </ButtonLink>
           <ButtonLink href={`/${typedLocale}/services`} variant="secondary">
             {dict.home.servicesLink}

@@ -267,7 +267,7 @@ export default async function CaseStudyPage({
                 className="h-16 w-24 shrink-0 rounded-lg object-cover object-top sm:h-20 sm:w-32"
               />
               <span className="min-w-0">
-                <span className="block truncate font-[family-name:var(--font-space-grotesk)] text-lg font-medium text-text group-hover/next:text-accent">
+                <span className="block truncate font-display text-lg font-semibold text-text group-hover/next:text-accent">
                   {next.name}
                 </span>
                 <span className="t-small block truncate text-text-muted">

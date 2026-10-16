@@ -78,7 +78,7 @@ export function WorkShowcase({
                     </span>
                   </div>
 
-                  <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-medium text-text">
+                  <h3 className="font-display text-xl font-semibold text-text">
                     {project.name}
                   </h3>
 

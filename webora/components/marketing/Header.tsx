@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { AnimatedLogo } from "@/components/ui/AnimatedLogo";
 import { ButtonLink } from "@/components/ui/Button";
-import { mailtoHref } from "@/config/site";
+import { siteConfig } from "@/config/site";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 import type { Dictionary, Locale } from "@/content/i18n";
@@ -93,7 +94,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                     href={link.href}
                     aria-current={isActive(link.href) ? "page" : undefined}
                     className={cn(
-                      "rounded-lg px-3 py-2 text-[15px] transition-colors duration-150",
+                      "rounded-lg px-3 py-2 text-[15px] font-medium tracking-[-0.01em] transition-colors duration-150",
                       isActive(link.href)
                         ? "text-accent"
                         : "text-text-muted hover:text-text",
@@ -117,11 +118,13 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             </Link>
 
             <ButtonLink
-              href={mailtoHref(dict.contact.mailSubject)}
+              href={siteConfig.whatsapp.href}
               external
+              target="_blank"
               size="sm"
               className="hidden sm:inline-flex"
             >
+              <WhatsAppIcon className="size-4" />
               {dict.common.getQuote}
             </ButtonLink>
 
@@ -159,7 +162,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                 <li>
                   <Link
                     href={`/${locale}`}
-                    className="block border-b border-border py-4 font-[family-name:var(--font-space-grotesk)] text-2xl text-text"
+                    className="block border-b border-border py-4 font-display text-2xl font-semibold tracking-[-0.02em] text-text"
                   >
                     {dict.nav.home}
                   </Link>
@@ -170,7 +173,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                       href={link.href}
                       aria-current={isActive(link.href) ? "page" : undefined}
                       className={cn(
-                        "block border-b border-border py-4 font-[family-name:var(--font-space-grotesk)] text-2xl",
+                        "block border-b border-border py-4 font-display text-2xl font-semibold tracking-[-0.02em]",
                         isActive(link.href) ? "text-accent" : "text-text",
                       )}
                     >
@@ -182,11 +185,13 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             </nav>
 
             <ButtonLink
-              href={mailtoHref(dict.contact.mailSubject)}
+              href={siteConfig.whatsapp.href}
               external
+              target="_blank"
               size="lg"
               className="mt-8 w-full"
             >
+              <WhatsAppIcon className="size-[18px]" />
               {dict.common.getQuote}
             </ButtonLink>
           </Container>

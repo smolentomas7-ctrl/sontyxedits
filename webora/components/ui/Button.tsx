@@ -23,7 +23,7 @@ type Size = "lg" | "md" | "sm";
 
 const base =
   "group/btn relative inline-flex select-none items-center justify-center gap-2 " +
-  "rounded-xl font-medium tracking-[-0.01em] whitespace-nowrap " +
+  "rounded-xl font-semibold tracking-[-0.01em] whitespace-nowrap " +
   "transition-[transform,background-color,border-color,color,box-shadow] " +
   "duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] " +
   "active:scale-[0.97] active:duration-75 " +

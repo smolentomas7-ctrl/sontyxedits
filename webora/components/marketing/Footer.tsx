@@ -27,7 +27,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           </div>
 
           <nav aria-label={dict.footer.navTitle}>
-            <h2 className="t-small mb-4 font-medium uppercase tracking-[0.14em] text-text">
+            <h2 className="t-small mb-4 font-semibold uppercase tracking-[0.12em] text-text">
               {dict.footer.navTitle}
             </h2>
             <ul className="flex flex-col gap-2.5">
@@ -46,7 +46,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
           {/* The only two contact routes on the site. Both are real links. */}
           <div>
-            <h2 className="t-small mb-4 font-medium uppercase tracking-[0.14em] text-text">
+            <h2 className="t-small mb-4 font-semibold uppercase tracking-[0.12em] text-text">
               {dict.footer.contactTitle}
             </h2>
             <ul className="flex flex-col gap-3 text-[15px] text-text-muted">

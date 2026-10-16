@@ -6,9 +6,10 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Card } from "@/components/ui/Card";
 import { ButtonLink } from "@/components/ui/Button";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { getDictionary, isLocale, LOCALES, type Locale } from "@/content/i18n";
 import { getPost, sortedPosts, type Block } from "@/content/blog/posts";
-import { siteConfig, mailtoHref } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { buildAlternates, canonicalUrl } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
 
@@ -153,13 +154,14 @@ export default async function BlogPostPage({
             <p className="t-small font-medium uppercase tracking-[0.12em] text-text-muted">
               {dict.blog.writtenBy}
             </p>
-            <p className="font-[family-name:var(--font-space-grotesk)] text-lg font-medium text-text">
+            <p className="font-display text-lg font-semibold text-text">
               {siteConfig.name}
             </p>
             <p className="t-small t-prose text-text-muted">{dict.blog.authorBio}</p>
             <div className="mt-3 flex flex-wrap gap-3">
-              <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external size="sm">
-                {dict.contact.emailCta}
+              <ButtonLink href={siteConfig.whatsapp.href} external target="_blank" size="sm">
+                <WhatsAppIcon className="size-4" />
+                {dict.contact.whatsappCta}
               </ButtonLink>
               <ButtonLink href={`/${typedLocale}/portfolio`} size="sm" variant="secondary">
                 {dict.common.seeWork}

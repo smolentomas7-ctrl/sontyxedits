@@ -22,7 +22,7 @@ export const en: Dictionary = {
   },
 
   common: {
-    getQuote: "Email me",
+    getQuote: "WhatsApp me",
     seeWork: "See the work",
     viewExample: "View example",
     caseStudy: "Project detail",
@@ -49,7 +49,7 @@ export const en: Dictionary = {
     heroTitleAccent: "actual customers",
     heroSubtitle:
       "I design and build websites for businesses and sole traders. Not a template with the photos swapped — a site built around what your business needs to achieve.",
-    heroPrimary: "Email me",
+    heroPrimary: "Message me on WhatsApp",
     heroSecondary: "See the work",
     heroStats: [
       { value: "3", label: "kinds of site I build" },
@@ -436,35 +436,14 @@ export const en: Dictionary = {
   },
 
   testimonials: {
-    eyebrow: "Testimonials",
-    title: "What belongs here",
-    subtitle:
-      "This section is ready for real client feedback. For now it shows sample text so you can see how it will look.",
+    eyebrow: "Reviews",
+    title: "Trusted by businesses. Designed to stand out.",
+    subtitle: "Thoughtful design, modern technology, and websites built around your business.",
     disclaimer:
-      "Sample content. The names, companies and text below are not real testimonials — they are placeholders I'll replace with genuine feedback once I have it, with the clients' permission.",
-    badge: "Sample text",
-    items: [
-      {
-        name: "Martin Kováč",
-        company: "Sample Company Ltd.",
-        role: "director",
-        text: "Working on the website was clear throughout and the result looks modern. I particularly appreciated the attention to detail and how easy it is to use.",
-      },
-      {
-        name: "Lenka Hrušková",
-        company: "Example Venue",
-        role: "owner",
-        text: "What helped most was knowing in advance what the site would contain and when it would be finished. No surprises on the invoice.",
-      },
-      {
-        name: "Peter Baláž",
-        company: "Demo Workshop",
-        role: "sole trader",
-        text: "I needed people to find me on a phone and call. That's exactly what the site is built around, and enquiries now come in by phone.",
-      },
-    ],
-    prev: "Previous testimonial",
-    next: "Next testimonial",
+      "Sample reviews. The names, companies, positions and text are placeholder content, not real testimonials. I'll replace them with genuine feedback once clients have agreed to it.",
+    badge: "Sample",
+    ratingLabel: "Rated {n} out of 5",
+    photoAlt: "Profile photo: {name}",
   },
 
   pricing: {

@@ -4,9 +4,10 @@ import { Check, Clock, Tag } from "lucide-react";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { ButtonLink } from "@/components/ui/Button";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { Card } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
-import { mailtoHref } from "@/config/site";
+import { siteConfig, mailtoHref } from "@/config/site";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
 import { buildAlternates, ogImages } from "@/lib/seo";
 import { cn } from "@/lib/utils";
@@ -141,7 +142,7 @@ export default async function ServicesPage({
           {dict.services.always.map((item, index) => (
             <Reveal as="li" key={item.title} delay={index * 60} className="flex">
               <Card className="flex w-full flex-col gap-2.5 p-6">
-                <h3 className="font-[family-name:var(--font-space-grotesk)] text-[17px] font-medium text-text">
+                <h3 className="font-display text-[17px] font-semibold text-text">
                   {item.title}
                 </h3>
                 <p className="t-small text-text-muted">{item.body}</p>
@@ -151,8 +152,9 @@ export default async function ServicesPage({
         </ul>
 
         <div className="mt-12 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external size="lg">
-            {dict.contact.emailCta}
+          <ButtonLink href={siteConfig.whatsapp.href} external target="_blank" size="lg">
+            <WhatsAppIcon className="size-4" />
+            {dict.contact.whatsappCta}
           </ButtonLink>
           <ButtonLink href={`/${typedLocale}/features`} variant="secondary" size="lg">
             {dict.nav.features}

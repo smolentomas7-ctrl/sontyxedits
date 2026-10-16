@@ -22,7 +22,7 @@ export const sk: Dictionary = {
   },
 
   common: {
-    getQuote: "Napísať e-mail",
+    getQuote: "Napísať na WhatsApp",
     seeWork: "Pozrieť práce",
     viewExample: "Pozrieť ukážku",
     caseStudy: "Detail projektu",
@@ -49,7 +49,7 @@ export const sk: Dictionary = {
     heroTitleAccent: "privedú zákazníkov",
     heroSubtitle:
       "Navrhujem a programujem weby pre firmy a živnostníkov. Nie šablónu s vymenenými fotkami — stránku postavenú okolo toho, čo má vaša firma dosiahnuť.",
-    heroPrimary: "Napísať e-mail",
+    heroPrimary: "Napísať na WhatsApp",
     heroSecondary: "Pozrieť ukážky prác",
     heroStats: [
       { value: "3", label: "typy webov, ktoré staviam" },
@@ -438,34 +438,13 @@ export const sk: Dictionary = {
 
   testimonials: {
     eyebrow: "Referencie",
-    title: "Čo by tu malo byť",
-    subtitle:
-      "Táto sekcia je pripravená na skutočné ohlasy od klientov. Zatiaľ v nej vidíte ukážkové texty, aby bolo vidieť, ako bude vyzerať.",
+    title: "Dôvera firiem. Weby, ktoré vyniknú.",
+    subtitle: "Premyslený dizajn, moderné technológie a weby postavené okolo vášho podnikania.",
     disclaimer:
-      "Ukážkový obsah. Nižšie uvedené mená, firmy ani texty nie sú skutočné referencie — sú to zástupné údaje, ktoré nahradím reálnymi ohlasmi, keď ich budem mať so súhlasom klientov.",
-    badge: "Ukážkový text",
-    items: [
-      {
-        name: "Martin Kováč",
-        company: "Ukážková firma s.r.o.",
-        role: "konateľ",
-        text: "Spolupráca na tvorbe webovej stránky bola prehľadná a výsledok pôsobí moderne. Oceňujem najmä dôraz na detaily a jednoduché používanie.",
-      },
-      {
-        name: "Lenka Hrušková",
-        company: "Vzorová prevádzka",
-        role: "majiteľka",
-        text: "Najviac mi pomohlo, že som dopredu vedela, čo bude web obsahovať a dokedy to bude hotové. Žiadne prekvapenia na faktúre.",
-      },
-      {
-        name: "Peter Baláž",
-        company: "Demonštračná dielňa",
-        role: "živnostník",
-        text: "Potreboval som, aby ma ľudia našli cez mobil a zavolali. Presne na to je web postavený a odvtedy mi chodia dopyty priamo telefonicky.",
-      },
-    ],
-    prev: "Predchádzajúca referencia",
-    next: "Ďalšia referencia",
+      "Ukážkové recenzie. Mená, firmy, pozície a texty sú zatiaľ zástupný obsah, nie skutočné referencie. Nahradím ich reálnymi ohlasmi, keď ich budem mať so súhlasom klientov.",
+    badge: "Ukážka",
+    ratingLabel: "Hodnotenie {n} z 5",
+    photoAlt: "Profilová fotografia: {name}",
   },
 
   pricing: {

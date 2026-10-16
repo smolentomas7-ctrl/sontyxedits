@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -22,10 +23,14 @@ import { WorkShowcase } from "@/components/marketing/WorkShowcase";
 import { Testimonials } from "@/components/marketing/Testimonials";
 import { ContactOptions, ContactButtons } from "@/components/marketing/ContactOptions";
 import { getDictionary, isLocale, type Locale } from "@/content/i18n";
-import { siteConfig, mailtoHref } from "@/config/site";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
+import { siteConfig } from "@/config/site";
+import { marketing } from "@/config/images";
 import { buildAlternates, ogImages } from "@/lib/seo";
 
 const TRUST_ICONS = [Smartphone, Gauge, Search, GraduationCap];
+/** config/images.ts keeps alt text in Slovak, the default locale. */
+const HERO_ALT_EN = "A dark desk with a monitor, keyboard and laptop lit at night";
 /** One per service, in the order services are listed. */
 const SERVICE_ICONS = [FileText, Layout, RefreshCw];
 
@@ -128,52 +133,79 @@ export default async function HomePage({
         </div>
 
         <Container>
-          <div className="flex flex-col items-start gap-7 py-24 md:py-36">
-            <Reveal>
-              <span className="t-small inline-flex rounded-full border border-border bg-surface/70 px-3.5 py-1.5 font-medium uppercase tracking-[0.16em] text-accent backdrop-blur-sm">
-                {dict.home.heroEyebrow}
-              </span>
-            </Reveal>
+          <div className="grid items-center gap-12 py-20 md:py-28 lg:grid-cols-[1.08fr_1fr] lg:gap-14 lg:py-32">
+            <div className="flex min-w-0 flex-col items-start gap-7">
+              <Reveal>
+                <span className="t-small inline-flex rounded-full border border-border bg-surface/70 px-3.5 py-1.5 font-semibold uppercase tracking-[0.14em] text-accent backdrop-blur-sm">
+                  {dict.home.heroEyebrow}
+                </span>
+              </Reveal>
 
-            <Reveal delay={70}>
-              <h1 className="t-h1 max-w-[17ch] text-balance text-text">
-                {dict.home.heroTitle}{" "}
-                <span className="text-accent">{dict.home.heroTitleAccent}</span>
-              </h1>
-            </Reveal>
+              <Reveal delay={70}>
+                <h1 className="t-display max-w-[16ch] text-balance text-text">
+                  {dict.home.heroTitle}{" "}
+                  <span className="text-accent">{dict.home.heroTitleAccent}</span>
+                </h1>
+              </Reveal>
 
-            <Reveal delay={140}>
-              <p className="t-prose text-lg text-text-muted">{dict.home.heroSubtitle}</p>
-            </Reveal>
+              <Reveal delay={140}>
+                <p className="t-lead max-w-[46ch] text-text-muted">{dict.home.heroSubtitle}</p>
+              </Reveal>
 
-            <Reveal delay={210}>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <ButtonLink href={mailtoHref(dict.contact.mailSubject)} external size="lg">
-                  {dict.home.heroPrimary}
-                </ButtonLink>
-                <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary" size="lg">
-                  {dict.home.heroSecondary}
-                </ButtonLink>
-              </div>
-            </Reveal>
+              <Reveal delay={210}>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <ButtonLink
+                    href={siteConfig.whatsapp.href}
+                    external
+                    target="_blank"
+                    size="lg"
+                  >
+                    <WhatsAppIcon className="size-[18px]" />
+                    {dict.home.heroPrimary}
+                  </ButtonLink>
+                  <ButtonLink href={`/${typedLocale}/portfolio`} variant="secondary" size="lg">
+                    {dict.home.heroSecondary}
+                  </ButtonLink>
+                </div>
+              </Reveal>
 
-            <Reveal delay={280}>
-              <dl className="mt-6 flex flex-wrap gap-x-12 gap-y-6">
-                {dict.home.heroStats.map((stat) => (
-                  <div key={stat.label}>
-                    <dt className="sr-only">{stat.label}</dt>
-                    <dd>
-                      <span className="block font-[family-name:var(--font-space-grotesk)] text-3xl font-bold tracking-[-0.03em] text-text">
-                        {stat.value}
-                      </span>
-                      <span className="t-small mt-1 block max-w-[20ch] text-text-muted">
-                        {stat.label}
-                      </span>
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </Reveal>
+              <Reveal delay={280}>
+                <dl className="mt-4 flex flex-wrap gap-x-12 gap-y-6">
+                  {dict.home.heroStats.map((stat) => (
+                    <div key={stat.label}>
+                      <dt className="sr-only">{stat.label}</dt>
+                      <dd>
+                        <span className="block font-display text-3xl font-bold tracking-[-0.035em] text-text">
+                          {stat.value}
+                        </span>
+                        <span className="t-small mt-1 block max-w-[20ch] text-text-muted">
+                          {stat.label}
+                        </span>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </Reveal>
+            </div>
+
+            {/* Hero image. Not wrapped in Reveal: it is the largest element in
+                the first viewport, so it must paint immediately. The frame
+                crops the wide original towards the monitor, which sits at the
+                centre of the shot. */}
+            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-3xl border border-border bg-surface shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)] sm:aspect-[16/9] lg:aspect-[5/4]">
+              <Image
+                src={marketing.hero.src}
+                alt={typedLocale === "sk" ? marketing.hero.alt : HERO_ALT_EN}
+                fill
+                priority
+                sizes="(min-width: 1200px) 530px, (min-width: 1024px) 46vw, 100vw"
+                className="object-cover object-[50%_58%]"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/[0.06]"
+              />
+            </div>
           </div>
         </Container>
       </section>
@@ -189,7 +221,7 @@ export default async function HomePage({
             return (
               <Reveal as="li" key={item.title} delay={index * 60} className="flex flex-col gap-3">
                 <Icon aria-hidden="true" strokeWidth={1.5} className="size-6 text-accent" />
-                <h3 className="font-[family-name:var(--font-space-grotesk)] text-[17px] font-medium text-text">
+                <h3 className="font-display text-[17px] font-semibold text-text">
                   {item.title}
                 </h3>
                 <p className="t-small text-text-muted">{item.body}</p>
@@ -314,7 +346,7 @@ export default async function HomePage({
               className="relative flex gap-4 md:block"
             >
               <div aria-hidden="true" className="flex flex-col items-center md:block">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-accent-soft font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-accent">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-accent-soft font-display text-sm font-bold text-accent">
                   {index + 1}
                 </span>
                 {index < dict.home.process.length - 1 ? (
@@ -323,7 +355,7 @@ export default async function HomePage({
               </div>
 
               <div className="pb-2 md:mt-5">
-                <h3 className="font-[family-name:var(--font-space-grotesk)] text-[17px] font-medium text-text">
+                <h3 className="font-display text-[17px] font-semibold text-text">
                   {step.title}
                 </h3>
                 <p className="mt-2 text-[15px] text-text-muted">{step.body}</p>
@@ -375,7 +407,7 @@ export default async function HomePage({
             <ul className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2">
               {dict.pricing.factors.map((factor) => (
                 <li key={factor.title} className="bg-surface p-6">
-                  <h4 className="font-[family-name:var(--font-space-grotesk)] text-[16px] font-medium text-text">
+                  <h4 className="font-display text-[16px] font-semibold text-text">
                     {factor.title}
                   </h4>
                   <p className="t-small mt-2 text-text-muted">{factor.body}</p>

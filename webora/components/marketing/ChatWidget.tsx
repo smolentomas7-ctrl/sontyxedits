@@ -119,7 +119,7 @@ export function ChatWidget({ locale, dict }: { locale: Locale; dict: Dictionary 
           )}
         >
           <div className="border-b border-border px-4 py-3">
-            <p className="font-[family-name:var(--font-space-grotesk)] text-[15px] font-medium text-text">
+            <p className="font-display text-[15px] font-semibold text-text">
               {dict.chat.title}
             </p>
             <p className="t-small text-text-muted">{dict.chat.subtitle}</p>

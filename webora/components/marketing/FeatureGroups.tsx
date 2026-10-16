@@ -41,7 +41,7 @@ export function FeatureGroups({ dict }: { dict: Dictionary }) {
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "font-[family-name:var(--font-space-grotesk)] text-[13px] font-bold tabular-nums transition-colors duration-150",
+                    "font-display text-[13px] font-bold tabular-nums transition-colors duration-150",
                     isOpen ? "text-accent" : "text-text-muted",
                   )}
                 >
@@ -51,7 +51,7 @@ export function FeatureGroups({ dict }: { dict: Dictionary }) {
                 <span className="flex-1">
                   <span
                     className={cn(
-                      "block font-[family-name:var(--font-space-grotesk)] text-[17px] font-medium transition-colors duration-150",
+                      "block font-display text-[17px] font-semibold transition-colors duration-150",
                       isOpen ? "text-accent" : "text-text group-hover/row:text-accent",
                     )}
                   >

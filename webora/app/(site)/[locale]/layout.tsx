@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { Header } from "@/components/marketing/Header";
 import { Footer } from "@/components/marketing/Footer";
@@ -8,16 +8,16 @@ import { ChatWidget } from "@/components/marketing/ChatWidget";
 import { getDictionary, isLocale, LOCALES, type Locale } from "@/content/i18n";
 import { siteConfig } from "@/config/site";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin", "latin-ext"],
-  weight: ["500", "700"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-});
-
+/**
+ * One family for the whole site, Apple-style: Inter carries headings and body
+ * alike, and hierarchy comes from weight, size and tracking rather than from a
+ * second display face. SF Pro is not licensed for web embedding, so on Apple
+ * devices the stack in globals.css falls back to the system font only if
+ * Inter fails to load.
+ */
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-inter",
   display: "swap",
 });
@@ -70,7 +70,7 @@ export default async function SiteLayout({
   const dict = getDictionary(typedLocale);
 
   return (
-    <html lang={typedLocale} className={`${spaceGrotesk.variable} ${inter.variable}`}>
+    <html lang={typedLocale} className={inter.variable}>
       <body>
         <a
           href="#main"

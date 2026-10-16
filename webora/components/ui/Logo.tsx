@@ -50,7 +50,7 @@ export function Wordmark({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 font-[family-name:var(--font-space-grotesk)] text-[15px] font-bold tracking-[-0.02em]",
+        "inline-flex items-center gap-1.5 font-display text-[15px] font-bold tracking-[-0.02em]",
         className,
       )}
     >

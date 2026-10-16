@@ -219,7 +219,7 @@ export function Lightbox({
 
         {item.title ? (
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="font-[family-name:var(--font-space-grotesk)] text-lg text-text">
+            <p className="font-display text-lg text-text">
               {item.title}
             </p>
             {item.href && item.hrefLabel ? (
