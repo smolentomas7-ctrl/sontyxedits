@@ -440,7 +440,7 @@ export const en: Dictionary = {
     title: "Trusted by businesses. Designed to stand out.",
     subtitle: "Thoughtful design, modern technology, and websites built around your business.",
     disclaimer:
-      "Sample reviews. The names, companies, positions and text are placeholder content, not real testimonials. I'll replace them with genuine feedback once clients have agreed to it.",
+      "Reviews marked “Sample” are placeholder content: the names, companies, positions and text are made up, not real testimonials. I'm replacing them with genuine feedback as clients agree to it.",
     badge: "Sample",
     ratingLabel: "Rated {n} out of 5",
     photoAlt: "Profile photo: {name}",

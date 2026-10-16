@@ -8,11 +8,18 @@ import { reviews as reviewPhotos, type ImageSlot } from "@/config/images";
  * Webora clients, and the page labels them as samples. Nothing here may be
  * presented as a verified or real testimonial.
  *
+ * The "Ukážka" label is per review: a card with `sample: true` carries it,
+ * a card with `sample: false` renders with no label at all. The note above
+ * the grid only shows while at least one visible card is a sample, so it
+ * disappears on its own once every sample has been replaced.
+ *
  * To publish a genuine review, edit its entry in place: replace `name`,
  * `company`, `position` and `text` with what the client approved, swap the
- * photo in config/images.ts (`reviews` group), and set `sample: false`. Once
- * every entry is genuine, the sample note above the cards disappears on its
- * own (see components/marketing/Testimonials.tsx).
+ * photo in config/images.ts (`reviews` group) or drop `photo` to show the
+ * client's initials, and set `sample: false`.
+ *
+ * A real client's card must carry the client's own words. Until they arrive,
+ * leave `text` empty: entries without text are kept here but not rendered.
  *
  * Reviews are written in the reviewer's own language and are shown as-is in
  * both site locales, so they are kept here rather than in the dictionaries.
@@ -31,8 +38,10 @@ export type Review = {
   /** PLACEHOLDER until a real client supplies it. */
   position: string;
   rating: 5;
+  /** The client's own words. Empty = not shown on the site yet. */
   text: string;
-  photo: ImageSlot;
+  /** Portrait; without one the card shows the reviewer's initials. */
+  photo?: ImageSlot;
   /** True while the entry is demonstration content. */
   sample: boolean;
 };
@@ -106,4 +115,21 @@ export const REVIEWS: Review[] = [
     photo: reviewPhotos.en02,
     sample: true,
   },
+  {
+    // Real client (the M.I.Auto site in this repo). Awaiting their own
+    // wording: fill in `name`, `position` and `text` with what they approved.
+    // Hidden until `text` is set.
+    id: "sk-miauto",
+    lang: "sk",
+    name: "",
+    country: "SK",
+    company: "M.I.Auto s.r.o.",
+    position: "",
+    rating: 5,
+    text: "",
+    sample: false,
+  },
 ];
+
+/** Reviews ready to show: every entry that has the reviewer's name and words. */
+export const PUBLISHED_REVIEWS = REVIEWS.filter((review) => review.name && review.text.trim());

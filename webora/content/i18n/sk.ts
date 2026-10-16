@@ -441,7 +441,7 @@ export const sk: Dictionary = {
     title: "Dôvera firiem. Weby, ktoré vyniknú.",
     subtitle: "Premyslený dizajn, moderné technológie a weby postavené okolo vášho podnikania.",
     disclaimer:
-      "Ukážkové recenzie. Mená, firmy, pozície a texty sú zatiaľ zástupný obsah, nie skutočné referencie. Nahradím ich reálnymi ohlasmi, keď ich budem mať so súhlasom klientov.",
+      "Recenzie označené „Ukážka“ sú zástupný obsah: mená, firmy, pozície aj texty sú vymyslené, nejde o skutočné referencie. Postupne ich nahrádzam reálnymi ohlasmi so súhlasom klientov.",
     badge: "Ukážka",
     ratingLabel: "Hodnotenie {n} z 5",
     photoAlt: "Profilová fotografia: {name}",

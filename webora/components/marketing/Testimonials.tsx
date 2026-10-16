@@ -2,24 +2,30 @@ import Image from "next/image";
 import { Info, Star } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { Flag } from "@/components/ui/Flag";
-import { REVIEWS, COUNTRY_NAMES, type Review } from "@/content/reviews";
+import { PUBLISHED_REVIEWS, COUNTRY_NAMES, type Review } from "@/content/reviews";
 import type { Dictionary } from "@/content/i18n";
 import { cn } from "@/lib/utils";
 
 /**
  * Customer reviews.
  *
- * Content lives in content/reviews.ts; this component only lays it out. While
- * any entry is marked `sample`, a short note above the grid and a label on the
- * card say so, so placeholder reviewers are never passed off as real clients.
- * Both disappear on their own once every entry is genuine.
+ * Content lives in content/reviews.ts; this component only lays it out. Each
+ * card marked `sample` carries a label, and a short note above the grid shows
+ * while any visible card is a sample, so placeholder reviewers are never
+ * passed off as real clients. Genuine reviews render with neither.
  *
- * Five cards: three across, then two wider ones on large screens, two columns
- * on tablets (the last card spans both), one column on phones.
+ * Large screens fill rows of three; when the count leaves a remainder, the
+ * last row's cards widen to fill it (five = three + two). Tablets use two
+ * columns with an odd last card spanning both; phones use one column.
  */
 export function Testimonials({ dict }: { dict: Dictionary }) {
   const t = dict.testimonials;
-  const anySample = REVIEWS.some((review) => review.sample);
+  const reviews = PUBLISHED_REVIEWS;
+  const anySample = reviews.some((review) => review.sample);
+  const lastRowStart = reviews.length - (reviews.length % 3 || 3);
+  const lastRowSpan = { 1: "lg:col-span-6", 2: "lg:col-span-3", 3: "lg:col-span-2" }[
+    reviews.length - lastRowStart
+  ];
 
   return (
     <>
@@ -36,15 +42,15 @@ export function Testimonials({ dict }: { dict: Dictionary }) {
       ) : null}
 
       <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-6">
-        {REVIEWS.map((review, index) => (
+        {reviews.map((review, index) => (
           <Reveal
             as="li"
             key={review.id}
             delay={index * 60}
             className={cn(
               "flex min-w-0",
-              index < 3 ? "lg:col-span-2" : "lg:col-span-3",
-              index === REVIEWS.length - 1 && "md:col-span-2 lg:col-span-3",
+              index < lastRowStart ? "lg:col-span-2" : lastRowSpan,
+              reviews.length % 2 === 1 && index === reviews.length - 1 && "md:col-span-2",
             )}
           >
             <ReviewCard review={review} dict={dict} />
@@ -70,14 +76,23 @@ function ReviewCard({ review, dict }: { review: Review; dict: Dictionary }) {
       )}
     >
       <figcaption className="flex items-start gap-3.5 sm:gap-4">
-        <Image
-          src={review.photo.src}
-          width={review.photo.width}
-          height={review.photo.height}
-          alt={t.photoAlt.replace("{name}", review.name)}
-          sizes="56px"
-          className="size-12 shrink-0 rounded-full sm:size-14 bg-surface-hover object-cover object-center ring-1 ring-white/10"
-        />
+        {review.photo ? (
+          <Image
+            src={review.photo.src}
+            width={review.photo.width}
+            height={review.photo.height}
+            alt={t.photoAlt.replace("{name}", review.name)}
+            sizes="56px"
+            className="size-12 shrink-0 rounded-full sm:size-14 bg-surface-hover object-cover object-center ring-1 ring-white/10"
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[15px] font-semibold text-accent ring-1 ring-white/10 sm:size-14"
+          >
+            {initials(review.name)}
+          </span>
+        )}
 
         <span className="flex min-w-0 flex-1 flex-col gap-1">
           <span className="text-[16px] font-semibold leading-tight tracking-[-0.01em] text-text">
@@ -126,4 +141,13 @@ function ReviewCard({ review, dict }: { review: Review; dict: Dictionary }) {
       </blockquote>
     </figure>
   );
+}
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
 }
